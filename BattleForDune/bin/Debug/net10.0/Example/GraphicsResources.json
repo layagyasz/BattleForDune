@@ -1,8 +1,0 @@
-{
-  "Textures": {
-    "Volumes": [ "Example/Textures.json" ]
-  },
-  "Fonts": "Example/Fonts.json",
-  "Shaders": "Example/Shaders.json",
-  "Classes": [ "Example/Style.json" ]
-}
