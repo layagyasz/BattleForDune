@@ -1,0 +1,55 @@
+#version 430 core
+
+#define CHANNEL_RED 1
+#define CHANNEL_GREEN 2
+#define CHANNEL_BLUE 4
+#define CHANNEL_ALPHA 8
+
+layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D in_texture;
+layout(rgba32f, binding = 1) uniform image2D out_texture;
+
+layout(location=0) uniform int seed;
+layout(location=1) uniform int channel;
+
+uint hash(uint x) 
+{
+    x += (x << 10u);
+    x ^= (x >>  6u);
+    x += (x <<  3u);
+    x ^= (x >> 11u);
+    x += (x << 15u);
+    return x;
+}
+
+uint hash(uvec2 v, int seed) 
+{ 
+    return hash(v.x ^ hash(v.y) ^ seed);
+}
+
+float construct_float(uint m) {
+    const uint ieee_mantissa = 0x007FFFFFu;
+    const uint ieee_one = 0x3F800000u;
+    m &= ieee_mantissa;
+    m |= ieee_one;
+    float f = uintBitsToFloat(m);
+    return f - 1.0;
+}
+
+float generate(vec2 v, int seed) {
+	return construct_float(hash(floatBitsToUint(v), seed));
+}
+
+void main() {
+	vec2 p = gl_GlobalInvocationID.xy;
+	ivec2 position = ivec2(gl_GlobalInvocationID.xy);
+    vec4 current = imageLoad(out_texture, position);
+    float value = generate(p, seed);
+	vec4 new = 
+		vec4(
+			(channel & CHANNEL_RED) != 0 ? value : current.r,
+			(channel & CHANNEL_GREEN) != 0 ? value : current.g,
+			(channel & CHANNEL_BLUE) != 0 ? value : current.b,
+			(channel & CHANNEL_ALPHA) != 0 ? value : current.a);
+    imageStore(out_texture, position, new);
+}

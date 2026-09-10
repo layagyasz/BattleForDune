@@ -1,0 +1,51 @@
+#version 430 core
+
+#define CHANNEL_RED 1
+#define CHANNEL_GREEN 2
+#define CHANNEL_BLUE 4
+#define CHANNEL_ALPHA 8
+
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D in_texture;
+layout(rgba32f, binding = 1) uniform image2D out_texture;
+
+layout(location=0) uniform int bucket_count;
+layout(location=1) uniform vec4 colors[32];
+layout(location=33) uniform ivec2 bucket_positions[32];
+layout(location=65) uniform int condition_channels[128];
+layout(location=193) uniform vec2 condition_ranges[128];
+layout(location=321) uniform int channel;
+
+bool meets_condition(vec4 v, int index) {
+	ivec2 pos = bucket_positions[index];
+	for (int i=pos.s; i<pos.t; ++i) {
+		float vi = v[condition_channels[i]];
+		if (vi < condition_ranges[i].x || vi > condition_ranges[i].y) {
+			return false;
+		}
+	}
+	return true;
+}
+
+vec4 generate(vec4 v) {
+	for (int i=0; i<bucket_count; ++i) {
+		if (meets_condition(v, i)) {
+			return colors[i];
+		}
+	}
+	return v;
+}
+
+void main() {
+    ivec2 position = ivec2(gl_GlobalInvocationID.xy);
+    vec4 input = imageLoad(in_texture, position);
+	vec4 current = imageLoad(out_texture, position);
+	vec4 classified = generate(input);
+	vec4 new = 
+		vec4(
+			(channel & CHANNEL_RED) != 0 ? classified.r : current.r,
+			(channel & CHANNEL_GREEN) != 0 ? classified.g : current.g,
+			(channel & CHANNEL_BLUE) != 0 ? classified.b : current.b,
+			(channel & CHANNEL_ALPHA) != 0 ? classified.a : current.a);
+    imageStore(out_texture, position, new);
+}

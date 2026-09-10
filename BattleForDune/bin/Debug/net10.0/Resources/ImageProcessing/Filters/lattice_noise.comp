@@ -1,0 +1,310 @@
+#version 430 core
+
+#define PI 3.1415926535f
+
+#define EVALUATOR_COSINE 0
+#define EVALUATOR_COSINE_INVERSE 1
+#define EVALUATOR_CURL 2
+#define EVALUATOR_CURVATURE 3
+#define EVALUATOR_DIVERGENCE 4
+#define EVALUATOR_DOUBLE_PLANE 5
+#define EVALUATOR_GRADIENT 6
+#define EVALUATOR_HILL 7
+#define EVALUATOR_HILL_AND_SLOPE 8
+#define EVALUATOR_HYPERBOLIC 9
+#define EVALUATOR_HYPERBOLIC_PLANES 10
+#define EVALUATOR_HYPERBOLIC_PLANES_DISPLACED 11
+#define EVALUATOR_MONKEY_SADDLE 12
+#define EVALUATOR_PARABOLIC 13
+#define EVALUATOR_PARABOLIC_COMPOSED 14
+#define EVALUATOR_PARABOLIC_DISPLACED 15
+#define EVALUATOR_PARABOLIC_INVERSE 16
+#define EVALUATOR_REJECTION 17
+#define EVALUATOR_TRIANGULAR_EDGE 18
+#define EVALUATOR_VERTICAL_EDGE 19
+#define EVALUATOR_VERTICAL_EDGE_DISPLACED 20
+#define EVALUATOR_VERTICAL_EDGE_INVERSE 21
+#define EVALUATOR_VERTICAL_EDGE_INVERSE_DISPLACED 22
+
+#define INTERPOLATOR_COSINE 0
+#define INTERPOLATOR_EPANECHNIKOV 1
+#define INTERPOLATOR_HERMITE 2
+#define INTERPOLATOR_HERMITE_DISPLACED 3
+#define INTERPOLATOR_HERMITE_QUINTIC 4
+#define INTERPOLATOR_HERMITE_SIGMOID 5
+#define INTERPOLATOR_LINEAR 6
+#define INTERPOLATOR_PYRAMID 7
+#define INTERPOLATOR_QUARTIC 8
+#define INTERPOLATOR_SIGMOID 9
+#define INTERPOLATOR_TRICUBE 10
+#define INTERPOLATOR_TRIWEIGHT 11
+
+#define TREATMENT_NONE 0
+#define TREATMENT_BILLOW 1
+#define TREATMENT_RIDGE 2
+#define TREATMENT_SEMIBILLOW 3
+#define TREATMENT_SEMIRIDGE 4
+
+#define CHANNEL_RED 1
+#define CHANNEL_GREEN 2
+#define CHANNEL_BLUE 4
+#define CHANNEL_ALPHA 8
+
+layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D in_texture;
+layout(rgba32f, binding = 1) uniform image2D out_texture;
+
+layout(location=0) uniform vec3 frequency;
+layout(location=1) uniform vec3 lacunarity;
+layout(location=2) uniform int octaves;
+layout(location=3) uniform float persistence;
+layout(location=4) uniform float amplitude;
+layout(location=5) uniform int evaluator;
+layout(location=6) uniform int interpolator;
+layout(location=7) uniform int pre_treatment;
+layout(location=8) uniform int post_treatment;
+layout(location=9) uniform int seed;
+layout(location=10) uniform int channel;
+
+const vec3 kernel[] = vec3[]
+(
+	vec3(1,1,0), vec3(-1,1,0), vec3(1,-1,0), vec3(-1,-1,0),
+	vec3(1,0,1), vec3(-1,0,1), vec3(1,0,-1), vec3(-1,0,-1),
+	vec3(0,1,1), vec3(0,-1,1), vec3(0,1,-1), vec3(0,-1,-1),
+	vec3(1,1,0), vec3(-1,-1,0),  vec3(1,0,-1),  vec3(0,-1,1)
+);
+
+uint hash(uint x) 
+{
+    x += (x << 10u);
+    x ^= (x >>  6u);
+    x += (x <<  3u);
+    x ^= (x >> 11u);
+    x += (x << 15u);
+    return x;
+}
+
+uint hash(int x, int y, int z, int seed) 
+{ 
+    return hash(x ^ hash(y) ^ hash(z) ^ seed);
+}
+
+vec3 get_vector(int x, int y, int z)
+{
+	return kernel[hash(x, y, z, seed) & 15];
+}
+
+float treat(float x, int function) {
+	switch (function) {
+		case TREATMENT_NONE:
+			return x;
+		case TREATMENT_BILLOW:
+			return abs(x);
+		case TREATMENT_RIDGE:
+			return -abs(x);
+		case TREATMENT_SEMIBILLOW:
+			return max(0, x);
+		case TREATMENT_SEMIRIDGE:
+			return min(0, x);
+		default:
+			return x;
+	}
+}
+
+float interpolate_hermite(vec3 u) {
+	return (1 - (u.x * u.x * (3 - 2 * u.x))) 
+		* (1 - (u.y * u.y * (3 - 2 * u.y))) 
+		* (1 - (u.z * u.z * (3 - 2 * u.z)));
+}
+
+float interpolate_sigmoid(vec3 u) {
+	return (1f / (1 + exp(10 * u.x - 5))) * (1f / (1 + exp(10 * u.y - 5))) * (1f / (1 + exp(10 * u.z - 5)));
+}
+
+float interpolate(vec3 u) {
+	switch (interpolator) {
+		case INTERPOLATOR_COSINE:
+			return 0.125f * (1 + cos(u.x * PI)) * (1 + cos(u.y * PI)) * (1 + cos(u.z * PI));
+		case INTERPOLATOR_EPANECHNIKOV:
+			return (1 - u.x * u.x) * (1 - u.y * u.y) * (1 - u.z * u.z);
+		case INTERPOLATOR_HERMITE:
+			return interpolate_hermite(u);
+		case INTERPOLATOR_HERMITE_DISPLACED:
+			return interpolate_hermite(vec3(2 * abs(u.x - 0.5f), 2 * abs(u.y - 0.5f), 2 * abs(u.z - 0.5f)));
+		case INTERPOLATOR_HERMITE_QUINTIC:
+			return (1 - (u.x * u.x * u.x * (10 - 15 * u.x + 6 * u.x * u.x))) 
+				* (1 - (u.y * u.y * u.y * (10 - 15 * u.y + 6 * u.y * u.y)))
+				* (1 - (u.z * u.z * u.z * (10 - 15 * u.z + 6 * u.z * u.z)));
+		case INTERPOLATOR_HERMITE_SIGMOID:
+			return 0.5f * (interpolate_hermite(u) + interpolate_sigmoid(u));
+		case INTERPOLATOR_LINEAR:
+				return (1 - u.x) * (1 - u.y) * (1 - u.z);
+		case INTERPOLATOR_PYRAMID:
+			return min(1 - u.x, min(1 - u.y, 1 - u.z));
+		case INTERPOLATOR_QUARTIC:
+			return (1 - u.x * u.x) * (1 - u.x * u.x) 
+				* (1 - u.y * u.y) * (1 - u.y * u.y) 
+				* (1 - u.z * u.z) * (1 - u.z * u.z);
+		case INTERPOLATOR_SIGMOID:
+			return interpolate_sigmoid(u);
+		case INTERPOLATOR_TRICUBE:
+			return (1 - abs(u.x * u.x * u.x)) * (1 - abs(u.y * u.y * u.y)) * (1 - abs(u.z * u.z * u.z));
+		case INTERPOLATOR_TRIWEIGHT:
+			float v = (1 - u.x * u.x) * (1 - u.y * u.y) * (1 - u.z * u.z);
+			return v * v * v;
+		default:
+			return (1 - u.x) * (1 - u.y) * (1 - u.z);
+	}
+}
+
+float evaluate_cosine(vec3 u, vec3 v) {
+	float cx = cos(PI * u.x);
+	float cy = cos(PI * u.y);
+	return 0.25f * (1 + v.x * cx + v.y * cy + v.z * cx * cy);
+}
+
+float evaluate_hyperbolic_planes(vec3 u, vec3 v) {
+	float w = -dot(u, v);
+	float x = (-u.x * v.y + u.y * v.z - u.z * v.x);
+	float y = dot(u, v);
+	float z = (u.x * v.y - u.y * v.z + u.x * v.x);
+	return min(max(w * w * w, x * x * x), max(y * y * y, z * z * z));
+}
+
+float evaluate_parabolic(vec3 u, vec3 v) {
+	return u.x * u.x * v.x + u.y * u.y * v.y + 2 * u.x * u.y * v.z;
+}
+
+float evaluate_rejection(vec3 u, vec3 v) {
+	vec3 d = u - dot(u, v) * v;
+	return 0.5f * dot(d, d);
+}
+
+float evaluate_triangular_edge(vec3 u, vec3 v) {
+	float w = -dot(u, v);
+	float x = (-u.x * v.y + u.y * v.z - u.z * v.x);
+	float y = dot(u, v);
+	float z = (u.x * v.y - u.y * v.z + u.x * v.x);
+	return min(max(w, x), max(y, z));
+}
+
+float evaluate(vec3 u, vec3 v) {
+	switch (evaluator) {
+		case EVALUATOR_COSINE:
+			return evaluate_cosine(u, v);
+		case EVALUATOR_COSINE_INVERSE:
+			return v.z - evaluate_cosine(u, v);
+		case EVALUATOR_CURL:
+			return (u.z / (v.y + 2)) 
+				- (u.y / (v.z + 2)) 
+				+ (u.x / (v.z + 2))
+				- (u.z / (v.x + 2))
+				+ (u.x / (v.y + 2))
+				- (u.y / (v.x + 2));
+		case EVALUATOR_CURVATURE:
+			return dot(cross(u , vec3(0, 0, 1)), v);
+		case EVALUATOR_DIVERGENCE:
+			return (u.x / (v.x + 2)) + (u.y / (v.y + 2)) + (u.z / (v.z + 2));
+		case EVALUATOR_DOUBLE_PLANE:
+			return min(dot(u, v), dot(u, vec3(v.y, v.z, v.x)));
+		case EVALUATOR_GRADIENT:
+			return dot(u, v);
+		case EVALUATOR_HILL:
+			return 0.5f * v.z;
+		case EVALUATOR_HILL_AND_SLOPE:
+			return 0.5f * v.z + dot(u, v);
+		case EVALUATOR_HYPERBOLIC:
+			return 1f / (16 + dot(u, v));
+		case EVALUATOR_HYPERBOLIC_PLANES:
+			return evaluate_hyperbolic_planes(u, v);
+		case EVALUATOR_HYPERBOLIC_PLANES_DISPLACED:
+			return evaluate_hyperbolic_planes(u + .025f * v, v);
+		case EVALUATOR_MONKEY_SADDLE:
+			return v.z * (u.x * u.x * u.x - 3 * u.x * u.y * u.y);
+		case EVALUATOR_PARABOLIC:
+			return evaluate_parabolic(u, v);
+		case EVALUATOR_PARABOLIC_COMPOSED:
+			return max(evaluate_parabolic(u, v), v.x - evaluate_parabolic(u, v));
+		case EVALUATOR_PARABOLIC_DISPLACED:
+			return u.x * (v.y + v.z) + u.y * (v.x + v.z) + u.z * (v.x + v.y);
+		case EVALUATOR_PARABOLIC_INVERSE:
+			return v.z - evaluate_parabolic(u, v);
+		case EVALUATOR_REJECTION:
+			return evaluate_rejection(u, v);
+		case EVALUATOR_TRIANGULAR_EDGE:
+			return evaluate_triangular_edge(u, v);
+		case EVALUATOR_VERTICAL_EDGE:
+			return min(u.x * v.x + u.y * v.y + v.z, -u.x * v.x - u.y * v.y + v.z);
+		case EVALUATOR_VERTICAL_EDGE_DISPLACED:
+			return min((u.x + 0.5f) * v.x + (u.y + 0.5f) * v.y + v.z, -(u.x + 0.5f) * v.x - (u.y + 0.5f)* v.y + v.z);
+		case EVALUATOR_VERTICAL_EDGE_INVERSE:
+			return max(u.x * v.x + u.y * v.y + v.z, -u.x * v.x - u.y * v.y + v.z);
+		case EVALUATOR_VERTICAL_EDGE_INVERSE_DISPLACED:
+			return max((u.x + 0.5f) * v.x + (u.y + 0.5f) * v.y + v.z, -(u.x + 0.5f) * v.x - (u.y + 0.5f)* v.y + v.z);
+		default:
+			return dot(u, v);
+	}
+}
+
+float generate_octave(vec3 position) {
+	int gx = int(floor(position.x));
+	int gy = int(floor(position.y));
+	int gz = int(floor(position.z));
+	float dx = position.x - gx;
+	float dy = position.y - gy;
+	float dz = position.z - gz;
+
+	float o = 
+		interpolate(vec3(dx, dy, dz)) * treat(evaluate(vec3(dx, dy, dz), get_vector(gx, gy, gz)), pre_treatment);
+	float p = interpolate(vec3(1 - dx, dy, dz)) 
+		* treat(evaluate(vec3(dx - 1, dy, dz), get_vector(gx + 1, gy, gz)), pre_treatment);
+	float q = interpolate(vec3(dx, 1 - dy, dz)) 
+		* treat(evaluate(vec3(dx, dy - 1, dz), get_vector(gx, gy + 1, gz)), pre_treatment);
+	float r = 
+		interpolate(vec3(1 - dx, 1 - dy, dz)) 
+		* treat(evaluate(vec3(dx - 1, dy - 1, dz), get_vector(gx + 1, gy + 1, gz)), pre_treatment);
+
+	float s = interpolate(vec3(dx, dy, 1 - dz)) 
+		* treat(evaluate(vec3(dx, dy, dz - 1), get_vector(gx, gy, gz + 1)), pre_treatment);
+	float t = 
+		interpolate(vec3(1 - dx, dy, 1 - dz)) 
+		* treat(evaluate(vec3(dx - 1, dy, dz - 1), get_vector(gx + 1, gy, gz + 1)), pre_treatment);
+	float u = 
+		interpolate(vec3(dx, 1 - dy, 1 - dz)) 
+		* treat(evaluate(vec3(dx, dy - 1, dz - 1), get_vector(gx, gy + 1, gz + 1)), pre_treatment);
+	float v = 
+		interpolate(vec3(1 - dx, 1 - dy, 1 - dz))
+		* treat(evaluate(vec3(dx - 1, dy - 1, dz - 1), get_vector(gx + 1, gy + 1, gz + 1)), pre_treatment);
+
+	return treat(o + p + q + r + s + t + u + v, post_treatment);
+}
+
+float generate(vec3 position) {
+	float total = 0;
+    float a = amplitude;
+    float max = 0;
+	vec3 f = frequency;
+    for (int i = 0; i < octaves; ++i)
+    {
+        total += a * generate_octave(f * position);
+        max += a;
+        a *= persistence;
+        f *= lacunarity;
+    }
+
+    return total / max;
+}
+
+void main() {
+    ivec2 position = ivec2(gl_GlobalInvocationID.xy);
+    vec4 input = imageLoad(in_texture, position);
+	vec4 current = imageLoad(out_texture, position);
+	float v = generate(input.xyz);
+	vec4 new = 
+		vec4(
+			(channel & CHANNEL_RED) != 0 ? v : current.r,
+			(channel & CHANNEL_GREEN) != 0 ? v : current.g,
+			(channel & CHANNEL_BLUE) != 0 ? v : current.b,
+			(channel & CHANNEL_ALPHA) != 0 ? v : current.a);
+    imageStore(out_texture, position, new);
+}

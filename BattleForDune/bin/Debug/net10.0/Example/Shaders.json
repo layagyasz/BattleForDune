@@ -1,0 +1,30 @@
+[
+  {
+    "$id": "shader-default",
+    "Element": {
+      "Vertex": "Example/default.vert",
+      "Fragment": "Example/default.frag"
+    }
+  },
+  {
+    "$id": "shader-default-no-texture",
+    "Element": {
+      "Vertex": "Example/default.vert",
+      "Fragment": "Example/default_no_texture.frag"
+    }
+  },
+  {
+    "$id": "shader-default-classed-ui-element",
+    "Element": {
+      "Vertex": "Example/default.vert",
+      "Fragment": "Example/classed_ui_element.frag"
+    }
+  },
+  {
+    "$id": "shader-simple-light",
+    "Element": {
+      "Vertex": "Example/simple_light.vert",
+      "Fragment": "Example/simple_light.frag"
+    }
+  }
+]

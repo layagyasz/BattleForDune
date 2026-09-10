@@ -1,0 +1,39 @@
+#version 430 core
+
+#define CHANNEL_RED 1
+#define CHANNEL_GREEN 2
+#define CHANNEL_BLUE 4
+#define CHANNEL_ALPHA 8
+
+#define WAVE_TYPE_SINE 0
+
+layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D in_texture;
+layout(rgba32f, binding = 1) uniform image2D out_texture;
+
+layout(location=0) uniform int wave_type;
+layout(location=1) uniform mat4 frequency;
+layout(location=2) uniform int channel;
+
+float generate(vec4 position, int channel) {
+	const float tau = 6.2831853f;
+	float w = tau * dot(frequency[channel], position);
+	if (wave_type == WAVE_TYPE_SINE)
+	{
+		return sin(w);
+	}
+	return cos(w);
+}
+
+void main() {
+    ivec2 position = ivec2(gl_GlobalInvocationID.xy);
+    vec4 input = imageLoad(in_texture, position);
+	vec4 current = imageLoad(out_texture, position);
+	vec4 new = 
+		vec4(
+			(channel & CHANNEL_RED) != 0 ? generate(input, 0) : current.r,
+			(channel & CHANNEL_GREEN) != 0 ? generate(input, 1) : current.g,
+			(channel & CHANNEL_BLUE) != 0 ? generate(input, 2) : current.b,
+			(channel & CHANNEL_ALPHA) != 0 ? generate(input, 3) : current.a);
+    imageStore(out_texture, position, new);
+}

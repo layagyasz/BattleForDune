@@ -1,0 +1,115 @@
+[
+  {
+    "$id": "example-base-class",
+    "Default": {
+      "Size": [ 500, 500 ],
+      "Padding": [ 16, 16, 16, 16 ],
+      "BackgroundColor": [ "#0000ff88" ],
+      "BorderColor": [ "#ffffff88" ],
+      "BorderWidth": [ 1 ],
+      "CornerRadius": [
+        [ 16, 16 ]
+      ],
+      "BackgroundShader": "shader-default-classed-ui-element",
+      "FontFace": "font-riesling",
+      "FontSize": 18,
+      "Color": "#ffffff",
+      "Shader": "shader-default",
+      "DisableScissor": true
+    },
+    "States": [
+      {
+        "State": [ "Hover" ],
+        "Attributes": {
+          "BackgroundColor": [ "#000000aa" ],
+          "BorderColor": [ "#ffffffaa" ],
+          "Color": "#ff0000"
+        }
+      },
+      {
+        "State": [ "Focus" ],
+        "Attributes": {
+          "BorderColor": [ "#ffffff" ]
+        }
+      }
+    ]
+  },
+  {
+    "$id": "example-child-class",
+    "Parent": "example-base-class",
+    "Default": {
+      "Size": [ 256, 468 ],
+      "BackgroundColor": [ "#ffffff" ],
+      "Margin": [ 0, 2, 0, 2 ],
+      "Texture": "texture-example"
+    }
+  },
+  {
+    "$id": "example-table-class",
+    "Parent": "example-base-class",
+    "Default": {
+      "Size": [ "DynamicContents", "DynamicContents" ],
+      "Margin": [ 0, 2, 0, 2 ]
+    }
+  },
+  {
+    "$id": "example-row-class",
+    "Default": {
+      "Size": [ "DynamicContents", "DynamicContents" ],
+      "Margin": [ 0, 2, 0, 2 ],
+      "BackgroundShader": "shader-default-classed-ui-element"
+    }
+  },
+  {
+    "$id": "example-cell-class",
+    "Parent": "example-child-class",
+    "Default": {
+      "Size": [ "DynamicContents", "DynamicContents" ],
+      "Margin": [ 2, 0, 2, 0 ],
+      "Padding": [ 8, 8, 8, 8 ]
+    }
+  },
+  {
+    "$id": "example-text-input-class",
+    "Parent": "example-child-class",
+    "Default": {
+      "Size": [ 224, 32 ],
+      "Padding": [ 16, 8, 16, 2 ],
+      "DisableScissor": false
+    }
+  },
+  {
+    "$id": "example-select-class",
+    "Parent": "example-child-class",
+    "Default": {
+      "Size": [ 224, 32 ],
+      "Padding": [ 16, 4, 16, 2 ],
+      "Align": "Right"
+    }
+  },
+  {
+    "$id": "example-select-drop-box-class",
+    "Parent": "example-base-class",
+    "Default": {
+      "Size": [ 224, "DynamicContents" ],
+      "DisableScissor": false
+    }
+  },
+  {
+    "$id": "example-select-option-class",
+    "Parent": "example-select-class",
+    "Default": {
+      "Size": [ 192, 32 ],
+      "Margin": [ 0, 2, 0, 2 ],
+      "Align": "Center"
+    },
+    "States": [
+      {
+        "State": [ "Toggle" ],
+        "Attributes": {
+          "BackgroundColor": [ "#00ff00" ]
+        }
+      }
+    ]
+  }
+]
