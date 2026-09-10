@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../Cardamom/Cardamom/Cardamom.csproj" />
+  <Project Path="BattleForDune/BattleForDune.csproj" />
+</Solution>

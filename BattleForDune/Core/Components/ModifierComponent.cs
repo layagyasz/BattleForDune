@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Components
     {
         public interface IModifierCallback
         {
-            void Notify(EntityId ownerId, in StatBlock stats);
+            void Notify(EntityId ownerId, in StatBlock modifier);
         }
 
         private readonly record struct ModifierEntry(EntityId OwnerId, EntityId SourceId, StatBlock Modifier);
