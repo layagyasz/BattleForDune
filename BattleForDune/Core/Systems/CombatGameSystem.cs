@@ -1,11 +1,26 @@
-﻿using BattleForDune.Core.Events;
+﻿using BattleForDune.Core.Components;
+using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 
 namespace BattleForDune.Core.Systems
 {
-    public class CombatGameSystem : IGameEventProcessor
+    public class CombatGameSystem(ComponentWorld world) : IGameEventProcessor
     {
-        public void Process<TSink>(in AttackEvent attack, TSink sink) where TSink : IGameEventSink
+        private readonly ComponentWorld _world = world;
+
+        public void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            Console.WriteLine("process ability");
+            if (_world.TryGetAbility(@event.AbilityId, out var ability))
+            {
+                var handler = (IGameEventHandler<UseAbilityEvent>)ability;
+                handler.Intercept(ref @event);
+                @event.InstanceId = _world.GetId();
+                handler.Handle(in @event, sink);
+            }
+        }
+
+        public void Process<TSink>(ref AttackEvent @event, TSink sink) where TSink : IGameEventSink
         {
             Console.WriteLine($"Process attack");
         }

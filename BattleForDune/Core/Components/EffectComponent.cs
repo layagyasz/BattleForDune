@@ -7,14 +7,14 @@ namespace BattleForDune.Core.Components
     public class EffectComponent : IGameEventRouter
     {
         private readonly SparseStorage<IGenericEffect> _effects = new(1024);
-        private readonly UniqueIndex _index = new(1024);
+        private readonly UniqueIndex _byId = new(1024);
         private readonly MultiIndex _byType = new(1024, Enum.GetValues<GameEventType>().Length);
 
         public bool Add(IGenericEffect effect)
         {
             if (_effects.Allocate(effect, out var handle))
             {
-                _index.Add(effect.Id.Value, handle);
+                _byId.Add(effect.Id.Value, handle);
                 foreach (var @event in effect.SupportedEvents)
                 {
                     _byType.Add((int)@event, handle);
@@ -26,7 +26,7 @@ namespace BattleForDune.Core.Components
 
         public bool Remove(EntityId id)
         {
-            if (_index.RemoveOnly(id.Value, out var handle))
+            if (_byId.RemoveOnly(id.Value, out var handle))
             {
                 ref var effect = ref _effects.Get(handle);
                 foreach (var @event in effect.SupportedEvents)
@@ -43,7 +43,7 @@ namespace BattleForDune.Core.Components
         {
             foreach (var handle in _byType.GetEnumerator((int)@event.Type))
             {
-                ((IEffect<T>)_effects.Get(handle)).Intercept(ref @event);
+                ((IGameEventHandler<T>)_effects.Get(handle)).Intercept(ref @event);
             }
         }
 
@@ -51,7 +51,7 @@ namespace BattleForDune.Core.Components
         {
             foreach (var handle in _byType.GetEnumerator((int)@event.Type))
             {
-                ((IEffect<T>)_effects.Get(handle)).Handle(in @event, sink);
+                ((IGameEventHandler<T>)_effects.Get(handle)).Handle(in @event, sink);
             }
         }
     }

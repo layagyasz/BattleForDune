@@ -14,7 +14,7 @@ namespace BattleForDune.Core.Components.Effects
             Console.WriteLine("intercepted!");
         }
 
-        public void Handle(in AttackEvent @event, IGameEventSink sink)
+        public void Handle<TSink>(in AttackEvent @event, in TSink sink) where TSink : IGameEventSink
         {
             Console.WriteLine("reacted!");
         }

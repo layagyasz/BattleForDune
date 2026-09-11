@@ -1,4 +1,4 @@
-﻿using BattleForDune.Schema;
+﻿using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components
 {

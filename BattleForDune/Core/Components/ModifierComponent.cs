@@ -1,5 +1,5 @@
-﻿using BattleForDune.FastLookup;
-using BattleForDune.Schema;
+﻿using BattleForDune.Core.Schema;
+using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {

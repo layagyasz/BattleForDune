@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace BattleForDune.Schema
+namespace BattleForDune.Core.Schema
 {
     [InlineArray(4)]
     public struct Damage

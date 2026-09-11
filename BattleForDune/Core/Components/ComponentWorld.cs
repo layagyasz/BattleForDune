@@ -1,5 +1,7 @@
-﻿using BattleForDune.FastLookup;
-using BattleForDune.Schema;
+﻿using BattleForDune.Core.Components.Abilities;
+using BattleForDune.Core.Events;
+using BattleForDune.Core.Schema;
+using BattleForDune.FastLookup;
 using Cardamom.Utils.Suppliers.Ids;
 using OpenTK.Mathematics;
 
@@ -24,18 +26,29 @@ namespace BattleForDune.Core.Components
 
         private readonly LinearCongruentialIdSupplier _ids = ids;
 
-        private readonly IdSet _entities = new(1024);
+        private readonly IdSet _units = new(1024);
         private readonly PositionComponent _positions = new();
         private readonly StatComponent _stats = new();
         private readonly ModifierComponent _modifiers = new();
         private readonly EffectComponent _effects = new();
+        private readonly AbilityComponent _abilities = new();
 
         public void AddUnit(UnitType unitType, Vector2i position)
         {
             var id = new EntityId(_ids.Get());
-            _entities.Add(id.Value);
+            _units.Add(id.Value);
             _positions.Add(id, position);
             _stats.Add(id, unitType.Stats);
+            for (int i=0; i<unitType.Abilities.Length; ++i)
+            {
+                AddAbility(unitType.Abilities[i], id);
+            }
+        }
+
+        public void AddAbility(AbilityType abilityType, EntityId ownerId)
+        {
+            var ability = AbilityFactory.Create(abilityType, GetId(), ownerId);
+            _abilities.Add(ability);
         }
 
         public void AddModifier(EntityId ownerId, EntityId sourceId, StatBlock modifier)
@@ -48,6 +61,33 @@ namespace BattleForDune.Core.Components
                     stats.Add(modifier);
                 }
             }
+        }
+
+        public ComponentEnumerator<SparseStorage<IAbility>, IAbility> GetAbilities(EntityId ownerId)
+        {
+            return _abilities.GetEnumerator(ownerId);
+        }
+
+        public bool TryGetAbility(EntityId id, out IAbility ability)
+        {
+            var result = _abilities.TryGet(id, out var container);
+            ability = container;
+            return result;
+        }
+
+        public EntityId GetId()
+        {
+            return new(_ids.Get());
+        }
+
+        public EffectComponent GetRouter()
+        {
+            return _effects;
+        }
+
+        public ReadOnlySpan<int> GetUnitIds()
+        {
+            return _units.AsSpan();
         }
 
         public void RemoveModifiers(EntityId sourceId)

@@ -48,10 +48,15 @@ namespace BattleForDune.Core.Events
         {
             switch (@event.Type)
             {
+                case GameEventType.UseAbility:
+                    var ability = @event.ReadPayload<UseAbilityEvent>();
+                    _processor.Process(ref ability, this);
+                    _handler.Handle(in ability, this);
+                    return;
                 case GameEventType.Attack:
                     var attack = @event.ReadPayload<AttackEvent>();
                     _handler.Intercept(ref attack);
-                    _processor.Process(in attack, this);
+                    _processor.Process(ref attack, this);
                     _handler.Handle(in attack, this);
                     return;
             }
