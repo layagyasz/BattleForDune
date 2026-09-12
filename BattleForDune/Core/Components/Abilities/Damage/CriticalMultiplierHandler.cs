@@ -1,13 +1,17 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 
-namespace BattleForDune.Core.Components.Abilities.Procs
+namespace BattleForDune.Core.Components.Abilities.Damage
 {
-    public record class Critical(float Multiplier) : IGameEventHandler<DamageEvent>
+    public record class CriticalMultiplierHandler(float Multiplier) 
+        : IGameEventHandler<DamageEvent>, IGenericHandler
     {
         public void Intercept(ref DamageEvent @event, ComponentWorld world)
         {
-            @event.Damage = (byte)(Multiplier * @event.Damage);
+            if (@event.IsCritical)
+            {
+                @event.Roll = (byte)(Multiplier * @event.Roll);
+            }
         }
 
         public void Handle<TSink>(

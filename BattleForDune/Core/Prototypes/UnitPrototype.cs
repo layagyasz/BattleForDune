@@ -1,7 +1,6 @@
-﻿using BattleForDune.Core.Components.Abilities;
-using BattleForDune.Core.Schema;
+﻿using BattleForDune.Core.Prototypes.Abilities;
 
 namespace BattleForDune.Core.Prototypes
 {
-    public record class UnitPrototype(StatBlockPrototype Stats, AbilityType[] Abilities) { }
+    public record class UnitPrototype(StatBlockPrototype Stats, IAbilityPrototype[] Abilities) { }
 }

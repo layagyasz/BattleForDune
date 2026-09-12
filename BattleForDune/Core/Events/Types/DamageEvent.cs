@@ -5,13 +5,15 @@ namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct DamageEvent(
-        EntityId abilityId, EntityId targetId, DamageType damageType, byte damage) : IGameEvent
+        EntityId abilityId, EntityId targetId, bool isCritical, DamageType damageType, Die die) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Damage;
         public bool IsCanceled { get; set; }
+        public bool IsCritical { get; set; } = isCritical;
         public EntityId AbilityId { get; set; } = abilityId;
         public EntityId TargetId { get; set; } = targetId;
         public DamageType DamageType { get; set; } = damageType;
-        public byte Damage { get; set; } = damage;
+        public Die Die { get; set; } = die;
+        public byte Roll { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Prototypes;
+using BattleForDune.Core.Prototypes.Abilities;
 using BattleForDune.Core.Schema;
 using BattleForDune.FastLookup;
 using Cardamom.Utils.Suppliers.Ids;
@@ -47,9 +48,9 @@ namespace BattleForDune.Core.Components
             }
         }
 
-        public void AddAbility(AbilityType abilityType, EntityId ownerId)
+        public void AddAbility(IAbilityPrototype prototype, EntityId ownerId)
         {
-            var ability = AbilityFactory.Create(abilityType, GetId(), ownerId);
+            var ability = prototype.Materialize(GetId(), ownerId);
             _abilities.Add(ability);
         }
 
