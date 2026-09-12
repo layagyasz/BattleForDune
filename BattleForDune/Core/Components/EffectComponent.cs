@@ -4,7 +4,7 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {
-    public class EffectComponent : IGameEventRouter
+    public class EffectComponent
     {
         private readonly SparseStorage<IGenericEffect> _effects = new(1024);
         private readonly UniqueIndex _byId = new(1024);
@@ -39,20 +39,10 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public void Intercept<T>(ref T @event) where T : struct, IGameEvent
+        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect> Enumerate(
+            GameEventType eventType)
         {
-            foreach (var handle in _byType.GetEnumerator((int)@event.Type))
-            {
-                ((IGameEventHandler<T>)_effects.Get(handle)).Intercept(ref @event);
-            }
-        }
-
-        public void Handle<T>(in T @event, IGameEventSink sink) where T : struct, IGameEvent
-        {
-            foreach (var handle in _byType.GetEnumerator((int)@event.Type))
-            {
-                ((IGameEventHandler<T>)_effects.Get(handle)).Handle(in @event, sink);
-            }
+            return new(_effects, _byType.GetEnumerator((int)eventType));
         }
     }
 }

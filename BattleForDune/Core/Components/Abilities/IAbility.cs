@@ -6,6 +6,6 @@ namespace BattleForDune.Core.Components.Abilities
     {
         public EntityId Id { get; }
         public EntityId OwnerId { get; }
-        void Trigger<TSink>(in TSink sink) where TSink : IGameEventSink;
+        void Trigger<TSink>(in TSink sink, EntityId target) where TSink : IGameEventSink;
     }
 }

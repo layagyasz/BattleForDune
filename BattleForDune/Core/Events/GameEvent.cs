@@ -6,7 +6,7 @@ namespace BattleForDune.Core.Events
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public readonly struct GameEvent
     {
-        [StructLayout(LayoutKind.Sequential, Size = 16)]
+        [StructLayout(LayoutKind.Sequential, Size = 32)]
         private struct InlineBuffer { }
 
         public readonly GameEventType Type;

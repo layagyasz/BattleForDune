@@ -3,17 +3,13 @@ using System.Threading.Channels;
 
 namespace BattleForDune.Core.Events
 {
-    public class EventPump<TRouter, TProcessor> : IGameEventSink 
-        where TRouter : IGameEventRouter
-        where TProcessor : IGameEventProcessor
+    public class EventPump<TProcessor> : IGameEventSink where TProcessor : IGameEventProcessor
     {
-        private readonly TRouter _handler;
         private readonly TProcessor _processor;
         private readonly Channel<GameEvent> _channel;
 
-        public EventPump(TRouter handler, TProcessor processor)
+        public EventPump(TProcessor processor)
         {
-            _handler = handler;
             _processor = processor;
             var options = 
                 new BoundedChannelOptions(capacity: 1024)
@@ -40,25 +36,7 @@ namespace BattleForDune.Core.Events
         {
             while (_channel.Reader.TryRead(out GameEvent @event))
             {
-                Process(ref @event);
-            }
-        }
-
-        private void Process(ref GameEvent @event)
-        {
-            switch (@event.Type)
-            {
-                case GameEventType.UseAbility:
-                    var ability = @event.ReadPayload<UseAbilityEvent>();
-                    _processor.Process(ref ability, this);
-                    _handler.Handle(in ability, this);
-                    return;
-                case GameEventType.Attack:
-                    var attack = @event.ReadPayload<AttackEvent>();
-                    _handler.Intercept(ref attack);
-                    _processor.Process(ref attack, this);
-                    _handler.Handle(in attack, this);
-                    return;
+                _processor.Process(ref @event, this);
             }
         }
     }

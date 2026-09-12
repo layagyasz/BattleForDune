@@ -5,11 +5,6 @@ namespace BattleForDune.Core.Schema
     [StructLayout(LayoutKind.Sequential)]
     public record struct Stat(sbyte Value, sbyte Temporary, sbyte Max)
     {
-        public static Stat Of(sbyte value)
-        {
-            return new(value, 0, value);
-        }
-
         public void Add(in Stat other)
         {
             Value += other.Value;

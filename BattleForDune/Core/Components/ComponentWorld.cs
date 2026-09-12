@@ -1,5 +1,6 @@
 ﻿using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Events;
+using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Schema;
 using BattleForDune.FastLookup;
 using Cardamom.Utils.Suppliers.Ids;
@@ -7,7 +8,7 @@ using OpenTK.Mathematics;
 
 namespace BattleForDune.Core.Components
 {
-    public class ComponentWorld(LinearCongruentialIdSupplier ids)
+    public class ComponentWorld(LinearCongruentialIdSupplier ids, Random random) : IGameEventRouter
     {
         private readonly ref struct RemoveModifierCallback(ComponentWorld world)
             : ModifierComponent.IModifierCallback
@@ -25,6 +26,7 @@ namespace BattleForDune.Core.Components
         }
 
         private readonly LinearCongruentialIdSupplier _ids = ids;
+        private readonly Random _random = random;
 
         private readonly IdSet _units = new(1024);
         private readonly PositionComponent _positions = new();
@@ -33,12 +35,12 @@ namespace BattleForDune.Core.Components
         private readonly EffectComponent _effects = new();
         private readonly AbilityComponent _abilities = new();
 
-        public void AddUnit(UnitType unitType, Vector2i position)
+        public void AddUnit(UnitPrototype unitType, Vector2i position)
         {
             var id = new EntityId(_ids.Get());
             _units.Add(id.Value);
             _positions.Add(id, position);
-            _stats.Add(id, unitType.Stats);
+            _stats.Add(id, unitType.Stats.Materialize());
             for (int i=0; i<unitType.Abilities.Length; ++i)
             {
                 AddAbility(unitType.Abilities[i], id);
@@ -80,9 +82,11 @@ namespace BattleForDune.Core.Components
             return new(_ids.Get());
         }
 
-        public EffectComponent GetRouter()
+        public ref StatBlock TryGetStats(EntityId id, out bool isFound)
         {
-            return _effects;
+            ref var result = ref _stats.TryGet(id, out bool found);
+            isFound = found;
+            return ref result;
         }
 
         public ReadOnlySpan<int> GetUnitIds()
@@ -90,9 +94,30 @@ namespace BattleForDune.Core.Components
             return _units.AsSpan();
         }
 
+        public byte Roll(Die die)
+        {
+            return die.Roll(_random);
+        }
+
         public void RemoveModifiers(EntityId sourceId)
         {
             _modifiers.RemoveBySource(sourceId, new RemoveModifierCallback(this));
+        }
+
+        public void Intercept<T>(ref T @event) where T : struct, IGameEvent
+        {
+            foreach (var effect in _effects.Enumerate(@event.Type))
+            {
+                ((IGameEventHandler<T>)effect).Intercept(ref @event, this);
+            }
+        }
+
+        public void Handle<T>(in T @event, IGameEventSink sink) where T : struct, IGameEvent
+        {
+            foreach (var effect in _effects.Enumerate(@event.Type))
+            {
+                ((IGameEventHandler<T>)effect).Handle(in @event, this, sink);
+            }
         }
     }
 }

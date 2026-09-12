@@ -3,24 +3,31 @@
 namespace BattleForDune.Core.Schema
 {
     [StructLayout(LayoutKind.Sequential)]
-    public record struct StatBlock(
-        Stat Attack,
-        Stat Defense,
-        Stat Armor,
-        Stat Shield,
-        Stat Damage,
-        Stat Initiative,
-        Stat Hitpoints,
-        Stat Morale,
-        Stat Threat)
+    public struct StatBlock(
+        Stat attack,
+        Stat defense,
+        Stat armor,
+        Stat shield,
+        Stat initiative,
+        Stat hitpoints,
+        Stat morale,
+        Stat threat)
     {
+        public Stat Attack = attack;
+        public Stat Defense = defense;
+        public Stat Armor = armor;
+        public Stat Shield = shield;
+        public Stat Initiative = initiative;
+        public Stat Hitpoints = hitpoints;
+        public Stat Morale = morale;
+        public Stat Threat = threat;
+
         public void Add(in StatBlock other)
         {
             Attack.Add(other.Attack);
             Defense.Add(other.Defense);
             Armor.Add(other.Armor);
             Shield.Add(other.Shield);
-            Damage.Add(other.Damage);
             Initiative.Add(other.Initiative);
             Hitpoints.Add(other.Hitpoints);
             Morale.Add(other.Morale);
@@ -33,7 +40,6 @@ namespace BattleForDune.Core.Schema
             Defense.Subtract(other.Defense);
             Armor.Subtract(other.Armor);
             Shield.Subtract(other.Shield);
-            Damage.Subtract(other.Damage);
             Initiative.Subtract(other.Initiative);
             Hitpoints.Subtract(other.Hitpoints);
             Morale.Subtract(other.Morale);

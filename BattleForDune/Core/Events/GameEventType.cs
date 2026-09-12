@@ -1,8 +1,9 @@
 ﻿namespace BattleForDune.Core.Events
 {
-    public enum GameEventType
+    public enum GameEventType : byte
     {
-        UseAbility,
-        Attack
+        Attack,
+        Damage,
+        UseAbility
     }
 }

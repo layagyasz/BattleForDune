@@ -9,12 +9,13 @@ namespace BattleForDune.Core.Components.Effects
 
         public ReadOnlySpan<GameEventType> SupportedEvents => _supportedEvents.AsSpan();
 
-        public void Intercept(ref AttackEvent @event)
+        public void Intercept(ref AttackEvent @event, ComponentWorld world)
         {
             Console.WriteLine("intercepted!");
         }
 
-        public void Handle<TSink>(in AttackEvent @event, in TSink sink) where TSink : IGameEventSink
+        public void Handle<TSink>(
+            in AttackEvent @event, ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
             Console.WriteLine("reacted!");
         }
