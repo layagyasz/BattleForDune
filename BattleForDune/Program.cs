@@ -38,7 +38,7 @@ namespace BattleForDune
                         new BasicAttackAbilityPrototype(
                             [
                                 new BasicUseAbilityPrototype(), 
-                                new BasicAttackPrototype(0, 1, DamageType.Physical, new(1, 6, 0)), 
+                                new BasicAttackPrototype(0, 1, DamageType.Physical, new(1, 6, 0), 0, 0), 
                                 new CriticalMultiplierPrototype(2f)
                             ])
                     ]);

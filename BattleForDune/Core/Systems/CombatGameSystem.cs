@@ -34,21 +34,29 @@ namespace BattleForDune.Core.Systems
             {
                 return;
             }
+
             ref var stats = ref _world.TryGetStats(@event.TargetId, out bool isFound);
             if (isFound)
             {
-                stats.Hitpoints.Value = (sbyte)(stats.Hitpoints.Value - @event.Roll);
+                stats.Hitpoints.Value = (sbyte)(stats.Hitpoints.Value - @event.Damage);
             }
         }
 
         private void Process<TSink>(ref AttackEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            @event.Roll = _world.Roll(new(1, 20, 0));
+
             if (_world.TryGetAbility(@event.AbilityId, out var ability))
             {
-                @event.Roll = _world.Roll(new(1, 20, 0));
 
                 AbilityIntercept(ability, ref @event);
                 _world.Intercept(ref @event);
+
+                if (@event.Roll != 20 && (@event.Roll + @event.Skill < @event.Difficulty || @event.Roll == 1))
+                {
+                    @event.IsCanceled = true;
+                }
+
                 AbilityHandle(ability, in @event, sink);
                 _world.Handle(in @event, sink);
             }
@@ -56,12 +64,18 @@ namespace BattleForDune.Core.Systems
 
         private void Process<TSink>(ref DamageEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            @event.Roll = _world.Roll(@event.Die);
+
             if (_world.TryGetAbility(@event.AbilityId, out var ability))
             {
-                @event.Roll = _world.Roll(@event.Die);
-
                 AbilityIntercept(ability, ref @event);
                 _world.Intercept(ref @event);
+
+                var shield = Math.Max(0, @event.Shield - @event.ShieldPiercing);
+                var armor = Math.Max(0, @event.Armor - @event.ArmorPiercing);
+                var damage = shield == 0 ? @event.Roll : Math.Min(@event.Roll, 6 - shield);
+                @event.Damage = (byte)Math.Max(0, damage - armor);
+
                 ApplyDamage(in @event, sink);
                 AbilityHandle(ability, in @event, sink);
                 _world.Handle(in @event, sink);
