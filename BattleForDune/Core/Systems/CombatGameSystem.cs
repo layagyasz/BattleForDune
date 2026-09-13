@@ -11,8 +11,13 @@ namespace BattleForDune.Core.Systems
 
         public void Process<TSink>(ref GameEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            Console.WriteLine(@event.Type);
             switch (@event.Type)
             {
+                case GameEventType.ApplyEffect:
+                    var effect = @event.ReadPayload<ApplyEffectEvent>();
+                    Process(ref effect, sink);
+                    return;
                 case GameEventType.Attack:
                     var attack = @event.ReadPayload<AttackEvent>();
                     Process(ref attack, sink);
@@ -42,6 +47,46 @@ namespace BattleForDune.Core.Systems
             }
         }
 
+        private void ApplyEffect<TSink>(in ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+
+            _world.AddEffect(
+                new(
+                    @event.SubjectId,
+                    @event.AbilityId, 
+                    @event.TargetId,
+                    @event.InstanceId,
+                    @event.Stacks, 
+                    @event.Power,
+                    @event.EffectType));
+            // Schedule timeout when duration > 0
+        }
+
+        private void Process<TSink>(ref ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            @event.Roll = _world.Roll(new(1, 20, 0));
+
+            if (_world.TryGetAbility(@event.AbilityId, out var ability))
+            {
+
+                AbilityIntercept(ability, ref @event);
+                _world.Intercept(ref @event);
+
+                if (@event.Roll + @event.Skill < @event.Difficulty)
+                {
+                    @event.IsCanceled = true;
+                }
+
+                AbilityHandle(ability, in @event, sink);
+                _world.Handle(in @event, sink);
+                ApplyEffect(in @event, sink);
+            }
+        }
+
         private void Process<TSink>(ref AttackEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.Roll = _world.Roll(new(1, 20, 0));
@@ -52,7 +97,9 @@ namespace BattleForDune.Core.Systems
                 AbilityIntercept(ability, ref @event);
                 _world.Intercept(ref @event);
 
-                if (@event.Roll != 20 && (@event.Roll + @event.Skill < @event.Difficulty || @event.Roll == 1))
+                if (@event.Difficulty > 0 
+                    && @event.Roll != 20 
+                    && (@event.Roll + @event.Skill < @event.Difficulty || @event.Roll == 1))
                 {
                     @event.IsCanceled = true;
                 }
@@ -75,20 +122,26 @@ namespace BattleForDune.Core.Systems
                 var armor = Math.Max(0, @event.Armor - @event.ArmorPiercing);
                 var damage = shield == 0 ? @event.Roll : Math.Min(@event.Roll, 6 - shield);
                 @event.Damage = (byte)Math.Max(0, damage - armor);
+                if (@event.Damage == 0)
+                {
+                    @event.IsCanceled = true;
+                }
 
-                ApplyDamage(in @event, sink);
                 AbilityHandle(ability, in @event, sink);
                 _world.Handle(in @event, sink);
+                ApplyDamage(in @event, sink);
             }
         }
 
         private void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            @event.InstanceId = _world.GetId();
+
             if (_world.TryGetAbility(@event.AbilityId, out var ability))
             {
                 AbilityIntercept(ability, ref @event);
                 _world.Intercept(ref @event);
-                @event.InstanceId = _world.GetId();
+
                 AbilityHandle(ability, in @event, sink);
                 _world.Handle(in @event, sink);
             }

@@ -1,5 +1,6 @@
 ﻿using BattleForDune.Core;
 using BattleForDune.Core.Components;
+using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Prototypes;
@@ -39,7 +40,8 @@ namespace BattleForDune
                             [
                                 new BasicUseAbilityPrototype(), 
                                 new BasicAttackPrototype(0, 1, DamageType.Physical, new(1, 6, 0), 0, 0), 
-                                new CriticalMultiplierPrototype(2f)
+                                new CriticalMultiplierPrototype(2f),
+                                new ChanceApplyEffectPrototype(EffectType.Burn, 0, 3)
                             ])
                     ]);
             world.AddUnit(unitType, new());

@@ -10,8 +10,10 @@ namespace BattleForDune.Core.Components
         private readonly UniqueIndex _byId = new(1024);
         private readonly MultiIndex _byType = new(1024, Enum.GetValues<GameEventType>().Length);
 
-        public bool Add(IGenericEffect effect)
+        public bool Add(EffectParameters @params)
         {
+            // Merge with existing effect if possible.
+            var effect = EffectFactory.Materialize(@params);
             if (_effects.Allocate(effect, out var handle))
             {
                 _byId.Add(effect.Id.Value, handle);

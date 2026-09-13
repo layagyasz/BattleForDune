@@ -7,7 +7,9 @@ namespace BattleForDune.Core.Events.Types
     public struct DamageEvent(
         EntityId subjectId, 
         EntityId abilityId,
-        EntityId targetId, 
+        EntityId targetId,
+        EntityId instanceId,
+        bool isPrimary,
         bool isCritical, 
         DamageType damageType,
         Die die,
@@ -18,10 +20,12 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.Damage;
         public bool IsCanceled { get; set; }
+        public bool IsPrimary { get; set; } = isPrimary;
         public bool IsCritical { get; set; } = isCritical;
         public EntityId SubjectId { get; set; } = subjectId;
         public EntityId AbilityId { get; set; } = abilityId;
         public EntityId TargetId { get; set; } = targetId;
+        public EntityId InstanceId { get; set; } = instanceId;
         public DamageType DamageType { get; set; } = damageType;
         public Die Die { get; set; } = die;
         public sbyte ArmorPiercing { get; set; } = armorPiercing;

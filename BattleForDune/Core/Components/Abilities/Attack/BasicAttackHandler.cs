@@ -38,6 +38,8 @@ namespace BattleForDune.Core.Components.Abilities.Attack
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
+                    @event.InstanceId,
+                    isPrimary: true,
                     @event.IsCritical,
                     DamageType,
                     Damage,

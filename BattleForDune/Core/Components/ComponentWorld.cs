@@ -1,4 +1,5 @@
 ﻿using BattleForDune.Core.Components.Abilities;
+using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Prototypes.Abilities;
@@ -52,6 +53,11 @@ namespace BattleForDune.Core.Components
         {
             var ability = prototype.Materialize(GetId(), ownerId);
             _abilities.Add(ability);
+        }
+
+        public void AddEffect(EffectParameters @params)
+        {
+            _effects.Add(@params);
         }
 
         public void AddModifier(EntityId ownerId, EntityId sourceId, StatBlock modifier)

@@ -8,7 +8,7 @@ namespace BattleForDune.Core.Components.Abilities.Damage
     {
         public void Intercept(ref DamageEvent @event, ComponentWorld world)
         {
-            if (@event.IsCritical)
+            if (!@event.IsCanceled && @event.IsCritical)
             {
                 @event.Roll = (byte)(Multiplier * @event.Roll);
             }
