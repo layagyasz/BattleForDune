@@ -8,9 +8,7 @@ namespace BattleForDune.Core.Systems
     {
         public void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
-            // TODO: Systems should only mutate the world through events.
-            var component = world.GetInitiative();
-            component.Clear();
+            sink.Queue(new TickEvent());
             foreach (var id in world.GetUnitIds())
             {
                 var entityId = new EntityId(id);
@@ -21,9 +19,8 @@ namespace BattleForDune.Core.Systems
                 }
                 sink.Queue(new InitiativeEvent(entityId, stats.Initiative.Value));
             }
+            sink.Queue(new FinalizeInitiativeEvent());
             sink.Flush();
-            // TODO: Systems should only mutate the world through events.
-            component.Sort();
         }
     }
 }

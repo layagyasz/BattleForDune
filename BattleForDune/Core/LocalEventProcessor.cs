@@ -26,15 +26,46 @@ namespace BattleForDune.Core
                     var damage = @event.ReadPayload<DamageEvent>();
                     Process(ref damage, sink);
                     return;
+                case GameEventType.FinalizeInitiative:
+                    var finalize = @event.ReadPayload<FinalizeInitiativeEvent>();
+                    Process(ref finalize, sink);
+                    return;
                 case GameEventType.Initiative:
                     var initiative = @event.ReadPayload<InitiativeEvent>();
                     Process(ref initiative, sink);
+                    return;
+                case GameEventType.SpawnUnit:
+                    var spawn = @event.ReadPayload<SpawnUnitEvent>();
+                    Process(ref spawn, sink);
+                    return;
+                case GameEventType.Tick:
+                    var tick = @event.ReadPayload<TickEvent>();
+                    Process(ref tick, sink);
                     return;
                 case GameEventType.UseAbility:
                     var ability = @event.ReadPayload<UseAbilityEvent>();
                     Process(ref ability, sink);
                     return;
             }
+        }
+
+        private void ApplyEffect<TSink>(in ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+
+            _world.AddEffect(
+                new(
+                    @event.SubjectId,
+                    @event.AbilityId,
+                    @event.TargetId,
+                    @event.InstanceId,
+                    @event.Stacks,
+                    @event.Power,
+                    @event.EffectType));
+            // TODO: Schedule timeout when duration > 0
         }
 
         private void ApplyDamage<TSink>(in DamageEvent @event, TSink sink) where TSink : IGameEventSink
@@ -51,33 +82,42 @@ namespace BattleForDune.Core
             }
         }
 
+        private void ApplyFinalizeInitiative<TSink>(in FinalizeInitiativeEvent @event, TSink sink) 
+            where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _world.GetInitiative().Sort();
+        }
+
         private void ApplyInitiative<TSink>(in InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
         {
             if (@event.IsCanceled)
             {
                 return;
             }
-
             _world.GetInitiative().Add(@event.SubjectId, @event.Initiative);
         }
 
-        private void ApplyEffect<TSink>(in ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplySpawnUnit<TSink>(in SpawnUnitEvent @event, TSink sink) where TSink : IGameEventSink
         {
             if (@event.IsCanceled)
             {
                 return;
             }
+            // TODO: Track unit teams.
+            _world.AddUnit(@event.UnitPrototypeId, @event.Position);
+        }
 
-            _world.AddEffect(
-                new(
-                    @event.SubjectId,
-                    @event.AbilityId, 
-                    @event.TargetId,
-                    @event.InstanceId,
-                    @event.Stacks, 
-                    @event.Power,
-                    @event.EffectType));
-            // Schedule timeout when duration > 0
+        private void ApplyTick<TSink>(in TickEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _world.GetInitiative().Clear();
         }
 
         private void Process<TSink>(ref ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
@@ -147,6 +187,13 @@ namespace BattleForDune.Core
             }
         }
 
+        private void Process<TSink>(ref FinalizeInitiativeEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            _world.Handle(in @event, sink);
+            ApplyFinalizeInitiative(in @event, sink);
+        }
+
         private void Process<TSink>(ref InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.Roll = _world.Roll(new(1, 20, 0));
@@ -154,6 +201,20 @@ namespace BattleForDune.Core
             @event.Initiative = (sbyte)(@event.Skill + @event.Roll);
             _world.Handle(in @event, sink);
             ApplyInitiative(in @event, sink);
+        }
+
+        private void Process<TSink>(ref SpawnUnitEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            ApplySpawnUnit(in @event, sink);
+            _world.Handle(in @event, sink);
+        }
+
+        private void Process<TSink>(ref TickEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            _world.Handle(in @event, sink);
+            ApplyTick(in @event, sink);
         }
 
         private void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink

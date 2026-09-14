@@ -5,7 +5,10 @@
         ApplyEffect,
         Attack,
         Damage,
+        FinalizeInitiative,
         Initiative,
+        SpawnUnit,
+        Tick,
         UseAbility
     }
 }

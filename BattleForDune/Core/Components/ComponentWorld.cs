@@ -1,7 +1,6 @@
 ﻿using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Events;
-using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Prototypes.Abilities;
 using BattleForDune.Core.Schema;
 using BattleForDune.FastLookup;
@@ -10,7 +9,8 @@ using OpenTK.Mathematics;
 
 namespace BattleForDune.Core.Components
 {
-    public class ComponentWorld(LinearCongruentialIdSupplier ids, Random random) : IGameEventRouter
+    public class ComponentWorld(
+        ConfigurationRegistry registry, LinearCongruentialIdSupplier ids, Random random) : IGameEventRouter
     {
         private readonly ref struct RemoveModifierCallback(ComponentWorld world)
             : ModifierComponent.IModifierCallback
@@ -27,6 +27,7 @@ namespace BattleForDune.Core.Components
             }
         }
 
+        private readonly ConfigurationRegistry _registry = registry;
         private readonly LinearCongruentialIdSupplier _ids = ids;
         private readonly Random _random = random;
 
@@ -38,15 +39,16 @@ namespace BattleForDune.Core.Components
         private readonly EffectComponent _effects = new();
         private readonly AbilityComponent _abilities = new();
 
-        public void AddUnit(UnitPrototype unitType, Vector2i position)
+        public void AddUnit(EntityId prototypeId, Vector2i position)
         {
+            var prototype = _registry.GetUnitPrototype(prototypeId);
             var id = new EntityId(_ids.Get());
             _units.Add(id.Value);
             _positions.Add(id, position);
-            _stats.Add(id, unitType.Stats.Materialize());
-            for (int i=0; i<unitType.Abilities.Length; ++i)
+            _stats.Add(id, prototype.Stats.Materialize());
+            for (int i=0; i< prototype.Abilities.Length; ++i)
             {
-                AddAbility(unitType.Abilities[i], id);
+                AddAbility(prototype.Abilities[i], id);
             }
         }
 
