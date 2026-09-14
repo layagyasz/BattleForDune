@@ -3,9 +3,9 @@ using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 
-namespace BattleForDune.Core.Systems
+namespace BattleForDune.Core
 {
-    public class CombatGameSystem(ComponentWorld world) : IGameEventProcessor
+    public class LocalEventProcessor(ComponentWorld world) : IGameEventProcessor
     {
         private readonly ComponentWorld _world = world;
 
@@ -26,6 +26,10 @@ namespace BattleForDune.Core.Systems
                     var damage = @event.ReadPayload<DamageEvent>();
                     Process(ref damage, sink);
                     return;
+                case GameEventType.Initiative:
+                    var initiative = @event.ReadPayload<InitiativeEvent>();
+                    Process(ref initiative, sink);
+                    return;
                 case GameEventType.UseAbility:
                     var ability = @event.ReadPayload<UseAbilityEvent>();
                     Process(ref ability, sink);
@@ -45,6 +49,16 @@ namespace BattleForDune.Core.Systems
             {
                 stats.Hitpoints.Value = (sbyte)(stats.Hitpoints.Value - @event.Damage);
             }
+        }
+
+        private void ApplyInitiative<TSink>(in InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+
+            _world.GetInitiative().Add(@event.SubjectId, @event.Initiative);
         }
 
         private void ApplyEffect<TSink>(in ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
@@ -131,6 +145,15 @@ namespace BattleForDune.Core.Systems
                 _world.Handle(in @event, sink);
                 ApplyDamage(in @event, sink);
             }
+        }
+
+        private void Process<TSink>(ref InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            @event.Roll = _world.Roll(new(1, 20, 0));
+            _world.Intercept(ref @event);
+            @event.Initiative = (sbyte)(@event.Skill + @event.Roll);
+            _world.Handle(in @event, sink);
+            ApplyInitiative(in @event, sink);
         }
 
         private void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink

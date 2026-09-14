@@ -33,6 +33,7 @@ namespace BattleForDune.Core.Components
         private readonly IdSet _units = new(1024);
         private readonly PositionComponent _positions = new();
         private readonly StatComponent _stats = new();
+        private readonly InitiativeComponent _initiative = new();
         private readonly ModifierComponent _modifiers = new();
         private readonly EffectComponent _effects = new();
         private readonly AbilityComponent _abilities = new();
@@ -87,6 +88,11 @@ namespace BattleForDune.Core.Components
         public EntityId GetId()
         {
             return new(_ids.Get());
+        }
+
+        public InitiativeComponent GetInitiative()
+        {
+            return _initiative;
         }
 
         public ref StatBlock TryGetStats(EntityId id, out bool isFound)

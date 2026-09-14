@@ -2,7 +2,6 @@
 using BattleForDune.Core.Components;
 using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Events;
-using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Prototypes.Abilities;
 using BattleForDune.Core.Prototypes.Abilities.Attack;
@@ -21,8 +20,8 @@ namespace BattleForDune
             var world = new ComponentWorld(
                 new((uint)(4 * random.Next() + 1), (uint)(2 * random.Next() + 1), random.Next()), random);
 
-            var processor = new CombatGameSystem(world);
-            var events = new EventPump<CombatGameSystem>(processor);
+            var processor = new LocalEventProcessor(world);
+            var events = new EventPump<LocalEventProcessor>(processor);
 
             var unitType =
                 new UnitPrototype(
@@ -44,13 +43,16 @@ namespace BattleForDune
                                 new ChanceApplyEffectPrototype(EffectType.Burn, 0, 3)
                             ])
                     ]);
-            world.AddUnit(unitType, new());
-
-            var unitId = new EntityId(world.GetUnitIds()[0]);
-            foreach (var ability in world.GetAbilities(unitId))
+            for (int i = 0; i < 50; ++i)
             {
-                events.Queue(new UseAbilityEvent(unitId, ability.Id, unitId));
-                events.Flush();
+                world.AddUnit(unitType, new());
+            }
+
+            var initiative = new InitiativeSystem();
+            initiative.Run(world, in events);
+            foreach (var id in world.GetInitiative().AsSpan())
+            {
+                Console.WriteLine(id.Value);
             }
         }
     }

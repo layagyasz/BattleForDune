@@ -5,6 +5,7 @@
         ApplyEffect,
         Attack,
         Damage,
+        Initiative,
         UseAbility
     }
 }
