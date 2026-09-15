@@ -1,11 +1,7 @@
-﻿using BattleForDune.Core.Components.Abilities;
-using BattleForDune.Core.Components.Effects;
-using BattleForDune.Core.Events;
-using BattleForDune.Core.Prototypes.Abilities;
+﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Schema;
 using BattleForDune.FastLookup;
 using Cardamom.Utils.Suppliers.Ids;
-using OpenTK.Mathematics;
 
 namespace BattleForDune.Core.Components
 {
@@ -32,64 +28,38 @@ namespace BattleForDune.Core.Components
         private readonly Random _random = random;
 
         private readonly IdSet _units = new(1024);
-        private readonly PositionComponent _positions = new();
-        private readonly StatComponent _stats = new();
-        private readonly InitiativeComponent _initiative = new();
-        private readonly ModifierComponent _modifiers = new();
-        private readonly EffectComponent _effects = new();
-        private readonly AbilityComponent _abilities = new();
+        private readonly TeamComponent _teams = new(1024);
+        private readonly FactionComponent _factions = new(8);
+        private readonly PositionComponent _positions = new(1024);
+        private readonly StatComponent _stats = new(1024);
+        private readonly InitiativeComponent _initiative = new(1024);
+        private readonly ModifierComponent _modifiers = new(1024);
+        private readonly EffectComponent _effects = new(1024);
+        private readonly AbilityComponent _abilities = new(1024);
 
-        public void AddUnit(EntityId prototypeId, Vector2i position)
-        {
-            var prototype = _registry.GetUnitPrototype(prototypeId);
-            var id = new EntityId(_ids.Get());
-            _units.Add(id.Value);
-            _positions.Add(id, position);
-            _stats.Add(id, prototype.Stats.Materialize());
-            for (int i=0; i< prototype.Abilities.Length; ++i)
-            {
-                AddAbility(prototype.Abilities[i], id);
-            }
-        }
-
-        public void AddAbility(IAbilityPrototype prototype, EntityId ownerId)
-        {
-            var ability = prototype.Materialize(GetId(), ownerId);
-            _abilities.Add(ability);
-        }
-
-        public void AddEffect(EffectParameters @params)
-        {
-            _effects.Add(@params);
-        }
-
-        public void AddModifier(EntityId ownerId, EntityId sourceId, StatBlock modifier)
-        {
-            if (_modifiers.Add(ownerId, sourceId, modifier))
-            {
-                ref var stats = ref _stats.TryGet(ownerId, out bool isFound);
-                if (isFound)
-                {
-                    stats.Add(modifier);
-                }
-            }
-        }
-
-        public ComponentEnumerator<SparseStorage<IAbility>, IAbility> GetAbilities(EntityId ownerId)
-        {
-            return _abilities.GetEnumerator(ownerId);
-        }
-
-        public bool TryGetAbility(EntityId id, out IAbility ability)
-        {
-            var result = _abilities.TryGet(id, out var container);
-            ability = container;
-            return result;
-        }
-
-        public EntityId GetId()
+        public EntityId NextId()
         {
             return new(_ids.Get());
+        }
+
+        public IdSet GetUnits()
+        {
+            return _units;
+        }
+
+        public AbilityComponent GetAbilities()
+        {
+            return _abilities;
+        }
+
+        public EffectComponent GetEffects()
+        {
+            return _effects;
+        }
+
+        public FactionComponent GetFactions()
+        {
+            return _factions;
         }
 
         public InitiativeComponent GetInitiative()
@@ -97,26 +67,29 @@ namespace BattleForDune.Core.Components
             return _initiative;
         }
 
-        public ref StatBlock TryGetStats(EntityId id, out bool isFound)
+        public PositionComponent GetPositions()
         {
-            ref var result = ref _stats.TryGet(id, out bool found);
-            isFound = found;
-            return ref result;
+            return _positions;
         }
 
-        public ReadOnlySpan<int> GetUnitIds()
+        public ConfigurationRegistry GetRegistry()
         {
-            return _units.AsSpan();
+            return _registry;
+        }
+
+        public StatComponent GetStats()
+        {
+            return _stats;
+        }
+
+        public TeamComponent GetTeams()
+        {
+            return _teams;
         }
 
         public byte Roll(Die die)
         {
             return die.Roll(_random);
-        }
-
-        public void RemoveModifiers(EntityId sourceId)
-        {
-            _modifiers.RemoveBySource(sourceId, new RemoveModifierCallback(this));
         }
 
         public void Intercept<T>(ref T @event) where T : struct, IGameEvent

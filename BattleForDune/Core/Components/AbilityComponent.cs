@@ -3,11 +3,11 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {
-    public class AbilityComponent : IGameComponent<IAbility>
+    public class AbilityComponent(int capacity) : IGameComponent<IAbility>
     {
-        private readonly SparseStorage<IAbility> _abilities = new(1024);
-        private readonly UniqueIndex _byId = new(1024);
-        private readonly MultiIndex _byOwner = new(1024, 1024);
+        private readonly SparseStorage<IAbility> _abilities = new(capacity);
+        private readonly UniqueIndex _byId = new(capacity);
+        private readonly MultiIndex _byOwner = new(capacity, capacity);
 
         public bool Add(IAbility ability)
         {

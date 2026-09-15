@@ -2,5 +2,5 @@
 
 namespace BattleForDune.Core.Components
 {
-    public class StatComponent : SimpleComponent<StatBlock> { }
+    public class StatComponent(int capacity) : SimpleComponent<StatBlock>(capacity) { }
 }

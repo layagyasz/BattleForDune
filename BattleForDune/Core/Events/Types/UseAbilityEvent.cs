@@ -10,6 +10,5 @@ namespace BattleForDune.Core.Events.Types
         public EntityId SubjectId { get; set; } = subjectId;
         public EntityId AbilityId { get; set; } = abilityId;
         public EntityId TargetId { get; set; } = targetId;
-        public EntityId InstanceId { get; set; }
     }
 }

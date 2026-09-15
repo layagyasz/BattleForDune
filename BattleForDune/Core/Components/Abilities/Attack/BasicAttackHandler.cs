@@ -28,7 +28,7 @@ namespace BattleForDune.Core.Components.Abilities.Attack
             {
                 return;
             }
-            ref var stats = ref world.TryGetStats(@event.TargetId, out var isFound);
+            ref var stats = ref world.GetStats().TryGet(@event.TargetId, out var isFound);
             if (!isFound)
             {
                 return;
@@ -38,7 +38,6 @@ namespace BattleForDune.Core.Components.Abilities.Attack
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
-                    @event.InstanceId,
                     isPrimary: true,
                     @event.IsCritical,
                     DamageType,

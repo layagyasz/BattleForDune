@@ -4,5 +4,5 @@ using System.Runtime.CompilerServices;
 
 namespace BattleForDune.Core.Components
 {
-    public class PositionComponent : SimpleComponent<Vector2i> { }
+    public class PositionComponent(int capacity) : SimpleComponent<Vector2i>(capacity) { }
 }

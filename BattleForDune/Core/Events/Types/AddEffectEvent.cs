@@ -4,11 +4,10 @@ using System.Runtime.InteropServices;
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct ApplyEffectEvent(
+    public struct AddEffectEvent(
         EntityId subjectId, 
         EntityId abilityId,
         EntityId targetId, 
-        EntityId instanceId,
         byte stacks, 
         byte power, 
         byte duration,
@@ -16,12 +15,12 @@ namespace BattleForDune.Core.Events.Types
         sbyte skill,
         sbyte difficulty) : IGameEvent
     {
-        public readonly GameEventType Type => GameEventType.ApplyEffect;
+        public readonly GameEventType Type => GameEventType.AddEffect;
         public bool IsCanceled { get; set; }
         public EntityId SubjectId { get; set; } = subjectId;
         public EntityId AbilityId { get; set; } = abilityId;
         public EntityId TargetId { get; set; } = targetId;
-        public EntityId InstanceId { get; set; } = instanceId;
+        public EntityId InstanceId { get; set; }
         public byte Stacks { get; set; } = stacks;
         public byte Power { get; set; } = power;
         public byte Duration { get; set; } = duration;

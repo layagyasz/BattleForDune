@@ -14,9 +14,13 @@ namespace BattleForDune.Core
             Console.WriteLine(@event.Type);
             switch (@event.Type)
             {
-                case GameEventType.ApplyEffect:
-                    var effect = @event.ReadPayload<ApplyEffectEvent>();
+                case GameEventType.AddEffect:
+                    var effect = @event.ReadPayload<AddEffectEvent>();
                     Process(ref effect, sink);
+                    return;
+                case GameEventType.AddTeam:
+                    var team = @event.ReadPayload<AddTeamEvent>();
+                    Process(ref team, sink);
                     return;
                 case GameEventType.Attack:
                     var attack = @event.ReadPayload<AttackEvent>();
@@ -49,14 +53,23 @@ namespace BattleForDune.Core
             }
         }
 
-        private void ApplyEffect<TSink>(in ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplyAddTeam<TSink>(in AddTeamEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _world.GetFactions().Add(@event.TeamId, @event.FactionId);
+        }
+
+        private void ApplyAddEffect<TSink>(in AddEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
             if (@event.IsCanceled)
             {
                 return;
             }
 
-            _world.AddEffect(
+            _world.GetEffects().Add(
                 new(
                     @event.SubjectId,
                     @event.AbilityId,
@@ -75,7 +88,7 @@ namespace BattleForDune.Core
                 return;
             }
 
-            ref var stats = ref _world.TryGetStats(@event.TargetId, out bool isFound);
+            ref var stats = ref _world.GetStats().TryGet(@event.TargetId, out bool isFound);
             if (isFound)
             {
                 stats.Hitpoints.Value = (sbyte)(stats.Hitpoints.Value - @event.Damage);
@@ -107,8 +120,12 @@ namespace BattleForDune.Core
             {
                 return;
             }
-            // TODO: Track unit teams.
-            _world.AddUnit(@event.UnitPrototypeId, @event.Position);
+            var prototype = _world.GetRegistry().GetUnitPrototype(@event.UnitPrototypeId);
+            _world.GetUnits().Add(@event.UnitId.Value);
+            _world.GetStats().Add(@event.UnitId, prototype.Stats.Materialize());
+            _world.GetPositions().Add(@event.UnitId, @event.Position);
+            _world.GetTeams().Add(@event.UnitId, @event.TeamId);
+            // TODO: Add abilities
         }
 
         private void ApplyTick<TSink>(in TickEvent @event, TSink sink) where TSink : IGameEventSink
@@ -120,11 +137,12 @@ namespace BattleForDune.Core
             _world.GetInitiative().Clear();
         }
 
-        private void Process<TSink>(ref ApplyEffectEvent @event, TSink sink) where TSink : IGameEventSink
+        private void Process<TSink>(ref AddEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            @event.InstanceId = _world.NextId();
             @event.Roll = _world.Roll(new(1, 20, 0));
 
-            if (_world.TryGetAbility(@event.AbilityId, out var ability))
+            if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
             {
 
                 AbilityIntercept(ability, ref @event);
@@ -137,15 +155,23 @@ namespace BattleForDune.Core
 
                 AbilityHandle(ability, in @event, sink);
                 _world.Handle(in @event, sink);
-                ApplyEffect(in @event, sink);
+                ApplyAddEffect(in @event, sink);
             }
+        }
+
+        private void Process<TSink>(ref AddTeamEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            @event.TeamId = _world.NextId();
+            _world.Intercept(ref @event);
+            ApplyAddTeam(in @event, sink);
+            _world.Handle(in @event, sink);
         }
 
         private void Process<TSink>(ref AttackEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.Roll = _world.Roll(new(1, 20, 0));
 
-            if (_world.TryGetAbility(@event.AbilityId, out var ability))
+            if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
             {
 
                 AbilityIntercept(ability, ref @event);
@@ -167,7 +193,7 @@ namespace BattleForDune.Core
         {
             @event.Roll = _world.Roll(@event.Die);
 
-            if (_world.TryGetAbility(@event.AbilityId, out var ability))
+            if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
             {
                 AbilityIntercept(ability, ref @event);
                 _world.Intercept(ref @event);
@@ -205,6 +231,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref SpawnUnitEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            @event.UnitId = _world.NextId();
             _world.Intercept(ref @event);
             ApplySpawnUnit(in @event, sink);
             _world.Handle(in @event, sink);
@@ -219,9 +246,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.InstanceId = _world.GetId();
-
-            if (_world.TryGetAbility(@event.AbilityId, out var ability))
+            if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
             {
                 AbilityIntercept(ability, ref @event);
                 _world.Intercept(ref @event);

@@ -2,5 +2,6 @@
 
 namespace BattleForDune.Core.Prototypes
 {
-    public record class UnitPrototype(EntityId Id, StatBlockPrototype Stats, IAbilityPrototype[] Abilities) { }
+    public record class UnitPrototype(
+        EntityId Id, LocalizationKey Name, StatBlockPrototype Stats, AbilityPrototype[] Abilities) { }
 }

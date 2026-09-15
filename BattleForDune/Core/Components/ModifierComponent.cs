@@ -3,7 +3,7 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {
-    public class ModifierComponent : IGameComponent<StatBlock>
+    public class ModifierComponent(int capacity) : IGameComponent<StatBlock>
     {
         public interface IModifierCallback
         {
@@ -12,9 +12,9 @@ namespace BattleForDune.Core.Components
 
         private readonly record struct ModifierEntry(EntityId OwnerId, EntityId SourceId, StatBlock Modifier);
 
-        private readonly DenseStorage<ModifierEntry> _values = new(1024);
-        private readonly MultiIndex _byOwner = new(1024, 1024);
-        private readonly MultiIndex _bySource = new(1024, 1024);
+        private readonly DenseStorage<ModifierEntry> _values = new(capacity);
+        private readonly MultiIndex _byOwner = new(capacity, capacity);
+        private readonly MultiIndex _bySource = new(capacity, capacity);
 
         public bool Add(EntityId ownerId, EntityId sourceId, StatBlock modifier)
         {

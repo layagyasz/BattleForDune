@@ -9,10 +9,10 @@ namespace BattleForDune.Core.Systems
         public void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
             sink.Queue(new TickEvent());
-            foreach (var id in world.GetUnitIds())
+            foreach (var id in world.GetUnits().AsSpan())
             {
                 var entityId = new EntityId(id);
-                ref var stats = ref world.TryGetStats(entityId, out bool isFound);
+                ref var stats = ref world.GetStats().TryGet(entityId, out bool isFound);
                 if (!isFound)
                 {
                     continue;

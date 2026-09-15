@@ -3,10 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace BattleForDune.Core.Components
 {
-    public class SimpleComponent<T> : IGameComponent<T>
+    public class SimpleComponent<T>(int capacity) : IGameComponent<T>
     {
-        private readonly SparseStorage<T> _values = new(1024);
-        private readonly UniqueIndex _index = new(1024);
+        private readonly SparseStorage<T> _values = new(capacity);
+        private readonly UniqueIndex _index = new(capacity);
 
         public bool Add(EntityId id, T value)
         {

@@ -4,15 +4,15 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {
-    public class EffectComponent
+    public class EffectComponent(int capacity)
     {
-        private readonly SparseStorage<IGenericEffect> _effects = new(1024);
-        private readonly UniqueIndex _byId = new(1024);
-        private readonly MultiIndex _byType = new(1024, Enum.GetValues<GameEventType>().Length);
+        private readonly SparseStorage<IGenericEffect> _effects = new(capacity);
+        private readonly UniqueIndex _byId = new(capacity);
+        private readonly MultiIndex _byType = new(capacity, Enum.GetValues<GameEventType>().Length);
 
         public bool Add(EffectParameters @params)
         {
-            // Merge with existing effect if possible.
+            // TODO: Merge with existing effect if possible.
             var effect = EffectFactory.Materialize(@params);
             if (_effects.Allocate(effect, out var handle))
             {

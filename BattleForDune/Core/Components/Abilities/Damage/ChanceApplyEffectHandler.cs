@@ -17,11 +17,10 @@ namespace BattleForDune.Core.Components.Abilities.Damage
                 return;
             }
             sink.Queue(
-                new ApplyEffectEvent(
+                new AddEffectEvent(
                     @event.SubjectId, 
                     @event.AbilityId,
                     @event.TargetId,
-                    @event.InstanceId,
                     stacks: 1, 
                     @event.Damage, 
                     Duration, 

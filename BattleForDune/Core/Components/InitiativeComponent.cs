@@ -1,10 +1,10 @@
 ﻿namespace BattleForDune.Core.Components
 {
-    public class InitiativeComponent
+    public class InitiativeComponent(int capacity)
     {
         private int _count;
-        private readonly EntityId[] _ids = new EntityId[1024];
-        private readonly sbyte[] _invInitiative = new sbyte[1024];
+        private readonly EntityId[] _ids = new EntityId[capacity];
+        private readonly sbyte[] _invInitiative = new sbyte[capacity];
 
         public void Add(EntityId id, sbyte initiative)
         {

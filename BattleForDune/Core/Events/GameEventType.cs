@@ -2,7 +2,8 @@
 {
     public enum GameEventType : byte
     {
-        ApplyEffect,
+        AddEffect,
+        AddTeam,
         Attack,
         Damage,
         FinalizeInitiative,

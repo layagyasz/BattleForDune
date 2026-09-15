@@ -8,6 +8,7 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.SpawnUnit;
         public bool IsCanceled { get; set; }
+        public EntityId UnitId { get; set; }
         public EntityId UnitPrototypeId { get; set; } = unitPrototypeId;
         public EntityId TeamId { get; set; } = teamId;
         public Vector2i Position { get; set; } = position;
