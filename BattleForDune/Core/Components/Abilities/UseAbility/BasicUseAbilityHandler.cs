@@ -1,10 +1,19 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
+using static BattleForDune.Core.Components.Abilities.IGenericHandler;
 
 namespace BattleForDune.Core.Components.Abilities.UseAbility
 {
     public class BasicUseAbilityHandler : IGameEventHandler<UseAbilityEvent>, IGenericHandler
     {
+        public record class Prototype : IHandlerPrototype
+        {
+            public IGenericHandler Materialize()
+            {
+                return new BasicUseAbilityHandler();
+            }
+        }
+
         public void Intercept(ref UseAbilityEvent @event, ComponentWorld world) { }
 
         public void Handle<TSink>(

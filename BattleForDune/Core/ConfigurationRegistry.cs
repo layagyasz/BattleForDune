@@ -1,15 +1,16 @@
-﻿using BattleForDune.Core.Prototypes;
-using BattleForDune.Core.Prototypes.Abilities;
+﻿using BattleForDune.Core.Components.Abilities;
+using BattleForDune.Core.Prototypes;
 
 namespace BattleForDune.Core
 {
-    public class ConfigurationRegistry(Faction[] factions, AbilityPrototype[] abilities, UnitPrototype[] unitPrototypes)
+    public class ConfigurationRegistry(
+        Faction[] factions, Ability.Prototype[] abilities, UnitPrototype[] unitPrototypes)
     {
         private readonly Faction[] _factions = factions;
-        private readonly AbilityPrototype[] _abilities = abilities;
+        private readonly Ability.Prototype[] _abilities = abilities;
         private readonly UnitPrototype[] _unitPrototypes = unitPrototypes;
 
-        public AbilityPrototype GetAbilityPrototype(RegistryKey key)
+        public Ability.Prototype GetAbilityPrototype(RegistryKey key)
         {
             return _abilities[key.Value];
         }

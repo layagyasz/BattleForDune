@@ -1,6 +1,7 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
+using static BattleForDune.Core.Components.Abilities.IGenericHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Attack
 {
@@ -13,6 +14,21 @@ namespace BattleForDune.Core.Components.Abilities.Attack
         sbyte ShieldPiercing) 
         : IGameEventHandler<AttackEvent>, IGenericHandler
     {
+        public record class Prototype(
+            sbyte Attack,
+            byte CritRange,
+            DamageType DamageType,
+            Die Damage,
+            sbyte ArmorPiercing,
+            sbyte ShieldPiercing) : IHandlerPrototype
+        {
+            public IGenericHandler Materialize()
+            {
+                return new BasicAttackHandler(
+                    Attack, CritRange, DamageType, Damage, ArmorPiercing, ShieldPiercing);
+            }
+        }
+
         public void Intercept(ref AttackEvent @event, ComponentWorld world)
         {
             ref var stats = ref world.GetStats().TryGet(@event.SubjectId, out bool isFound);
