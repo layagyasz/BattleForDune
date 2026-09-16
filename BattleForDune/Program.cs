@@ -17,9 +17,21 @@ namespace BattleForDune
     {
         static void Main()
         {
+            var abilities =
+                new AbilityPrototype[]
+                {
+                    new(
+                        new(0),
+                        [
+                            new BasicUseAbilityPrototype(),
+                            new BasicAttackPrototype(0, 1, DamageType.Physical, new(1, 6, 0), 0, 0),
+                            new CriticalMultiplierPrototype(2f),
+                            new ChanceApplyEffectPrototype(EffectType.Burn, 0, 3)
+                        ])
+                };
             var unitType =
                 new UnitPrototype(
-                    Id: new(0),
+                    Key: new(0),
                     Name: LocalizationKey.None,
                     new StatBlockPrototype(
                         Attack: 1,
@@ -30,18 +42,10 @@ namespace BattleForDune
                         Hitpoints: 10,
                         Morale: 10,
                         Threat: 0),
-                        [
-                            new AbilityPrototype(
-                                [
-                                    new BasicUseAbilityPrototype(),
-                                    new BasicAttackPrototype(0, 1, DamageType.Physical, new(1, 6, 0), 0, 0),
-                                    new CriticalMultiplierPrototype(2f),
-                                    new ChanceApplyEffectPrototype(EffectType.Burn, 0, 3)
-                                ])
-                        ]);
+                    [new(0)]);
             var random = new Random();
             var world = new ComponentWorld(
-                new ConfigurationRegistry([], [unitType]),
+                new ConfigurationRegistry([], abilities, [unitType]),
                 new((uint)(4 * random.Next() + 1), (uint)(2 * random.Next() + 1), random.Next()), 
                 random);
 
@@ -50,7 +54,7 @@ namespace BattleForDune
 
             for (int i = 0; i < 50; ++i)
             {
-                events.Queue(new SpawnUnitEvent(new(0), new(0), new()));
+                events.Queue(new AddUnitEvent(new(0), new(0), new(0), new()));
             }
             events.Flush();
 

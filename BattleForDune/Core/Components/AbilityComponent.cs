@@ -3,13 +3,13 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {
-    public class AbilityComponent(int capacity) : IGameComponent<IAbility>
+    public class AbilityComponent(int capacity) : IGameComponent<Ability>
     {
-        private readonly SparseStorage<IAbility> _abilities = new(capacity);
+        private readonly SparseStorage<Ability> _abilities = new(capacity);
         private readonly UniqueIndex _byId = new(capacity);
         private readonly MultiIndex _byOwner = new(capacity, capacity);
 
-        public bool Add(IAbility ability)
+        public bool Add(Ability ability)
         {
             if (_abilities.Allocate(ability, out var handle))
             {
@@ -20,7 +20,7 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public bool TryGet(EntityId id, out IAbility ability)
+        public bool TryGet(EntityId id, out Ability ability)
         {
             if (_byId.TryGet(id.Value, out var handle))
             {
@@ -43,7 +43,7 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public ComponentEnumerator<SparseStorage<IAbility>, IAbility> GetEnumerator(EntityId ownerId)
+        public ComponentEnumerator<SparseStorage<Ability>, Ability> GetEnumerator(EntityId ownerId)
         {
             return new(_abilities, _byOwner.GetEnumerator(ownerId.Value));
         }

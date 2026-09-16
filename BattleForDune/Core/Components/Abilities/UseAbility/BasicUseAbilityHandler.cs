@@ -15,24 +15,13 @@ namespace BattleForDune.Core.Components.Abilities.UseAbility
                 return;
             }
 
-            ref var stats = ref world.GetStats().TryGet(@event.SubjectId, out bool isFound);
-            if (!isFound)
-            {
-                return;
-            }
-            ref var targetStats = ref world.GetStats().TryGet(@event.TargetId, out isFound);
-            if (!isFound)
-            {
-                return;
-            }
-
             var attack =
                 new AttackEvent(
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
-                    stats.Attack.Value, 
-                    stats.Defense.Value);
+                    0,
+                    0);
             sink.Queue(in attack);
         }
     }

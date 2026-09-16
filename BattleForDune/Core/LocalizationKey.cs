@@ -1,7 +1,7 @@
 ﻿namespace BattleForDune.Core
 {
-    public readonly record struct LocalizationKey(int Value)
+    public readonly record struct LocalizationKey(ushort Value)
     {
-        public static readonly LocalizationKey None = new(0);
+        public static readonly LocalizationKey None = new();
     }
 }

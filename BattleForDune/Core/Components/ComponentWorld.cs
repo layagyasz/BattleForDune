@@ -18,7 +18,7 @@ namespace BattleForDune.Core.Components
                 ref var entityStats = ref _world._stats.TryGet(ownerId, out var isFound);
                 if (isFound)
                 {
-                    entityStats.Subtract(modifier);
+                    entityStats.Remove(modifier);
                 }
             }
         }

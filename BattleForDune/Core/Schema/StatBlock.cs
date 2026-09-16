@@ -22,28 +22,28 @@ namespace BattleForDune.Core.Schema
         public Stat Morale = morale;
         public Stat Threat = threat;
 
-        public void Add(in StatBlock other)
+        public void Combine(in StatBlock other)
         {
-            Attack.Add(other.Attack);
-            Defense.Add(other.Defense);
-            Armor.Add(other.Armor);
-            Shield.Add(other.Shield);
-            Initiative.Add(other.Initiative);
-            Hitpoints.Add(other.Hitpoints);
-            Morale.Add(other.Morale);
-            Threat.Add(other.Threat);
+            Attack.Combine(other.Attack);
+            Defense.Combine(other.Defense);
+            Armor.Combine(other.Armor);
+            Shield.Combine(other.Shield);
+            Initiative.Combine(other.Initiative);
+            Hitpoints.Combine(other.Hitpoints);
+            Morale.Combine(other.Morale);
+            Threat.Combine(other.Threat);
         }
 
-        public void Subtract(in StatBlock other)
+        public void Remove(in StatBlock other)
         {
-            Attack.Subtract(other.Attack);
-            Defense.Subtract(other.Defense);
-            Armor.Subtract(other.Armor);
-            Shield.Subtract(other.Shield);
-            Initiative.Subtract(other.Initiative);
-            Hitpoints.Subtract(other.Hitpoints);
-            Morale.Subtract(other.Morale);
-            Threat.Subtract(other.Threat);
+            Attack.Remove(other.Attack);
+            Defense.Remove(other.Defense);
+            Armor.Remove(other.Armor);
+            Shield.Remove(other.Shield);
+            Initiative.Remove(other.Initiative);
+            Hitpoints.Remove(other.Hitpoints);
+            Morale.Remove(other.Morale);
+            Threat.Remove(other.Threat);
         }
     }
 }

@@ -15,6 +15,19 @@ namespace BattleForDune.Core.Components.Abilities.Attack
     {
         public void Intercept(ref AttackEvent @event, ComponentWorld world)
         {
+            ref var stats = ref world.GetStats().TryGet(@event.SubjectId, out bool isFound);
+            if (!isFound)
+            {
+                return;
+            }
+            ref var targetStats = ref world.GetStats().TryGet(@event.TargetId, out isFound);
+            if (!isFound)
+            {
+                return;
+            }
+
+            @event.Skill = (sbyte)(Attack + stats.Attack.Value);
+            @event.Difficulty = targetStats.Defense.Value;
             if (@event.Roll > 20 - CritRange)
             {
                 @event.IsCritical = true;

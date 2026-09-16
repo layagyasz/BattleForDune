@@ -32,7 +32,7 @@ namespace BattleForDune.Core.Components
             StatBlock result = new();
             foreach (var handle in _byOwner.GetEnumerator(ownerId.Value))
             {
-                result.Add(_values.Get(handle).Modifier);
+                result.Combine(_values.Get(handle).Modifier);
             }
             return result;
         }
