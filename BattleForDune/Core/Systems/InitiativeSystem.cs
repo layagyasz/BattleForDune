@@ -1,6 +1,7 @@
 ﻿using BattleForDune.Core.Components;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
+using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Systems
 {
@@ -17,7 +18,7 @@ namespace BattleForDune.Core.Systems
                 {
                     continue;
                 }
-                sink.Queue(new InitiativeEvent(entityId, stats.Initiative.Value));
+                sink.Queue(new InitiativeEvent(entityId, stats.Get(StatType.Initiative)));
             }
             sink.Queue(new FinalizeInitiativeEvent());
             sink.Flush();

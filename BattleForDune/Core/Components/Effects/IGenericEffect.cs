@@ -18,8 +18,8 @@ namespace BattleForDune.Core.Components.Effects
         byte Stacks { get; }
         byte Power { get; }
 
-        void Apply(ComponentWorld world);
-        void Remove(ComponentWorld world);
+        void Apply<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink;
+        void Remove<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink;
         void MergeStacks(byte newStacks);
         void MergePower(byte newPower);
     }

@@ -8,21 +8,6 @@ namespace BattleForDune.Core.Components
     public class ComponentWorld(
         ConfigurationRegistry registry, LinearCongruentialIdSupplier ids, Random random) : IGameEventRouter
     {
-        private readonly ref struct RemoveModifierCallback(ComponentWorld world)
-            : ModifierComponent.IModifierCallback
-        {
-            private readonly ComponentWorld _world = world;
-
-            public readonly void Notify(EntityId ownerId, in StatBlock modifier)
-            {
-                ref var entityStats = ref _world._stats.TryGet(ownerId, out var isFound);
-                if (isFound)
-                {
-                    entityStats.Remove(modifier);
-                }
-            }
-        }
-
         private readonly ConfigurationRegistry _registry = registry;
         private readonly LinearCongruentialIdSupplier _ids = ids;
         private readonly Random _random = random;
@@ -33,7 +18,6 @@ namespace BattleForDune.Core.Components
         private readonly PositionComponent _positions = new(1024);
         private readonly StatComponent _stats = new(1024);
         private readonly InitiativeComponent _initiative = new(1024);
-        private readonly ModifierComponent _modifiers = new(1024);
         private readonly EffectComponent _effects = new(1024);
         private readonly AbilityComponent _abilities = new(1024);
 

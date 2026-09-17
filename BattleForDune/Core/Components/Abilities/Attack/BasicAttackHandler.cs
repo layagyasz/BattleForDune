@@ -42,8 +42,8 @@ namespace BattleForDune.Core.Components.Abilities.Attack
                 return;
             }
 
-            @event.Skill = (sbyte)(Attack + stats.Attack.Value);
-            @event.Difficulty = targetStats.Defense.Value;
+            @event.Skill = (sbyte)(Attack + stats.Get(StatType.Attack));
+            @event.Difficulty = (sbyte)(10 + stats.Get(StatType.Defense));
             if (@event.Roll > 20 - CritRange)
             {
                 @event.IsCritical = true;
@@ -72,9 +72,9 @@ namespace BattleForDune.Core.Components.Abilities.Attack
                     DamageType,
                     Damage,
                     ArmorPiercing,
-                    stats.Armor.Value,
+                    stats.Get(StatType.Armor),
                     ShieldPiercing,
-                    stats.Shield.Value);
+                    stats.Get(StatType.Shield));
             sink.Queue(in damage);
         }
     }

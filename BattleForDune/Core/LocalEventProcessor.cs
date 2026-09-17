@@ -2,6 +2,7 @@
 using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
+using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core
 {
@@ -80,10 +81,10 @@ namespace BattleForDune.Core
             {
                 if (effect.EffectKey == @event.EffectKey)
                 {
-                    effect.Remove(_world);
+                    effect.Remove(_world, in sink);
                     effect.MergeStacks(@event.Stacks);
                     effect.MergePower(@event.Power);
-                    effect.Apply(_world);
+                    effect.Apply(_world, in sink);
                     // TODO: Reschedule timeout.
                     return;
                 }
@@ -96,6 +97,7 @@ namespace BattleForDune.Core
             newEffect.MergeStacks(@event.Stacks);
             newEffect.MergePower(@event.Power);
             _world.GetEffects().Add(newEffect);
+            newEffect.Apply(_world, in sink);
             // TODO: Schedule timeout when duration > 0
         }
 
@@ -136,7 +138,7 @@ namespace BattleForDune.Core
             ref var stats = ref _world.GetStats().TryGet(@event.TargetId, out bool isFound);
             if (isFound)
             {
-                stats.Hitpoints.Value = (sbyte)(stats.Hitpoints.Value - @event.Damage);
+                stats[(int)StatType.Hitpoints].Value = (sbyte)(stats.Get(StatType.Hitpoints) - @event.Damage);
             }
         }
 

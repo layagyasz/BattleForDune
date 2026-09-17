@@ -26,9 +26,9 @@ namespace BattleForDune.Core.Components.Effects.Types
         public byte Stacks { get; internal set; }
         public byte Power { get; internal set; }
 
-        public void Apply(ComponentWorld world) { }
-        
-        public void Remove(ComponentWorld world) { }
+        public void Apply<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink { }
+
+        public void Remove<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink { }
 
         public void MergeStacks(byte newStacks)
         {
