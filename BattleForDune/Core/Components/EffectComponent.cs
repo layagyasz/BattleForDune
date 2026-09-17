@@ -8,15 +8,15 @@ namespace BattleForDune.Core.Components
     {
         private readonly SparseStorage<IGenericEffect> _effects = new(capacity);
         private readonly UniqueIndex _byId = new(capacity);
+        private readonly MultiIndex _byOwner = new(capacity, capacity);
         private readonly MultiIndex _byType = new(capacity, Enum.GetValues<GameEventType>().Length);
 
-        public bool Add(EffectParameters @params)
+        public bool Add(IGenericEffect effect)
         {
-            // TODO: Merge with existing effect if possible.
-            var effect = EffectFactory.Materialize(@params);
             if (_effects.Allocate(effect, out var handle))
             {
                 _byId.Add(effect.Id.Value, handle);
+                _byOwner.Add(effect.OwnerId.Value, handle);
                 foreach (var @event in effect.SupportedEvents)
                 {
                     _byType.Add((int)@event, handle);
@@ -35,13 +35,20 @@ namespace BattleForDune.Core.Components
                 {
                     _byType.Remove((int)@event, handle);
                 }
+                _byOwner.Remove(effect.OwnerId.Value, handle);
                 _effects.Free(handle);
                 return true;
             }
             return false;
         }
 
-        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect> Enumerate(
+        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect> ByOwner(
+            EntityId ownerId)
+        {
+            return new(_effects, _byOwner.GetEnumerator(ownerId.Value));
+        }
+
+        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect> ByEventType(
             GameEventType eventType)
         {
             return new(_effects, _byType.GetEnumerator((int)eventType));

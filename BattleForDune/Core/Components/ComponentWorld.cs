@@ -94,7 +94,7 @@ namespace BattleForDune.Core.Components
 
         public void Intercept<T>(ref T @event) where T : struct, IGameEvent
         {
-            foreach (var effect in _effects.Enumerate(@event.Type))
+            foreach (var effect in _effects.ByEventType(@event.Type))
             {
                 ((IGameEventHandler<T>)effect).Intercept(ref @event, this);
             }
@@ -102,7 +102,7 @@ namespace BattleForDune.Core.Components
 
         public void Handle<T>(in T @event, IGameEventSink sink) where T : struct, IGameEvent
         {
-            foreach (var effect in _effects.Enumerate(@event.Type))
+            foreach (var effect in _effects.ByEventType(@event.Type))
             {
                 ((IGameEventHandler<T>)effect).Handle(in @event, this, sink);
             }

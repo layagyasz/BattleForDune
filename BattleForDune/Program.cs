@@ -4,7 +4,7 @@ using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Abilities.Attack;
 using BattleForDune.Core.Components.Abilities.Damage;
 using BattleForDune.Core.Components.Abilities.UseAbility;
-using BattleForDune.Core.Components.Effects;
+using BattleForDune.Core.Components.Effects.Types;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Prototypes;
@@ -26,7 +26,7 @@ namespace BattleForDune
                             new BasicUseAbilityHandler.Prototype(),
                             new BasicAttackHandler.Prototype(0, 1, DamageType.Physical, new(1, 6, 0), 0, 0),
                             new CriticalMultiplierHandler.Prototype(2f),
-                            new ChanceApplyEffectHandler.Prototype(EffectType.Burn, 0, 3)
+                            new ChanceApplyEffectHandler.Prototype(new(0), 0, 3)
                         ])
                 };
             var unitType =
@@ -45,7 +45,7 @@ namespace BattleForDune
                     [new(0)]);
             var random = new Random();
             var world = new ComponentWorld(
-                new ConfigurationRegistry([], abilities, [unitType]),
+                new ConfigurationRegistry(abilities, [new BurnEffect.Prototype(new(0))], [], [unitType]),
                 new((uint)(4 * random.Next() + 1), (uint)(2 * random.Next() + 1), random.Next()), 
                 random);
 

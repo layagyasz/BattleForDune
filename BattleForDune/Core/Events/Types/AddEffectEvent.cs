@@ -1,5 +1,4 @@
-﻿using BattleForDune.Core.Components.Effects;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace BattleForDune.Core.Events.Types
 {
@@ -11,7 +10,7 @@ namespace BattleForDune.Core.Events.Types
         byte stacks, 
         byte power, 
         byte duration,
-        EffectType effectType,
+        RegistryKey effectKey,
         sbyte skill,
         sbyte difficulty) : IGameEvent
     {
@@ -24,7 +23,7 @@ namespace BattleForDune.Core.Events.Types
         public byte Stacks { get; set; } = stacks;
         public byte Power { get; set; } = power;
         public byte Duration { get; set; } = duration;
-        public EffectType EffectType { get; set; } = effectType;
+        public RegistryKey EffectKey { get; set; } = effectKey;
         public sbyte Skill { get; set; } = skill;
         public sbyte Difficulty { get; set; } = difficulty;
         public byte Roll { get; set; }

@@ -2,5 +2,6 @@
 
 namespace BattleForDune.Core.Prototypes
 {
-    public readonly record struct EffectPrototype(byte Stacks, byte Power, EffectType EffectType);
+    public readonly record struct EffectPrototype(
+        byte Stacks, byte Power, IGenericEffect.IEffectPrototype EffectType);
 }

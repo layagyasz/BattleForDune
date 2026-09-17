@@ -75,15 +75,27 @@ namespace BattleForDune.Core
                 return;
             }
 
-            _world.GetEffects().Add(
-                new(
-                    @event.SubjectId,
-                    @event.AbilityId,
-                    @event.TargetId,
-                    @event.InstanceId,
-                    @event.Stacks,
-                    @event.Power,
-                    @event.EffectType));
+            // Find an existing effect to merge with.
+            foreach (var effect in _world.GetEffects().ByOwner(@event.TargetId))
+            {
+                if (effect.EffectKey == @event.EffectKey)
+                {
+                    effect.Remove(_world);
+                    effect.MergeStacks(@event.Stacks);
+                    effect.MergePower(@event.Power);
+                    effect.Apply(_world);
+                    // TODO: Reschedule timeout.
+                    return;
+                }
+            }
+
+            // If no matching effects exist, add a new one.
+            var newEffect = 
+                _world.GetRegistry().GetEffectPrototype(@event.EffectKey)
+                    .Materialize(@event.InstanceId, @event.TargetId, @event.SubjectId, @event.AbilityId);
+            newEffect.MergeStacks(@event.Stacks);
+            newEffect.MergePower(@event.Power);
+            _world.GetEffects().Add(newEffect);
             // TODO: Schedule timeout when duration > 0
         }
 

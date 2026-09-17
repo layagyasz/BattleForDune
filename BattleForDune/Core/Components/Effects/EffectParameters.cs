@@ -7,5 +7,5 @@
         EntityId InstanceId,
         byte Stacks, 
         byte Power, 
-        EffectType EffectType);
+        RegistryKey EffectKey);
 }
