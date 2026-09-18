@@ -18,7 +18,7 @@ namespace BattleForDune.Core.Systems
                 {
                     continue;
                 }
-                sink.Queue(new InitiativeEvent(entityId, stats.Get(StatType.Initiative)));
+                sink.Queue(new InitiativeEvent(entityId, stats.Get(StatType.Initiative), 0));
             }
             sink.Queue(new FinalizeInitiativeEvent());
             sink.Flush();

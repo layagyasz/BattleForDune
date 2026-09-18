@@ -23,7 +23,12 @@ namespace BattleForDune.Core.Components
 
         public EntityId NextId()
         {
-            return new(_ids.Get());
+            var id = _ids.Get();
+            if (id == 0)
+            {
+                id = _ids.Get();
+            }
+            return new(id);
         }
 
         public IdSet GetUnits()

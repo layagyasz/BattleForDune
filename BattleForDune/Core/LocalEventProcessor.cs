@@ -122,6 +122,11 @@ namespace BattleForDune.Core
             _world.GetPositions().Add(@event.UnitId, @event.Position);
             _world.GetTeams().Add(@event.UnitId, @event.TeamId);
             _world.GetFactions().Add(@event.UnitId, @event.FactionKey);
+            foreach (var passive in prototype.Passives)
+            {
+                sink.Queue(
+                    new AddEffectEvent(@event.UnitId, EntityId.None, @event.UnitId, 0, 0, 0, passive, 0, 0));
+            }
             foreach (var ability in prototype.Abilities)
             {
                 sink.Queue(new AddAbilityEvent(@event.UnitId, ability));
@@ -181,23 +186,27 @@ namespace BattleForDune.Core
         private void Process<TSink>(ref AddEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.InstanceId = _world.NextId();
-            @event.Roll = _world.Roll(new(1, 20, 0));
+            @event.Roll = _world.Roll(new(1, 20, 0, 0));
 
-            if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
+            bool hasAbility = _world.GetAbilities().TryGet(@event.AbilityId, out var ability);
+
+            if (hasAbility)
             {
-
                 AbilityIntercept(ability, ref @event);
-                _world.Intercept(ref @event);
-
-                if (@event.Roll + @event.Skill < @event.Difficulty)
-                {
-                    @event.IsCanceled = true;
-                }
-
-                AbilityHandle(ability, in @event, sink);
-                _world.Handle(in @event, sink);
-                ApplyAddEffect(in @event, sink);
             }
+            _world.Intercept(ref @event);
+
+            if (@event.Roll + @event.Skill < @event.Difficulty)
+            {
+                @event.IsCanceled = true;
+            }
+
+            if (hasAbility)
+            {
+                AbilityHandle(ability, in @event, sink);
+            }
+            _world.Handle(in @event, sink);
+            ApplyAddEffect(in @event, sink);
         }
 
         private void Process<TSink>(ref AddTeamEvent @event, TSink sink) where TSink : IGameEventSink
@@ -218,48 +227,56 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref AttackEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.Roll = _world.Roll(new(1, 20, 0));
+            @event.Roll = _world.Roll(new(1, 20, 0, @event.Advantage));
 
-            if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
+            bool hasAbility = _world.GetAbilities().TryGet(@event.AbilityId, out var ability);
+
+            if (hasAbility)
             {
-
                 AbilityIntercept(ability, ref @event);
-                _world.Intercept(ref @event);
-
-                if (@event.Difficulty > 0 
-                    && @event.Roll != 20 
-                    && (@event.Roll + @event.Skill < @event.Difficulty || @event.Roll == 1))
-                {
-                    @event.IsCanceled = true;
-                }
-
-                AbilityHandle(ability, in @event, sink);
-                _world.Handle(in @event, sink);
             }
+            _world.Intercept(ref @event);
+
+            if (@event.Difficulty > 0 
+                && @event.Roll != 20 
+                && (@event.Roll + @event.Skill < @event.Difficulty || @event.Roll == 1))
+            {
+                @event.IsCanceled = true;
+            }
+
+            if (hasAbility)
+            {
+                AbilityHandle(ability, in @event, sink);
+            }
+            _world.Handle(in @event, sink);
         }
 
         private void Process<TSink>(ref DamageEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.Roll = _world.Roll(@event.Die);
 
-            if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
+            bool hasAbility = world.GetAbilities().TryGet(@event.AbilityId, out var ability);
+            if (hasAbility)
             {
                 AbilityIntercept(ability, ref @event);
-                _world.Intercept(ref @event);
-
-                var shield = Math.Max(0, @event.Shield - @event.ShieldPiercing);
-                var armor = Math.Max(0, @event.Armor - @event.ArmorPiercing);
-                var damage = shield == 0 ? @event.Roll : Math.Min(@event.Roll, 6 - shield);
-                @event.Damage = (byte)Math.Max(0, damage - armor);
-                if (@event.Damage == 0)
-                {
-                    @event.IsCanceled = true;
-                }
-
-                AbilityHandle(ability, in @event, sink);
-                _world.Handle(in @event, sink);
-                ApplyDamage(in @event, sink);
             }
+            _world.Intercept(ref @event);
+
+            var shield = Math.Max(0, @event.Shield - @event.ShieldPiercing);
+            var armor = Math.Max(0, @event.Armor - @event.ArmorPiercing);
+            var damage = shield == 0 ? @event.Roll : Math.Min(@event.Roll, 6 - shield);
+            @event.Damage = (byte)Math.Max(0, damage - armor);
+            if (@event.Damage == 0)
+            {
+                @event.IsCanceled = true;
+            }
+
+            if (hasAbility)
+            {
+                AbilityHandle(ability, in @event, sink);
+            }
+            _world.Handle(in @event, sink);
+            ApplyDamage(in @event, sink);
         }
 
         private void Process<TSink>(ref FinalizeInitiativeEvent @event, TSink sink) where TSink : IGameEventSink
@@ -271,7 +288,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.Roll = _world.Roll(new(1, 20, 0));
+            @event.Roll = _world.Roll(new(1, 20, 0, @event.Advantage));
             _world.Intercept(ref @event);
             @event.Initiative = (sbyte)(@event.Skill + @event.Roll);
             _world.Handle(in @event, sink);

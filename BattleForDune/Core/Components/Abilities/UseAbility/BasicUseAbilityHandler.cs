@@ -29,8 +29,9 @@ namespace BattleForDune.Core.Components.Abilities.UseAbility
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
-                    0,
-                    0);
+                    skill: 0,
+                    difficulty: 0,
+                    advantage: 0);
             sink.Queue(in attack);
         }
     }

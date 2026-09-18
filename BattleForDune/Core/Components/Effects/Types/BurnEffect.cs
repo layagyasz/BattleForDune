@@ -53,7 +53,7 @@ namespace BattleForDune.Core.Components.Effects.Types
                     isPrimary: false,
                     isCritical: false,
                     DamageType.Energy,
-                    new(0, 0, (sbyte)Power),
+                    new(0, 0, (sbyte)Power, 0),
                     0,
                     0,
                     0,

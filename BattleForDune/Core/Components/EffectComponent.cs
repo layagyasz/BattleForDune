@@ -16,7 +16,10 @@ namespace BattleForDune.Core.Components
             if (_effects.Allocate(effect, out var handle))
             {
                 _byId.Add(effect.Id.Value, handle);
-                _byOwner.Add(effect.OwnerId.Value, handle);
+                if (effect.OwnerId != EntityId.None)
+                {
+                    _byOwner.Add(effect.OwnerId.Value, handle);
+                }
                 foreach (var @event in effect.SupportedEvents)
                 {
                     _byType.Add((int)@event, handle);
@@ -35,7 +38,10 @@ namespace BattleForDune.Core.Components
                 {
                     _byType.Remove((int)@event, handle);
                 }
-                _byOwner.Remove(effect.OwnerId.Value, handle);
+                if (effect.OwnerId != EntityId.None)
+                {
+                    _byOwner.Remove(effect.OwnerId.Value, handle);
+                }
                 _effects.Free(handle);
                 return true;
             }

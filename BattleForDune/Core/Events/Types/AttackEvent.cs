@@ -1,5 +1,4 @@
-﻿using BattleForDune.Core.Schema;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace BattleForDune.Core.Events.Types
 {
@@ -9,7 +8,8 @@ namespace BattleForDune.Core.Events.Types
         EntityId abilityId, 
         EntityId targetId, 
         sbyte skill,
-        sbyte difficulty) : IGameEvent
+        sbyte difficulty,
+        sbyte advantage) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Attack;
         public bool IsCanceled { get; set; }
@@ -19,6 +19,7 @@ namespace BattleForDune.Core.Events.Types
         public EntityId TargetId { get; set; } = targetId;
         public sbyte Skill { get; set; } = skill;
         public sbyte Difficulty { get; set; } = difficulty;
+        public sbyte Advantage { get; set; } = advantage;
         public byte Roll { get; set; }
     }
 }

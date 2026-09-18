@@ -2,9 +2,10 @@
 
 namespace BattleForDune.Core.Components.Abilities
 {
-    public record class Ability(EntityId Id, EntityId OwnerId, IGenericHandler[] Handlers)
+    public record class Ability(
+        RegistryKey AbilityKey, EntityId Id, EntityId OwnerId, IGenericHandler[] Handlers)
     {
-        public class Prototype(RegistryKey Key, IHandlerPrototype[] Handlers)
+        public class Prototype(RegistryKey AbilityKey, IHandlerPrototype[] Handlers)
         {
             public Ability Materialize(EntityId Id, EntityId OwnerId)
             {
@@ -13,7 +14,7 @@ namespace BattleForDune.Core.Components.Abilities
                 {
                     handlers[i] = Handlers[i].Materialize();
                 }
-                return new Ability(Id, OwnerId, handlers);
+                return new Ability(AbilityKey, Id, OwnerId, handlers);
             }
         }
     }
