@@ -9,6 +9,7 @@
         Poison,
         Shock,
         Radiation,
-        Sonic
+        Sonic,
+        Psychic
     }
 }

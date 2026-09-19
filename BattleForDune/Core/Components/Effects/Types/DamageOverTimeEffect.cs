@@ -10,15 +10,18 @@ namespace BattleForDune.Core.Components.Effects.Types
         EntityId OwnerId, 
         EntityId SourceId,
         EntityId AbilityId,
-        DamageType DamageType)
+        DamageType DamageType,
+        DamageVector DamageVector)
         : IGenericEffect, IEffect<TickEvent>
     {
-        public record class Prototype(RegistryKey Key, DamageType DamageType) : IGenericEffect.IEffectPrototype
+        public record class Prototype(RegistryKey Key, DamageType DamageType, DamageVector DamageVector) 
+            : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
                 EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
             {
-                return new DamageOverTimeEffect(Key, id, ownerId, sourceId, abilityId, DamageType);
+                return new DamageOverTimeEffect(
+                    Key, id, ownerId, sourceId, abilityId, DamageType, DamageVector);
             }
         }
 
@@ -55,6 +58,7 @@ namespace BattleForDune.Core.Components.Effects.Types
                     isPrimary: false,
                     isCritical: false,
                     DamageType,
+                    DamageVector,
                     StatType.Hitpoints,
                     new(0, 0, (sbyte)Power, 0),
                     0));

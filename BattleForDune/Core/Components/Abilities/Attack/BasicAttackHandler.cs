@@ -9,6 +9,7 @@ namespace BattleForDune.Core.Components.Abilities.Attack
         sbyte Attack,
         byte CritRange, 
         DamageType DamageType, 
+        DamageVector DamageVector,
         Die Damage, 
         sbyte ArmorPiercing,
         sbyte ShieldPiercing) 
@@ -18,6 +19,7 @@ namespace BattleForDune.Core.Components.Abilities.Attack
             sbyte Attack,
             byte CritRange,
             DamageType DamageType,
+            DamageVector DamageVector,
             Die Damage,
             sbyte ArmorPiercing,
             sbyte ShieldPiercing) : IHandlerPrototype
@@ -25,7 +27,7 @@ namespace BattleForDune.Core.Components.Abilities.Attack
             public IGenericHandler Materialize()
             {
                 return new BasicAttackHandler(
-                    Attack, CritRange, DamageType, Damage, ArmorPiercing, ShieldPiercing);
+                    Attack, CritRange, DamageType, DamageVector, Damage, ArmorPiercing, ShieldPiercing);
             }
         }
 
@@ -74,6 +76,7 @@ namespace BattleForDune.Core.Components.Abilities.Attack
                     isPrimary: true,
                     @event.IsCritical,
                     DamageType,
+                    DamageVector,
                     StatType.Hitpoints,
                     Damage,
                     (byte)Math.Max(0, stats[StatType.Armor].Value - ArmorPiercing));

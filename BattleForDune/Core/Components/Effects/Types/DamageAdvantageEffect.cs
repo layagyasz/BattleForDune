@@ -11,16 +11,19 @@ namespace BattleForDune.Core.Components.Effects.Types
         EntityId SourceId,
         EntityId AbilityId,
         DamageType DamageType,
+        DamageVector DamageVector,
         sbyte Advantage)
         : IGenericEffect, IEffect<DamageEvent>
     {
-        public record class Prototype(RegistryKey Key, DamageType DamageType, sbyte Advantage)
+        public record class Prototype(
+            RegistryKey Key, DamageType DamageType, DamageVector DamageVector, sbyte Advantage)
             : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
                 EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
             {
-                return new DamageAdvantageEffect(Key, id, ownerId, sourceId, abilityId, DamageType, Advantage);
+                return new DamageAdvantageEffect(
+                    Key, id, ownerId, sourceId, abilityId, DamageType, DamageVector, Advantage);
             }
         }
 
@@ -40,7 +43,7 @@ namespace BattleForDune.Core.Components.Effects.Types
 
         public void Intercept(ref DamageEvent @event, ComponentWorld world)
         {
-            if (@event.DamageType == DamageType)
+            if (@event.DamageType == DamageType && (@event.DamageVector & DamageVector) != 0)
             {
                 @event.Die.Advantage += Advantage;
             }
