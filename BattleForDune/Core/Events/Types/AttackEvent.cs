@@ -13,13 +13,13 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.Attack;
         public bool IsCanceled { get; set; }
-        public bool IsCritical { get; set; }
-        public EntityId SubjectId { get; set; } = subjectId;
-        public EntityId AbilityId { get; set; } = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
-        public sbyte Skill { get; set; } = skill;
-        public sbyte Difficulty { get; set; } = difficulty;
-        public sbyte Advantage { get; set; } = advantage;
-        public byte Roll { get; set; }
+        public bool IsCritical;
+        public EntityId SubjectId = subjectId;
+        public EntityId AbilityId = abilityId;
+        public EntityId TargetId = targetId;
+        public sbyte Skill = skill;
+        public sbyte Difficulty = difficulty;
+        public sbyte Advantage = advantage;
+        public byte Roll;
     }
 }

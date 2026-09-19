@@ -7,14 +7,10 @@ namespace BattleForDune.Core.Schema
     {
         private Stat _element0;
 
-        public readonly sbyte Get(StatType stat)
+        public Stat this[StatType stat]
         {
-            return this[(int)stat].Value;
-        }
-
-        public void Set(StatType stat, Stat value)
-        {
-            this[(int)stat] = value;
+            readonly get => this[(int)stat];
+            set => this[(int)stat] = value;
         }
     }
 }

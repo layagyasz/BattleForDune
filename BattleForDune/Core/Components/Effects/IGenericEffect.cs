@@ -10,6 +10,7 @@ namespace BattleForDune.Core.Components.Effects
         }
 
         ReadOnlySpan<GameEventType> SupportedEvents { get; }
+        bool IsMergeable { get; }
         RegistryKey EffectKey { get; }
         EntityId Id { get; }
         EntityId OwnerId { get; }

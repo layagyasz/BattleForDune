@@ -1,6 +1,6 @@
 ﻿namespace BattleForDune.Core.Schema
 {
-    public enum StatType
+    public enum StatType : byte
     {
         Attack,
         Defense,

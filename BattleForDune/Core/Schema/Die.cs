@@ -1,8 +1,13 @@
 ﻿namespace BattleForDune.Core.Schema
 {
-    public readonly record struct Die(byte Count, byte Sides, sbyte Modifier, sbyte Advantage)
+    public struct Die(byte count, byte sides, sbyte modifier, sbyte advantage)
     {
-        public byte Roll(Random random)
+        public byte Count { get; set; } = count;
+        public byte Sides { get; set; } = sides;
+        public sbyte Modifier { get; set; } = modifier;
+        public sbyte Advantage { get; set; } = advantage;
+
+        public readonly byte Roll(Random random)
         {
             byte result = RollInternal(random);
             if (Advantage < 0)
@@ -16,7 +21,7 @@
             return result;
         }
 
-        private byte RollInternal(Random random)
+        private readonly byte RollInternal(Random random)
         {
             int result = Modifier + Count;
             for (int i = 0; i < Count; ++i)

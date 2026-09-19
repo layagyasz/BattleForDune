@@ -9,10 +9,10 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.AddUnit;
         public bool IsCanceled { get; set; }
-        public RegistryKey UnitPrototypeKey { get; set; } = unitPrototypeKey;
-        public EntityId UnitId { get; set; }
-        public EntityId TeamId { get; set; } = teamId;
-        public RegistryKey FactionKey { get; set; } = factionKey;
-        public Vector2i Position { get; set; } = position;
+        public RegistryKey UnitPrototypeKey = unitPrototypeKey;
+        public EntityId UnitId;
+        public EntityId TeamId = teamId;
+        public RegistryKey FactionKey = factionKey;
+        public Vector2i Position = position;
     }
 }

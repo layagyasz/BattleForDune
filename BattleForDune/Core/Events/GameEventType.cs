@@ -11,6 +11,7 @@
         FinalizeInitiative,
         Initiative,
         Tick,
+        UpdateStat,
         UseAbility
     }
 }

@@ -4,25 +4,27 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects.Types
 {
-    public record class BurnEffect(
+    public record class DamageOverTimeEffect(
         RegistryKey EffectKey,
         EntityId Id, 
         EntityId OwnerId, 
         EntityId SourceId,
-        EntityId AbilityId)
+        EntityId AbilityId,
+        DamageType DamageType)
         : IGenericEffect, IEffect<TickEvent>
     {
-        public record class Prototype(RegistryKey Key) : IGenericEffect.IEffectPrototype
+        public record class Prototype(RegistryKey Key, DamageType DamageType) : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
                 EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
             {
-                return new BurnEffect(Key, id, ownerId, sourceId, abilityId);
+                return new DamageOverTimeEffect(Key, id, ownerId, sourceId, abilityId, DamageType);
             }
         }
 
         private readonly GameEventType[] _supportedEvents = [GameEventType.Tick];
         public ReadOnlySpan<GameEventType> SupportedEvents => _supportedEvents.AsSpan();
+        public bool IsMergeable => true;
         public byte Stacks { get; internal set; }
         public byte Power { get; internal set; }
 
@@ -52,11 +54,9 @@ namespace BattleForDune.Core.Components.Effects.Types
                     OwnerId,
                     isPrimary: false,
                     isCritical: false,
-                    DamageType.Energy,
+                    DamageType,
+                    StatType.Hitpoints,
                     new(0, 0, (sbyte)Power, 0),
-                    0,
-                    0,
-                    0,
                     0));
         }
     }

@@ -11,26 +11,22 @@ namespace BattleForDune.Core.Events.Types
         bool isPrimary,
         bool isCritical, 
         DamageType damageType,
+        StatType stat,
         Die die,
-        sbyte armorPiercing,
-        sbyte armor,
-        sbyte shieldPiercing,
-        sbyte shield) : IGameEvent
+        byte reduction) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Damage;
         public bool IsCanceled { get; set; }
-        public bool IsPrimary { get; set; } = isPrimary;
-        public bool IsCritical { get; set; } = isCritical;
-        public EntityId SubjectId { get; set; } = subjectId;
-        public EntityId AbilityId { get; set; } = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
-        public DamageType DamageType { get; set; } = damageType;
-        public Die Die { get; set; } = die;
-        public sbyte ArmorPiercing { get; set; } = armorPiercing;
-        public sbyte Armor { get; set; } = armor;
-        public sbyte ShieldPiercing { get; set; } = shieldPiercing;
-        public sbyte Shield { get; set; } = shield;
-        public byte Roll { get; set; }
-        public byte Damage { get; set; }
+        public bool IsPrimary = isPrimary;
+        public bool IsCritical = isCritical;
+        public EntityId SubjectId = subjectId;
+        public EntityId AbilityId = abilityId;
+        public EntityId TargetId = targetId;
+        public DamageType DamageType = damageType;
+        public StatType Stat = stat;
+        public Die Die = die;
+        public byte Reduction = reduction;
+        public byte Roll;
+        public byte Damage;
     }
 }

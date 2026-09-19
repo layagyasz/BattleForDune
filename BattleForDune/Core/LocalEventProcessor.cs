@@ -2,7 +2,6 @@
 using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
-using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core
 {
@@ -51,6 +50,10 @@ namespace BattleForDune.Core
                     var tick = @event.ReadPayload<TickEvent>();
                     Process(ref tick, sink);
                     return;
+                case GameEventType.UpdateStat:
+                    var stat = @event.ReadPayload<UpdateStatEvent>();
+                    Process(ref stat, sink);
+                    return;
                 case GameEventType.UseAbility:
                     var use = @event.ReadPayload<UseAbilityEvent>();
                     Process(ref use, sink);
@@ -81,10 +84,13 @@ namespace BattleForDune.Core
             {
                 if (effect.EffectKey == @event.EffectKey)
                 {
-                    effect.Remove(_world, in sink);
-                    effect.MergeStacks(@event.Stacks);
-                    effect.MergePower(@event.Power);
-                    effect.Apply(_world, in sink);
+                    if (effect.IsMergeable)
+                    {
+                        effect.Remove(_world, in sink);
+                        effect.MergeStacks(@event.Stacks);
+                        effect.MergePower(@event.Power);
+                        effect.Apply(_world, in sink);
+                    }
                     // TODO: Reschedule timeout.
                     return;
                 }
@@ -143,7 +149,19 @@ namespace BattleForDune.Core
             ref var stats = ref _world.GetStats().TryGet(@event.TargetId, out bool isFound);
             if (isFound)
             {
-                stats[(int)StatType.Hitpoints].Value = (sbyte)(stats.Get(StatType.Hitpoints) - @event.Damage);
+                byte damage = @event.Damage;
+                ref var entry = ref stats[(int)@event.Stat];
+                if (entry.Temporary >= damage)
+                {
+                    entry.Temporary = (sbyte)(entry.Temporary - damage);
+                    damage = 0;
+                }
+                else
+                {
+                    damage = (byte)(damage - entry.Temporary);
+                    entry.Temporary = 0;
+                }
+                entry.Value = (sbyte)(entry.Value - damage);
             }
         }
 
@@ -173,6 +191,28 @@ namespace BattleForDune.Core
                 return;
             }
             _world.GetInitiative().Clear();
+        }
+
+        private void ApplyUpdateStat<TSink>(in UpdateStatEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+
+            ref var stats = ref _world.GetStats().TryGet(@event.TargetId, out bool isFound);
+            if (isFound)
+            {
+                ref var entry = ref stats[(int)@event.Stat];
+                if (@event.IsReversal)
+                {
+                    entry.Remove(@event.Delta);
+                }
+                else
+                {
+                    entry.Combine(@event.Delta);
+                }
+            }
         }
 
         private void Process<TSink>(ref AddAbilityEvent @event, TSink sink) where TSink : IGameEventSink
@@ -255,17 +295,14 @@ namespace BattleForDune.Core
         {
             @event.Roll = _world.Roll(@event.Die);
 
-            bool hasAbility = world.GetAbilities().TryGet(@event.AbilityId, out var ability);
+            bool hasAbility = _world.GetAbilities().TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 AbilityIntercept(ability, ref @event);
             }
             _world.Intercept(ref @event);
 
-            var shield = Math.Max(0, @event.Shield - @event.ShieldPiercing);
-            var armor = Math.Max(0, @event.Armor - @event.ArmorPiercing);
-            var damage = shield == 0 ? @event.Roll : Math.Min(@event.Roll, 6 - shield);
-            @event.Damage = (byte)Math.Max(0, damage - armor);
+            @event.Damage = (byte)Math.Max(0, @event.Roll - @event.Reduction);
             if (@event.Damage == 0)
             {
                 @event.IsCanceled = true;
@@ -302,6 +339,23 @@ namespace BattleForDune.Core
             ApplyTick(in @event, sink);
         }
 
+        private void Process<TSink>(ref UpdateStatEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            bool hasAbility = _world.GetAbilities().TryGet(@event.AbilityId, out var ability);
+            if (hasAbility)
+            {
+                AbilityIntercept(ability, ref @event);
+            }
+            _world.Intercept(ref @event);
+
+            if (hasAbility)
+            {
+                AbilityHandle(ability, in @event, sink);
+            }
+            _world.Handle(in @event, sink);
+            ApplyUpdateStat(in @event, sink);
+        }
+
         private void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink
         {
             if (_world.GetAbilities().TryGet(@event.AbilityId, out var ability))
@@ -313,6 +367,7 @@ namespace BattleForDune.Core
                 _world.Handle(in @event, sink);
             }
         }
+
 
         private void AbilityIntercept<T>(Ability ability, ref T @event) where T : struct, IGameEvent
         {

@@ -3,8 +3,12 @@
     public enum DamageType : byte
     {
         Physical,
-        Energy,
+        Heat,
+        Cold,
         Caustic,
-        Poison
+        Poison,
+        Shock,
+        Radiation,
+        Sonic
     }
 }

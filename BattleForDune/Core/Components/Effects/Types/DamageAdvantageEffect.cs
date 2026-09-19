@@ -4,52 +4,49 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects.Types
 {
-    public record class FastAttackEffect(
+    public record class DamageAdvantageEffect(
         RegistryKey EffectKey,
         EntityId Id,
         EntityId OwnerId,
         EntityId SourceId,
-        EntityId AbilityId)
-        : IGenericEffect, IEffect<InitiativeEvent>
+        EntityId AbilityId,
+        DamageType DamageType,
+        sbyte Advantage)
+        : IGenericEffect, IEffect<DamageEvent>
     {
-        public record class Prototype(RegistryKey Key) : IGenericEffect.IEffectPrototype
+        public record class Prototype(RegistryKey Key, DamageType DamageType, sbyte Advantage)
+            : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
                 EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
             {
-                return new FastAttackEffect(Key, id, ownerId, sourceId, abilityId);
+                return new DamageAdvantageEffect(Key, id, ownerId, sourceId, abilityId, DamageType, Advantage);
             }
         }
 
         private readonly GameEventType[] _supportedEvents = [GameEventType.Initiative];
         public ReadOnlySpan<GameEventType> SupportedEvents => _supportedEvents.AsSpan();
-        public byte Stacks { get; internal set; }
-        public byte Power { get; internal set; }
+        public bool IsMergeable => false;
+        public byte Stacks => 1;
+        public byte Power => 1;
 
         public void Apply<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink { }
 
         public void Remove<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink { }
 
-        public void MergeStacks(byte newStacks)
-        {
-            Stacks += newStacks;
-        }
+        public void MergeStacks(byte newStacks) { }
 
-        public void MergePower(byte newPower)
-        {
-            Power = Math.Max(Power, newPower);
-        }
+        public void MergePower(byte newPower) { }
 
-        public void Intercept(ref InitiativeEvent @event, ComponentWorld world)
+        public void Intercept(ref DamageEvent @event, ComponentWorld world)
         {
-            if (@event.SubjectId != OwnerId)
+            if (@event.DamageType == DamageType)
             {
-                return;
+                @event.Die.Advantage += Advantage;
             }
-            @event.Advantage += 1;
         }
 
-        public void Handle<TSink>(in InitiativeEvent @event, ComponentWorld world, in TSink sink)
+        public void Handle<TSink>(in DamageEvent @event, ComponentWorld world, in TSink sink)
             where TSink : IGameEventSink
         { }
     }

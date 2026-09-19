@@ -21,8 +21,8 @@ namespace BattleForDune
             var effects =
                 new IGenericEffect.IEffectPrototype[]
                 {
-                    new BurnEffect.Prototype(new(0)),
-                    new FastAttackEffect.Prototype(new(1))
+                    new DamageOverTimeEffect.Prototype(new(0), DamageType.Heat),
+                    new UpdateStatEffect.Prototype(new(1), StatType.Initiative, new(0, 0, 0, 1))
                 };
             var abilities =
                 new Ability.Prototype[]

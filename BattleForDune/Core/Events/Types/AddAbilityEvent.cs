@@ -7,8 +7,8 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.AddAbility;
         public bool IsCanceled { get; set; }
-        public EntityId OwnerId { get; set; } = ownerId;
-        public RegistryKey AbilityKey { get; set; } = abilityKey;
-        public EntityId AbilityId { get; set; }
+        public EntityId OwnerId = ownerId;
+        public RegistryKey AbilityKey = abilityKey;
+        public EntityId AbilityId;
     }
 }

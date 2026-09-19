@@ -16,16 +16,16 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.AddEffect;
         public bool IsCanceled { get; set; }
-        public EntityId SubjectId { get; set; } = subjectId;
-        public EntityId AbilityId { get; set; } = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
-        public EntityId InstanceId { get; set; }
-        public byte Stacks { get; set; } = stacks;
-        public byte Power { get; set; } = power;
-        public byte Duration { get; set; } = duration;
-        public RegistryKey EffectKey { get; set; } = effectKey;
-        public sbyte Skill { get; set; } = skill;
-        public sbyte Difficulty { get; set; } = difficulty;
-        public byte Roll { get; set; }
+        public EntityId SubjectId = subjectId;
+        public EntityId AbilityId = abilityId;
+        public EntityId TargetId = targetId;
+        public EntityId InstanceId;
+        public byte Stacks = stacks;
+        public byte Power = power;
+        public byte Duration = duration;
+        public RegistryKey EffectKey = effectKey;
+        public sbyte Skill = skill;
+        public sbyte Difficulty = difficulty;
+        public byte Roll;
     }
 }

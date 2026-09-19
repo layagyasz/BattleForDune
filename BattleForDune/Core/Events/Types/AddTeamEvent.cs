@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.AddTeam;
         public bool IsCanceled { get; set; }
-        public EntityId TeamId { get; set; }
-        public RegistryKey FactionKey { get; set; } = factionKey;
+        public EntityId TeamId;
+        public RegistryKey FactionKey = factionKey;
     }
 }
