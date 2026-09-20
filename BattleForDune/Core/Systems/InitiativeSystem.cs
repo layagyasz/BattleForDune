@@ -5,9 +5,9 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Systems
 {
-    public class InitiativeSystem : IGameSystem
+    public readonly struct InitiativeSystem : IGameSystem
     {
-        public void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
+        public readonly void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
             sink.Queue(new TickEvent());
             foreach (var id in world.GetUnits().AsSpan())

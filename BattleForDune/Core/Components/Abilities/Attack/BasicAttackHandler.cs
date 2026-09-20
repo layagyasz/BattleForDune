@@ -54,6 +54,8 @@ namespace BattleForDune.Core.Components.Abilities.Attack
             {
                 @event.IsCritical = true;
             }
+
+            Console.WriteLine($"intercept {@event.Skill}");
         }
 
         public void Handle<TSink>(

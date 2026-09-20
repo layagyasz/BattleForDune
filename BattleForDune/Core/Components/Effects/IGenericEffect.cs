@@ -6,7 +6,7 @@ namespace BattleForDune.Core.Components.Effects
     {
         public interface IEffectPrototype
         {
-            IGenericEffect Materialize(EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId);
+            IGenericEffect Materialize(EntityId id, EntityId ownerId, EntityId sourceId, byte abilityId);
         }
 
         ReadOnlySpan<GameEventType> SupportedEvents { get; }
@@ -15,7 +15,7 @@ namespace BattleForDune.Core.Components.Effects
         EntityId Id { get; }
         EntityId OwnerId { get; }
         EntityId SourceId { get; }
-        EntityId AbilityId { get; }
+        byte AbilityId { get; }
         byte Stacks { get; }
         byte Power { get; }
 

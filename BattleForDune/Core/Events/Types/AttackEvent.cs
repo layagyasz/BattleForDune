@@ -5,7 +5,7 @@ namespace BattleForDune.Core.Events.Types
     [StructLayout(LayoutKind.Sequential)]
     public struct AttackEvent(
         EntityId subjectId,
-        EntityId abilityId, 
+        byte abilityId, 
         EntityId targetId, 
         sbyte skill,
         sbyte difficulty,
@@ -15,7 +15,7 @@ namespace BattleForDune.Core.Events.Types
         public bool IsCanceled { get; set; }
         public bool IsCritical;
         public EntityId SubjectId = subjectId;
-        public EntityId AbilityId = abilityId;
+        public byte AbilityId = abilityId;
         public EntityId TargetId = targetId;
         public sbyte Skill = skill;
         public sbyte Difficulty = difficulty;

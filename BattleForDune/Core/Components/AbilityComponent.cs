@@ -3,49 +3,56 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {
-    public class AbilityComponent(int capacity) : IGameComponent<Ability>
+    public class AbilityComponent(int capacity) : IGameComponent<Ability[]>
     {
-        private readonly SparseStorage<Ability> _abilities = new(capacity);
-        private readonly UniqueIndex _byId = new(capacity);
-        private readonly MultiIndex _byOwner = new(capacity, capacity);
+        private readonly SparseStorage<Ability[]> _abilities = new(capacity);
+        private readonly UniqueIndex _byOwner = new(capacity);
 
-        public bool Add(Ability ability)
+        public bool Add(EntityId ownerId, Ability[] abilities)
         {
-            if (_abilities.Allocate(ability, out var handle))
+            if (_abilities.Allocate(abilities, out var handle))
             {
-                _byId.Add(ability.Id.Value, handle);
-                _byOwner.Add(ability.OwnerId.Value, handle);
+                _byOwner.Add(ownerId.Value, handle);
                 return true;
             }
             return false;
         }
 
-        public bool TryGet(EntityId id, out Ability ability)
+        public bool TryGet(EntityId ownerId, out Ability[] abilities)
         {
-            if (_byId.TryGet(id.Value, out var handle))
+            if (_byOwner.TryGet(ownerId.Value, out var handle))
             {
-                ability = _abilities.Get(handle);
+                abilities = _abilities.Get(handle);
+                return true;
+            }
+            abilities = default;
+            return false;
+        }
+
+        public bool TryGet(EntityId ownerId, byte abilityId, out Ability ability)
+        {
+            if (abilityId == 0xFF)
+            {
+                ability = default;
+                return false;
+            }
+            if (TryGet(ownerId, out var abilities))
+            {
+                ability = abilities[abilityId];
                 return true;
             }
             ability = default;
             return false;
         }
 
-        public bool Remove(EntityId id)
+        public bool Remove(EntityId ownerId)
         {
-            if (_byId.RemoveOnly(id.Value, out var handle))
+            if (_byOwner.RemoveOnly(ownerId.Value, out var handle))
             {
-                ref var ability = ref _abilities.Get(handle);
-                _byOwner.Remove(ability.OwnerId.Value, handle);
                 _abilities.Free(handle);
                 return true;
             }
             return false;
-        }
-
-        public ComponentEnumerator<SparseStorage<Ability>, Ability> GetEnumerator(EntityId ownerId)
-        {
-            return new(_abilities, _byOwner.GetEnumerator(ownerId.Value));
         }
     }
 }

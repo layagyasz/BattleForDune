@@ -6,7 +6,7 @@ namespace BattleForDune.Core.Events.Types
     [StructLayout(LayoutKind.Sequential)]
     public struct DamageEvent(
         EntityId subjectId, 
-        EntityId abilityId,
+        byte abilityId,
         EntityId targetId,
         bool isPrimary,
         bool isCritical, 
@@ -21,7 +21,7 @@ namespace BattleForDune.Core.Events.Types
         public bool IsPrimary = isPrimary;
         public bool IsCritical = isCritical;
         public EntityId SubjectId = subjectId;
-        public EntityId AbilityId = abilityId;
+        public byte AbilityId = abilityId;
         public EntityId TargetId = targetId;
         public DamageType DamageType = damageType;
         public DamageVector DamageVector = damageVector;

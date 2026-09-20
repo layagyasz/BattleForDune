@@ -9,7 +9,7 @@ namespace BattleForDune.Core.Components.Effects.Types
         EntityId Id,
         EntityId OwnerId,
         EntityId SourceId,
-        EntityId AbilityId,
+        byte AbilityId,
         StatType Stat,
         Stat Delta)
         : IGenericEffect
@@ -18,7 +18,7 @@ namespace BattleForDune.Core.Components.Effects.Types
             : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
-                EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
+                EntityId id, EntityId ownerId, EntityId sourceId, byte abilityId)
             {
                 return new UpdateStatEffect(Key, id, ownerId, sourceId, abilityId, Stat, Delta);
             }

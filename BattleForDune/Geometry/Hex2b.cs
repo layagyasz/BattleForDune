@@ -1,5 +1,8 @@
-﻿namespace BattleForDune.Geometry
+﻿using System.Runtime.InteropServices;
+
+namespace BattleForDune.Geometry
 {
+    [StructLayout(LayoutKind.Sequential)]
     public readonly struct Hex2b(sbyte q, sbyte r)
     {
         public readonly sbyte Q = q;

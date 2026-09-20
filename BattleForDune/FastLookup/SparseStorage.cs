@@ -50,7 +50,7 @@ namespace BattleForDune.FastLookup
             for (int handle = _count - 1; handle >= 0; handle--)
             {
                 ref var value = ref _values[handle];
-                if (predicate.Matches(ref value))
+                if (predicate.Matches(in value))
                 {
                     callback.Notify(handle, ref value);
                     RecycleHandle(handle);

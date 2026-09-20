@@ -5,7 +5,7 @@ namespace BattleForDune.Core.Events.Types
     [StructLayout(LayoutKind.Sequential)]
     public struct AddEffectEvent(
         EntityId subjectId, 
-        EntityId abilityId,
+        byte abilityId,
         EntityId targetId, 
         byte stacks, 
         byte power, 
@@ -17,7 +17,7 @@ namespace BattleForDune.Core.Events.Types
         public readonly GameEventType Type => GameEventType.AddEffect;
         public bool IsCanceled { get; set; }
         public EntityId SubjectId = subjectId;
-        public EntityId AbilityId = abilityId;
+        public byte AbilityId = abilityId;
         public EntityId TargetId = targetId;
         public EntityId InstanceId;
         public byte Stacks = stacks;

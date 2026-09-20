@@ -10,7 +10,7 @@ namespace BattleForDune.Core.Components.Effects.Types
         EntityId Id,
         EntityId OwnerId,
         EntityId SourceId,
-        EntityId AbilityId,
+        byte AbilityId,
         EnumSet<DamageType> DamageType,
         DamageVector DamageVector,
         EnumSet<StatType> Stat)
@@ -21,7 +21,7 @@ namespace BattleForDune.Core.Components.Effects.Types
             : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
-                EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
+                EntityId id, EntityId ownerId, EntityId sourceId, byte abilityId)
             {
                 return new DamageImmunityEffect(
                     Key, id, ownerId, sourceId, abilityId, DamageType, DamageVector, Stat);

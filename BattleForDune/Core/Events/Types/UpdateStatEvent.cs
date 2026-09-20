@@ -6,7 +6,7 @@ namespace BattleForDune.Core.Events.Types
     [StructLayout(LayoutKind.Sequential)]
     public struct UpdateStatEvent(
         EntityId subjectId,
-        EntityId abilityId,
+        byte abilityId,
         EntityId targetId,
         StatType stat,
         Stat delta,
@@ -15,7 +15,7 @@ namespace BattleForDune.Core.Events.Types
         public readonly GameEventType Type => GameEventType.UpdateStat;
         public bool IsCanceled { get; set; }
         public EntityId SubjectId = subjectId;
-        public EntityId AbilityId = abilityId;
+        public byte AbilityId = abilityId;
         public EntityId TargetId = targetId;
         public StatType Stat = stat;
         public Stat Delta = delta;

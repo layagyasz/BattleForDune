@@ -97,7 +97,7 @@ namespace BattleForDune.FastLookup
             for (int i = _count - 1; i >= 0; i--)
             {
                 ref var value = ref _values[i];
-                if (predicate.Matches(ref value))
+                if (predicate.Matches(in value))
                 {
                     int handle = _heap[i];
                     callback.Notify(handle, ref value);

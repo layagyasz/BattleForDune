@@ -31,7 +31,7 @@ namespace BattleForDune.Core.Components.Abilities.Damage
                     @event.AbilityId,
                     @event.TargetId,
                     stacks: 1, 
-                    @event.Damage, 
+                    power: 1,
                     Duration, 
                     EffectKey,
                     skill: 0,
