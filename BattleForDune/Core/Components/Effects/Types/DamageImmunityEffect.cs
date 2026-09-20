@@ -1,6 +1,7 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
+using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components.Effects.Types
 {
@@ -10,20 +11,20 @@ namespace BattleForDune.Core.Components.Effects.Types
         EntityId OwnerId,
         EntityId SourceId,
         EntityId AbilityId,
-        DamageType DamageType,
+        EnumSet<DamageType> DamageType,
         DamageVector DamageVector,
-        byte StatMask)
+        EnumSet<StatType> Stat)
         : IGenericEffect, IEffect<DamageEvent>
     {
         public record class Prototype(
-            RegistryKey Key, DamageType DamageType, DamageVector DamageVector, byte StatMask)
+            RegistryKey Key, EnumSet<DamageType> DamageType, DamageVector DamageVector, EnumSet<StatType> Stat)
             : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
                 EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
             {
                 return new DamageImmunityEffect(
-                    Key, id, ownerId, sourceId, abilityId, DamageType, DamageVector, StatMask);
+                    Key, id, ownerId, sourceId, abilityId, DamageType, DamageVector, Stat);
             }
         }
 
@@ -43,9 +44,10 @@ namespace BattleForDune.Core.Components.Effects.Types
 
         public void Intercept(ref DamageEvent @event, ComponentWorld world)
         {
-            if (@event.DamageType == DamageType 
-                && (@event.DamageVector & DamageVector) != 0 
-                && ((1 << (byte)@event.Stat) & StatMask) != 0)
+            if (@event.TargetId == OwnerId
+                && DamageType.Contains(@event.DamageType)
+                && DamageVector.HasFlag(@event.DamageVector) 
+                && Stat.Contains(@event.Stat))
             {
                 @event.IsCanceled = true;
             }

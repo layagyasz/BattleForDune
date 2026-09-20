@@ -3,14 +3,8 @@ using System.Runtime.CompilerServices;
 
 namespace BattleForDune.FastLookup
 {
-    public class HexQuadTree<T>
+    public class HexQuadTree<T> where T : IEquatable<T>
     {
-        public struct QuadItem(Hex2b position, T element)
-        {
-            public Hex2b Position = position;
-            public T Element = element;
-        }
-
         private struct Node(HexRect2b bounds)
         {
             public HexRect2b Bounds = bounds;
@@ -21,7 +15,8 @@ namespace BattleForDune.FastLookup
 
         private struct ItemNode
         {
-            public QuadItem Item;
+            public Hex2b Position;
+            public T Element;
             public int NextItemIndex;
         }
 
@@ -70,12 +65,17 @@ namespace BattleForDune.FastLookup
             {
                 return false;
             }
-            return InsertInternal(0, new(position, element), 0);
+            var index = AllocateItemNode();
+            var item = _items[index];
+            item.Position = position;
+            item.Element = element;
+            return InsertInternal(0, index, 0);
         }
 
-        private bool InsertInternal(int nodeIndex, in QuadItem item, int depth)
+        private bool InsertInternal(int nodeIndex, int itemIndex, int depth)
         {
             ref Node node = ref _nodes[nodeIndex];
+            ref ItemNode item = ref _items[itemIndex];
 
             if (!node.Bounds.Contains(item.Position))
             {
@@ -85,16 +85,10 @@ namespace BattleForDune.FastLookup
             if (!node.IsLeaf)
             {
                 int childIndex = GetChildIndexContainingPoint(ref node, item.Position);
-                return InsertInternal(node.ChildOrItemLink + childIndex, item, depth + 1);
+                return InsertInternal(node.ChildOrItemLink + childIndex, itemIndex, depth + 1);
             }
 
-            int newItemIndex = AllocateItemNode(item, node.ChildOrItemLink);
-            if (newItemIndex == -1)
-            {
-                return false;
-            }
-
-            node.ChildOrItemLink = newItemIndex;
+            node.ChildOrItemLink = itemIndex;
             node.ItemCount++;
 
             if (node.ItemCount > _maxItemsPerNode && depth < _maxDepth)
@@ -126,23 +120,23 @@ namespace BattleForDune.FastLookup
                     new(new(q + halfQ, r + halfR), 
                     new(node.Bounds.Size.Q - halfQ, node.Bounds.Size.R - halfR)));
 
-            int currItemIndex = node.ChildOrItemLink;
+            int currentItemIndex = node.ChildOrItemLink;
 
             node.IsLeaf = false;
             node.ChildOrItemLink = childStart;
             node.ItemCount = 0;
 
-            while (currItemIndex != -1)
+            while (currentItemIndex != -1)
             {
-                int nextItemIndex = _items[currItemIndex].NextItemIndex;
-                QuadItem item = _items[currItemIndex].Item;
+                int nextItemIndex = _items[currentItemIndex].NextItemIndex;
+                ref var item = ref _items[currentItemIndex];
 
-                FreeItemNode(currItemIndex);
+                FreeItemNode(currentItemIndex);
 
                 int childOffset = GetChildIndexContainingPoint(ref node, item.Position);
-                InsertInternal(childStart + childOffset, item, depth + 1);
+                InsertInternal(childStart + childOffset, currentItemIndex, depth + 1);
 
-                currItemIndex = nextItemIndex;
+                currentItemIndex = nextItemIndex;
             }
         }
 
@@ -167,18 +161,18 @@ namespace BattleForDune.FastLookup
 
                 while (currentIndex != -1)
                 {
-                    ref ItemNode currNode = ref _items[currentIndex];
+                    ref ItemNode currentItem = ref _items[currentIndex];
 
-                    if (currNode.Item.Position.Equals(position) 
-                        && EqualityComparer<T>.Default.Equals(currNode.Item.Element, element))
+                    if (currentItem.Position.Equals(position) 
+                        && EqualityComparer<T>.Default.Equals(currentItem.Element, element))
                     {
                         if (previousIndex == -1)
                         {
-                            node.ChildOrItemLink = currNode.NextItemIndex;
+                            node.ChildOrItemLink = currentItem.NextItemIndex;
                         }
                         else
                         {
-                            _items[previousIndex].NextItemIndex = currNode.NextItemIndex;
+                            _items[previousIndex].NextItemIndex = currentItem.NextItemIndex;
                         }
 
                         FreeItemNode(currentIndex);
@@ -187,7 +181,7 @@ namespace BattleForDune.FastLookup
                     }
 
                     previousIndex = currentIndex;
-                    currentIndex = currNode.NextItemIndex;
+                    currentIndex = currentItem.NextItemIndex;
                 }
 
                 return false;
@@ -288,9 +282,9 @@ namespace BattleForDune.FastLookup
                 while (itemIndex != -1)
                 {
                     ref ItemNode itemNode = ref _items[itemIndex];
-                    if (Hexes.Distance(itemNode.Item.Position, position) <= radius)
+                    if (Hexes.Distance(itemNode.Position, position) <= radius)
                     {
-                        callback.Notify(itemIndex, ref itemNode.Item.Element);
+                        callback.Notify(itemIndex, ref itemNode.Element);
                     }
                     itemIndex = itemNode.NextItemIndex;
                 }
@@ -361,7 +355,7 @@ namespace BattleForDune.FastLookup
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int AllocateItemNode(QuadItem item, int next)
+        private int AllocateItemNode()
         {
             if (_freeItemHead == -1)
             {
@@ -370,10 +364,6 @@ namespace BattleForDune.FastLookup
 
             int index = _freeItemHead;
             _freeItemHead = _items[index].NextItemIndex;
-
-            _items[index].Item = item;
-            _items[index].NextItemIndex = next;
-
             return index;
         }
 

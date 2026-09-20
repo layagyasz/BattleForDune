@@ -2,6 +2,6 @@
 {
     public interface IPredicate<T>
     {
-        bool Matches(ref T value);
+        bool Matches(in T value);
     }
 }

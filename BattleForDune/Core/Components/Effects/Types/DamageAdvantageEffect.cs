@@ -1,6 +1,7 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
+using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components.Effects.Types
 {
@@ -10,13 +11,13 @@ namespace BattleForDune.Core.Components.Effects.Types
         EntityId OwnerId,
         EntityId SourceId,
         EntityId AbilityId,
-        DamageType DamageType,
+        EnumSet<DamageType> DamageType,
         DamageVector DamageVector,
         sbyte Advantage)
         : IGenericEffect, IEffect<DamageEvent>
     {
         public record class Prototype(
-            RegistryKey Key, DamageType DamageType, DamageVector DamageVector, sbyte Advantage)
+            RegistryKey Key, EnumSet<DamageType> DamageType, DamageVector DamageVector, sbyte Advantage)
             : IGenericEffect.IEffectPrototype
         {
             public IGenericEffect Materialize(
@@ -43,7 +44,9 @@ namespace BattleForDune.Core.Components.Effects.Types
 
         public void Intercept(ref DamageEvent @event, ComponentWorld world)
         {
-            if (@event.DamageType == DamageType && (@event.DamageVector & DamageVector) != 0)
+            if (@event.TargetId == OwnerId 
+                && DamageType.Contains(@event.DamageType) 
+                && DamageVector.HasFlag(@event.DamageVector))
             {
                 @event.Die.Advantage += Advantage;
             }
