@@ -6,57 +6,24 @@ using static BattleForDune.Core.Components.Abilities.IGenericHandler;
 namespace BattleForDune.Core.Components.Abilities.Attack
 {
     public record class BasicAttackHandler(
-        sbyte Attack,
-        byte CritRange, 
-        DamageType DamageType, 
+        DamageType DamageType,
         DamageVector DamageVector,
         Die Damage, 
-        sbyte ArmorPiercing,
-        sbyte ShieldPiercing) 
-        : IGameEventHandler<AttackEvent>, IGenericHandler
+        sbyte ArmorPiercing) : IGameEventHandler<AttackEvent>, IGenericHandler
     {
         public record class Prototype(
-            sbyte Attack,
-            byte CritRange,
             DamageType DamageType,
             DamageVector DamageVector,
             Die Damage,
-            sbyte ArmorPiercing,
-            sbyte ShieldPiercing) : IHandlerPrototype
+            sbyte ArmorPiercing) : IHandlerPrototype
         {
             public IGenericHandler Materialize()
             {
-                return new BasicAttackHandler(
-                    Attack, CritRange, DamageType, DamageVector, Damage, ArmorPiercing, ShieldPiercing);
+                return new BasicAttackHandler(DamageType, DamageVector, Damage, ArmorPiercing);
             }
         }
 
-        public void Intercept(ref AttackEvent @event, ComponentWorld world)
-        {
-            ref var stats = ref world.GetStats().TryGet(@event.SubjectId, out bool isFound);
-            if (!isFound)
-            {
-                return;
-            }
-            ref var targetStats = ref world.GetStats().TryGet(@event.TargetId, out isFound);
-            if (!isFound)
-            {
-                return;
-            }
-
-            @event.Skill = (sbyte)(Attack + stats[StatType.Attack].Total);
-            @event.Difficulty = 
-                (sbyte)(10 + stats[StatType.Defense].Total
-                    + Math.Max(0, targetStats[StatType.Shield].Total - ShieldPiercing));
-            @event.Advantage = 
-                (sbyte)(stats[StatType.Attack].Advantage - targetStats[StatType.Defense].Advantage);
-            if (@event.Roll > 20 - CritRange)
-            {
-                @event.IsCritical = true;
-            }
-
-            Console.WriteLine($"intercept {@event.Skill}");
-        }
+        public void Intercept(ref AttackEvent @event, ComponentWorld world) { }
 
         public void Handle<TSink>(
             in AttackEvent @event, ComponentWorld world, in TSink sink) where TSink : IGameEventSink

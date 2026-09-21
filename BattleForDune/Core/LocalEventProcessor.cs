@@ -244,6 +244,10 @@ namespace BattleForDune.Core
             {
                 @event.IsCanceled = true;
             }
+            if (@event.Roll > 20 - @event.CritRange)
+            {
+                @event.IsCritical = true;
+            }
 
             if (hasAbility)
             {

@@ -8,6 +8,7 @@ namespace BattleForDune.Core.Events.Types
         byte abilityId, 
         EntityId targetId, 
         sbyte skill,
+        byte critRange,
         sbyte difficulty,
         sbyte advantage) : IGameEvent
     {
@@ -18,6 +19,7 @@ namespace BattleForDune.Core.Events.Types
         public byte AbilityId = abilityId;
         public EntityId TargetId = targetId;
         public sbyte Skill = skill;
+        public byte CritRange = critRange;
         public sbyte Difficulty = difficulty;
         public sbyte Advantage = advantage;
         public byte Roll;

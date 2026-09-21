@@ -26,9 +26,9 @@ namespace BattleForDune
                     new(
                         new(0),
                         [
-                            new BasicUseAbilityHandler.Prototype(),
+                            new UseAttackAbilityHandler.Prototype(0, 1, 0),
                             new BasicAttackHandler.Prototype(
-                                0, 1, DamageType.Physical, DamageVector.Direct, new(1, 6, 0, 0), 0, 0),
+                                DamageType.Physical, DamageVector.Direct, new(1, 6, 0, 0), 0),
                             new CriticalMultiplierHandler.Prototype(2f),
                             new ChanceApplyEffectHandler.Prototype(new(0), 0, 3)
                         ])
