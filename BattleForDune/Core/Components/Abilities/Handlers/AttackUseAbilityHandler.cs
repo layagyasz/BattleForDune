@@ -3,16 +3,16 @@ using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
 using static BattleForDune.Core.Components.Abilities.IGenericHandler;
 
-namespace BattleForDune.Core.Components.Abilities.UseAbility
+namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public class UseAttackAbilityHandler(sbyte Attack, byte CritRange, sbyte ShieldPiercing) 
+    public class AttackUseAbilityHandler(sbyte Attack, byte CritRange, sbyte ShieldPiercing) 
         : IGameEventHandler<UseAbilityEvent>, IGenericHandler
     {
         public record class Prototype(sbyte Attack, byte CritRange, sbyte ShieldPiercing) : IHandlerPrototype
         {
             public IGenericHandler Materialize()
             {
-                return new UseAttackAbilityHandler(Attack, CritRange, ShieldPiercing);
+                return new AttackUseAbilityHandler(Attack, CritRange, ShieldPiercing);
             }
         }
 

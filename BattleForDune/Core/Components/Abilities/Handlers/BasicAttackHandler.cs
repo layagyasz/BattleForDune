@@ -3,7 +3,7 @@ using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
 using static BattleForDune.Core.Components.Abilities.IGenericHandler;
 
-namespace BattleForDune.Core.Components.Abilities.Attack
+namespace BattleForDune.Core.Components.Abilities.Handlers
 {
     public record class BasicAttackHandler(
         DamageType DamageType,

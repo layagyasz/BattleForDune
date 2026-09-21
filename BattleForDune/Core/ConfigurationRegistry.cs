@@ -1,6 +1,7 @@
 ﻿using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Prototypes;
+using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core
 {

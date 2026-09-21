@@ -1,8 +1,6 @@
 ﻿using BattleForDune.Core;
 using BattleForDune.Core.Components.Abilities;
-using BattleForDune.Core.Components.Abilities.Attack;
-using BattleForDune.Core.Components.Abilities.Damage;
-using BattleForDune.Core.Components.Abilities.UseAbility;
+using BattleForDune.Core.Components.Abilities.Handlers;
 using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Components.Effects.Types;
 using BattleForDune.Core.Prototypes;
@@ -25,12 +23,14 @@ namespace BattleForDune
                 {
                     new(
                         new(0),
+                        TargetType.Enemy,
+                        new ITargetComparator.DefaultComparator(),
                         [
-                            new UseAttackAbilityHandler.Prototype(0, 1, 0),
+                            new AttackUseAbilityHandler.Prototype(0, 1, 0),
                             new BasicAttackHandler.Prototype(
                                 DamageType.Physical, DamageVector.Direct, new(1, 6, 0, 0), 0),
-                            new CriticalMultiplierHandler.Prototype(2f),
-                            new ChanceApplyEffectHandler.Prototype(new(0), 0, 3)
+                            new CriticalMultiplierDamageHandler.Prototype(2f),
+                            new ChanceApplyEffectDamageHandler.Prototype(new(0), 0, 3)
                         ])
                 };
             var unitType =
@@ -55,6 +55,10 @@ namespace BattleForDune
             for (int i = 0; i < 50; ++i)
             {
                 world.AddUnit(new(0), new(0), 0, new());
+            }
+            for (int i = 0; i < 50; ++i)
+            {
+                world.AddUnit(new(0), new(1), 1, new());
             }
             world.Step();
         }
