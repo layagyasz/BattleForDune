@@ -5,6 +5,7 @@ using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Components.Effects.Types;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Schema;
+using System.Diagnostics;
 
 namespace BattleForDune
 {
@@ -52,6 +53,7 @@ namespace BattleForDune
             var registry = new ConfigurationRegistry(abilities, effects, [], [unitType]);
             var world = new LocalWorld(registry, random);
 
+            var stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < 50; ++i)
             {
                 world.AddUnit(new(0), new(0), 0, new());
@@ -61,6 +63,7 @@ namespace BattleForDune
                 world.AddUnit(new(0), new(1), 1, new());
             }
             world.Step();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);
         }
     }
 }

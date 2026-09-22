@@ -9,6 +9,9 @@ namespace BattleForDune.Core.Components
         private readonly SparseStorage<IGenericEffect> _effects = new(capacity);
         private readonly UniqueIndex _byId = new(capacity);
         private readonly MultiIndex _byOwner = new(capacity, capacity);
+
+        // TODO: This index does not support an effect having multiple event types.  Will need to implement
+        // a more complicated index for many-to-many relationships.
         private readonly MultiIndex _byType = new(capacity, Enum.GetValues<GameEventType>().Length);
 
         public bool Add(IGenericEffect effect)

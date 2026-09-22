@@ -15,4 +15,10 @@
     <Folder Include="Core\Components\Abilities\Targeting\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\Fonts\ExpandedHerbertarian.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

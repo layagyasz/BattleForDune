@@ -11,7 +11,6 @@ namespace BattleForDune.Core
 
         public void Process<TSink>(ref GameEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            Console.WriteLine(@event.Type);
             switch (@event.Type)
             {
                 case GameEventType.AddEffect:

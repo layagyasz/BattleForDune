@@ -115,5 +115,4 @@ namespace BattleForDune.FastLookup
             _freeHandle = handle;
         }
     }
-
 }
