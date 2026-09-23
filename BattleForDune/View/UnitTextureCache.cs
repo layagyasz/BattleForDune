@@ -11,7 +11,7 @@ namespace BattleForDune.View
         ViewConfigurationRegistry registry, Font font, RenderShader shader, int capacity)
     {
         private static Vector2i ElementSize = new(64, 96);
-        private static Vector3 Scale = new(0.6f, 0.4f, 1f);
+        private static Vector3 Scale = new(1f, 1f, 1f);
         private static readonly Vector3[] Vertices =
         {
             Scale * new Vector3(-1f, -1f, 0f),
@@ -52,6 +52,7 @@ namespace BattleForDune.View
             foreach (var key in unitKeys)
             {
                 RenderUnit(key, text, renderTexture);
+                renderTexture.GetTexture().CopyToImage().SaveToFile("test.png");
                 if (_page.Add(renderTexture.GetTexture(), out var box) 
                     && _segments.Allocate(box, out var handle))
                 {
@@ -76,8 +77,7 @@ namespace BattleForDune.View
         }
 
         private static readonly Vertex3[] _vertices = new Vertex3[6];
-
-        private void RenderUnit(RegistryKey key, Text text, IRenderTarget target)
+        private void RenderUnit(RegistryKey key, Text text, RenderTexture target)
         {
             using Texture texture = Texture.FromFile(_registry.GetUnitTexture(key));
             AddSegment(

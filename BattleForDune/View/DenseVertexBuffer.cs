@@ -26,9 +26,9 @@ namespace BattleForDune.View
             _blockSize = blockSize;
             _capacity = blocks * blockSize;
             _vertices = new VertexBuffer<T>(PrimitiveType.Triangles);
-            _handleToIndex = new int[_capacity];
-            _indexToHandle = new int[_capacity];
-            _nextHandle = new int[_capacity];
+            _handleToIndex = new int[_blocks];
+            _indexToHandle = new int[_blocks];
+            _nextHandle = new int[_blocks];
 
             Array.Fill(_handleToIndex, -1);
             Array.Fill(_indexToHandle, -1);
@@ -59,7 +59,7 @@ namespace BattleForDune.View
             else
             {
                 handle = _maxHandle++;
-                if (handle >= _vertices.Length)
+                if (handle >= _blocks)
                 {
                     return false;
                 }
@@ -85,6 +85,11 @@ namespace BattleForDune.View
             RecycleHandle(handle);
 
             return true;
+        }
+
+        public void Set(int handle, T[] values)
+        {
+            _vertices.Sub(values, _blockSize * _handleToIndex[handle], _blockSize);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

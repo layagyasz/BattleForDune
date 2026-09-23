@@ -5,9 +5,10 @@ using BattleForDune.Core.Events.Types;
 
 namespace BattleForDune.Core
 {
-    public class LocalEventProcessor(ComponentWorld world) : IGameEventProcessor
+    public class LocalEventProcessor(ComponentWorld world, IGameEventSink[] listeners) : IGameEventProcessor
     {
         private readonly ComponentWorld _world = world;
+        private readonly IGameEventSink[] _listeners = listeners;
 
         public void Process<TSink>(ref GameEvent @event, TSink sink) where TSink : IGameEventSink
         {
@@ -16,38 +17,47 @@ namespace BattleForDune.Core
                 case GameEventType.AddEffect:
                     var effect = @event.ReadPayload<AddEffectEvent>();
                     Process(ref effect, sink);
+                    Notify(in effect);
                     return;
                 case GameEventType.Attack:
                     var attack = @event.ReadPayload<AttackEvent>();
                     Process(ref attack, sink);
+                    Notify(in attack);
                     return;
                 case GameEventType.Damage:
                     var damage = @event.ReadPayload<DamageEvent>();
                     Process(ref damage, sink);
+                    Notify(in damage);
                     return;
                 case GameEventType.FinalizeInitiative:
                     var finalize = @event.ReadPayload<FinalizeInitiativeEvent>();
                     Process(ref finalize, sink);
+                    Notify(in finalize);
                     return;
                 case GameEventType.Initiative:
                     var initiative = @event.ReadPayload<InitiativeEvent>();
                     Process(ref initiative, sink);
+                    Notify(in initiative);
                     return;
                 case GameEventType.AddUnit:
                     var spawn = @event.ReadPayload<AddUnitEvent>();
                     Process(ref spawn, sink);
+                    Notify(in spawn);
                     return;
                 case GameEventType.Tick:
                     var tick = @event.ReadPayload<TickEvent>();
                     Process(ref tick, sink);
+                    Notify(in tick);
                     return;
                 case GameEventType.UpdateStat:
                     var stat = @event.ReadPayload<UpdateStatEvent>();
                     Process(ref stat, sink);
+                    Notify(in stat);
                     return;
                 case GameEventType.UseAbility:
                     var use = @event.ReadPayload<UseAbilityEvent>();
                     Process(ref use, sink);
+                    Notify(in use);
                     return;
             }
         }
@@ -355,6 +365,14 @@ namespace BattleForDune.Core
                 {
                     specificHandler.Handle(in @event, _world, in sink);
                 }
+            }
+        }
+
+        private void Notify<T>(in T @event) where T : struct, IGameEvent
+        {
+            foreach (var listener in _listeners)
+            {
+                listener.Queue(@event);
             }
         }
     }

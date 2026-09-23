@@ -1,10 +1,21 @@
-﻿using BattleForDune.Core;
+﻿using BattleForDune.Controller;
+using BattleForDune.Core;
+using BattleForDune.Core.Components;
 using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Abilities.Handlers;
 using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Components.Effects.Types;
+using BattleForDune.Core.Events;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Schema;
+using BattleForDune.View;
+using Cardamom.Graphics;
+using Cardamom.Ui;
+using Cardamom.Utils.Suppliers.Ids;
+using Cardamom.Window;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 
 namespace BattleForDune
@@ -13,6 +24,13 @@ namespace BattleForDune
     {
         static void Main()
         {
+            var monitor = Monitors.GetPrimaryMonitor();
+            var window =
+                new RenderWindow(
+                    "Battle for Dune",
+                    new Vector2i(monitor.HorizontalResolution, monitor.VerticalResolution),
+                    false);
+
             var effects =
                 new IGenericEffect.IEffectPrototype[]
                 {
@@ -49,21 +67,59 @@ namespace BattleForDune
                         Threat: 0),
                     [new(1)],
                     [new(0)]);
-            var random = new Random();
             var registry = new ConfigurationRegistry(abilities, effects, [], [unitType]);
-            var world = new LocalWorld(registry, random);
 
-            var stopwatch = Stopwatch.StartNew();
-            for (int i = 0; i < 50; ++i)
+            var uiRegistry = new ViewConfigurationRegistry(["resources/textures/units/hark_light.png"]);
+
+            var shader = 
+                new RenderShader.Builder()
+                    .SetFragment("resources/shaders/default.frag")
+                    .SetVertex("resources/shaders/default.vert")
+                    .Build();
+            var font = new Font("resources/fonts/ExpandedHerbertarian.ttf");
+            var sceneFactory = new SceneFactory(uiRegistry, shader, font);
+
+            var ui = new UiWindow(window);
+            ui.Bind(new MouseListener());
+            ui.Bind(
+                new KeyboardListener(SimpleKeyMapper.Us, [Keys.Left, Keys.Right, Keys.Up, Keys.Down]));
+
+            var uiProcessor = new UiEventProcessor();
+            var uiEventPump = new EventPump<UiEventProcessor>(uiProcessor);
+            var controller = new BattleScreenController(uiEventPump, uiProcessor);
+            var screen = new BattleScreen(controller, sceneFactory.CreateBattle(128));
+            ui.SetRoot(screen);
+
+            var random = new Random();
+            var components =
+                new ComponentWorld(
+                    registry,
+                    new LinearCongruentialIdSupplier(0x9E3779B1, (uint)(2 * random.Next() + 1), random.Next()),
+                    random);
+            var processor = new LocalEventProcessor(components, [uiEventPump]);
+            var world = new LocalWorld(components, new(processor), random);
+
+            var thread = new Thread(TestThread(world, random));
+            thread.Start();
+            ui.Start();
+        }
+
+        private static ParameterizedThreadStart TestThread(LocalWorld world, Random random)
+        {
+            return _ =>
             {
-                world.AddUnit(new(0), new(0), 0, new());
-            }
-            for (int i = 0; i < 50; ++i)
-            {
-                world.AddUnit(new(0), new(1), 1, new());
-            }
-            world.Step();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+                for (int i = 0; i < 5; ++i)
+                {
+                    world.AddUnit(new(0), new(0), 0, new(random.Next(64), random.Next(64)));
+                    Thread.Sleep(100);
+                }
+                for (int i = 0; i < 50; ++i)
+                {
+                    world.AddUnit(new(0), new(1), 1, new(random.Next(64), random.Next(64)));
+                    Thread.Sleep(100);
+                }
+                world.Step();
+            };
         }
     }
 }

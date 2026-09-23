@@ -1,31 +1,35 @@
-﻿using Cardamom.Graphics;
+﻿using BattleForDune.Controller;
+using Cardamom.Graphics;
 using Cardamom.Ui;
 using OpenTK.Mathematics;
 
 namespace BattleForDune.View
 {
-    public class BattleScreen(BattleScene scene) : IRenderable
+    public class BattleScreen(IUpdatingController controller, BattleScene scene) : IRenderable
     {
-        private readonly BattleScene _scene = scene;
+        public IUpdatingController Controller { get; } = controller;
+        public BattleScene Scene { get; } = scene;
 
         public void Draw(IRenderTarget target, IUiContext context)
         {
-            _scene.Draw(target, context);
+            Scene.Draw(target, context);
         }
 
         public void Initialize()
         {
-            _scene.Initialize();
+            Controller.Bind(this);
+            Scene.Initialize();
         }
 
         public void ResizeContext(Vector3 context)
         {
-            _scene.ResizeContext(context);
+            Scene.ResizeContext(context);
         }
 
         public void Update(long delta)
         {
-            _scene.Update(delta);
+            Controller.Update(delta);
+            Scene.Update(delta);
         }
     }
 }

@@ -16,7 +16,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resources\Fonts\ExpandedHerbertarian.ttf">
+    <None Update="resources\fonts\ExpandedHerbertarian.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\shaders\default.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\shaders\default.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="resources\textures\units\hark_light.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
