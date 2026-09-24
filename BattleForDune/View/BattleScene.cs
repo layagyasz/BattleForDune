@@ -8,13 +8,18 @@ using OpenTK.Mathematics;
 namespace BattleForDune.View
 {
     public class BattleScene(
-        IElementController controller, ICamera camera, UnitLayer unitLayer) : IRenderable, IInteractive
+        IElementController controller,
+        ICamera camera, 
+        UnitLayer unitLayer,
+        TextParticleLayer textParticleLayer)
+        : IRenderable, IInteractive
     {
         public IElementController Controller { get; } = controller;
         public IControlledElement? Parent { get; set; }
         public ICamera Camera { get; } = camera;
         public float? OverrideDepth { get; set; }
         public UnitLayer UnitLayer { get; } = unitLayer;
+        public TextParticleLayer TextParticleLayer { get; } = textParticleLayer;
 
         public void Draw(IRenderTarget target, IUiContext context)
         {
@@ -22,6 +27,7 @@ namespace BattleForDune.View
             target.PushProjection(Camera.GetProjection());
             context.Register(this);
             UnitLayer.Draw(target, context);
+            TextParticleLayer.Draw(target, context);
             target.PopProjectionMatrix();
             target.PopViewMatrix();
         }
@@ -34,17 +40,20 @@ namespace BattleForDune.View
         public void Initialize()
         {
             UnitLayer.Initialize();
+            TextParticleLayer.Initialize();
         }
 
         public void ResizeContext(Vector3 context)
         {
             Camera.SetAspectRatio(context.X / context.Y);
             UnitLayer.ResizeContext(context);
+            TextParticleLayer.ResizeContext(context);
         }
 
         public void Update(long delta)
         {
             UnitLayer.Update(delta);
+            TextParticleLayer.Update(delta);
         }
     }
 }

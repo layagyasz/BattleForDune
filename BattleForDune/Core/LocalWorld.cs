@@ -9,10 +9,11 @@ namespace BattleForDune.Core
     public class LocalWorld(
         ComponentWorld components,
         EventPump<LocalEventProcessor> eventPump,
+        int delay,
         Random random)
     {
         private readonly ComponentWorld _components = components;
-        private readonly SystemWorld _systems = new(random);
+        private readonly SystemWorld _systems = new(delay, random);
         private readonly EventPump<LocalEventProcessor> _events = eventPump;
 
         public void AddUnit(RegistryKey prototypeKey, RegistryKey factionKey, byte teamId, Hex2b position)

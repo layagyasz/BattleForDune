@@ -21,7 +21,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
         public void Handle<TSink>(
             in DamageEvent @event, ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
-            if (@event.IsCanceled)
+            if (@event.IsCanceled || !@event.IsPrimary)
             {
                 return;
             }

@@ -5,9 +5,11 @@ using Cardamom.Ui.Controller.Element;
 
 namespace BattleForDune.View
 {
-    public class SceneFactory(ViewConfigurationRegistry registry, RenderShader shader, Font font)
+    public class SceneFactory(
+        ViewConfigurationRegistry registry, RenderShader shader, RenderShader textParticleShader, Font font)
     {
         private readonly UnitLayer.Factory _unitLayerFactory = new(shader);
+        private readonly TextParticleLayer.Factory _textParticleLayerFactory = new(font, textParticleShader);
 
         public BattleScene CreateBattle(int capacity)
         {
@@ -28,7 +30,8 @@ namespace BattleForDune.View
                         MouseWheelSensitivity = 2
                     }),
                 camera, 
-                _unitLayerFactory.Create(textures, capacity));
+                _unitLayerFactory.Create(textures, capacity),
+                _textParticleLayerFactory.Create(4096));
         }
     }
 }

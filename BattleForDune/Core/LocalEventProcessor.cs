@@ -370,6 +370,10 @@ namespace BattleForDune.Core
 
         private void Notify<T>(in T @event) where T : struct, IGameEvent
         {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
             foreach (var listener in _listeners)
             {
                 listener.Queue(@event);

@@ -1,13 +1,15 @@
 ﻿using BattleForDune.Core;
 using BattleForDune.FastLookup;
 using BattleForDune.Geometry;
+using Cardamom;
 using Cardamom.Graphics;
 using Cardamom.Ui;
 using OpenTK.Mathematics;
 
 namespace BattleForDune.View
 {
-    public class UnitLayer(UnitTextureCache textures, RenderShader shader, int capacity) : IRenderable
+    public class UnitLayer(UnitTextureCache textures, RenderShader shader, int capacity) 
+        : ManagedResource, IRenderable
     {
         public record class Factory(RenderShader Shader)
         {
@@ -78,6 +80,11 @@ namespace BattleForDune.View
             vertices[offset + 4] = 
                 new(position + _corners[4], color, new(textureView.Max.X, textureView.Min.Y));
             vertices[offset + 5] = new(position + _corners[5], color, textureView.Max);
+        }
+
+        protected override void DisposeImpl()
+        {
+            _vertices.Dispose();
         }
     }
 }

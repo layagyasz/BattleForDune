@@ -16,7 +16,6 @@ using Cardamom.Window;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.Diagnostics;
 
 namespace BattleForDune
 {
@@ -49,7 +48,7 @@ namespace BattleForDune
                             new BasicAttackHandler.Prototype(
                                 DamageType.Physical, DamageVector.Direct, new(1, 6, 0, 0), 0),
                             new CriticalMultiplierDamageHandler.Prototype(2f),
-                            new ChanceApplyEffectDamageHandler.Prototype(new(0), 0, 3)
+                            new ChanceApplyEffectDamageHandler.Prototype(new(0), 18, 3)
                         ])
                 };
             var unitType =
@@ -69,6 +68,13 @@ namespace BattleForDune
                     [new(0)]);
             var registry = new ConfigurationRegistry(abilities, effects, [], [unitType]);
 
+            var random = new Random();
+            var components =
+                new ComponentWorld(
+                    registry,
+                    new LinearCongruentialIdSupplier(0x9E3779B1, (uint)(2 * random.Next() + 1), random.Next()),
+                    random);
+
             var uiRegistry = new ViewConfigurationRegistry(["resources/textures/units/hark_light.png"]);
 
             var shader = 
@@ -76,28 +82,27 @@ namespace BattleForDune
                     .SetFragment("resources/shaders/default.frag")
                     .SetVertex("resources/shaders/default.vert")
                     .Build();
+            var textParticleShader =
+                new RenderShader.Builder()
+                    .SetFragment("resources/shaders/text_particle.frag")
+                    .SetVertex("resources/shaders/text_particle.vert")
+                    .Build();
             var font = new Font("resources/fonts/ExpandedHerbertarian.ttf");
-            var sceneFactory = new SceneFactory(uiRegistry, shader, font);
+            var sceneFactory = new SceneFactory(uiRegistry, shader, textParticleShader, font);
 
             var ui = new UiWindow(window);
             ui.Bind(new MouseListener());
             ui.Bind(
                 new KeyboardListener(SimpleKeyMapper.Us, [Keys.Left, Keys.Right, Keys.Up, Keys.Down]));
 
-            var uiProcessor = new UiEventProcessor();
+            var uiProcessor = new UiEventProcessor(components);
             var uiEventPump = new EventPump<UiEventProcessor>(uiProcessor);
             var controller = new BattleScreenController(uiEventPump, uiProcessor);
             var screen = new BattleScreen(controller, sceneFactory.CreateBattle(128));
             ui.SetRoot(screen);
 
-            var random = new Random();
-            var components =
-                new ComponentWorld(
-                    registry,
-                    new LinearCongruentialIdSupplier(0x9E3779B1, (uint)(2 * random.Next() + 1), random.Next()),
-                    random);
             var processor = new LocalEventProcessor(components, [uiEventPump]);
-            var world = new LocalWorld(components, new(processor), random);
+            var world = new LocalWorld(components, new(processor), 100, random);
 
             var thread = new Thread(TestThread(world, random));
             thread.Start();
@@ -108,17 +113,18 @@ namespace BattleForDune
         {
             return _ =>
             {
-                for (int i = 0; i < 5; ++i)
+                for (int i = 0; i < 50; ++i)
                 {
                     world.AddUnit(new(0), new(0), 0, new(random.Next(64), random.Next(64)));
-                    Thread.Sleep(100);
                 }
                 for (int i = 0; i < 50; ++i)
                 {
                     world.AddUnit(new(0), new(1), 1, new(random.Next(64), random.Next(64)));
-                    Thread.Sleep(100);
                 }
-                world.Step();
+                while (true)
+                {
+                    world.Step();
+                }
             };
         }
     }

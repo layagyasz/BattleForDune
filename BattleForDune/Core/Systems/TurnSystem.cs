@@ -6,8 +6,9 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Systems
 {
-    public readonly struct TurnSystem(Random random) : IGameSystem
+    public readonly struct TurnSystem(int delay, Random random) : IGameSystem
     {
+        private readonly int _delay = delay;
         private readonly Random _random = random;
 
         public readonly void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
@@ -35,10 +36,12 @@ namespace BattleForDune.Core.Systems
                     if (target != EntityId.None)
                     {
                         sink.Queue(new UseAbilityEvent(unitId, 0, target));
+                        break;
                     }
                 }
             }
             sink.Flush();
+            Thread.Sleep(_delay);
         }
 
         private EntityId FindTarget(

@@ -14,13 +14,15 @@ namespace BattleForDune.Controller
         public void Bind(object @object)
         {
             _screen = (BattleScreen)@object;
-            _processor.Attach(_screen.Scene.UnitLayer);
+            _processor.AttachUnitLayer(_screen.Scene.UnitLayer);
+            _processor.AttachTextParticleLayer(_screen.Scene.TextParticleLayer);
         }
         
         public void Unbind()
         {
             _screen = null;
-            _processor.Attach(null);
+            _processor.AttachUnitLayer(null);
+            _processor.AttachTextParticleLayer(null);
         }
 
         public void Update(long delta)
