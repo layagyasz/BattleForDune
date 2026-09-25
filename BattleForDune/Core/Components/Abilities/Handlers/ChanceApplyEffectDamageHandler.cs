@@ -31,7 +31,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                     @event.AbilityId,
                     @event.TargetId,
                     stacks: 1, 
-                    power: 1,
+                    power: Math.Max((byte)1, @event.Die.Count),
                     Duration, 
                     EffectKey,
                     skill: 0,

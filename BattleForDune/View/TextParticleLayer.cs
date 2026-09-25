@@ -19,8 +19,8 @@ namespace BattleForDune.View
 
         private static readonly TextParticleVertex3[] _buffer = new TextParticleVertex3[128];
 
-        private const float _scale = 0.025f;
-        private const uint _fontSize = 12;
+        private const float _scale = 0.01f;
+        private const uint _fontSize = 24;
         private const float _invLifetime = 0.001f;
 
         private readonly int _capacity = capacity;

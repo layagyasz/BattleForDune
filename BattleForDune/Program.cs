@@ -9,6 +9,7 @@ using BattleForDune.Core.Events;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Schema;
 using BattleForDune.View;
+using BattleForDune.View.Config;
 using Cardamom.Graphics;
 using Cardamom.Ui;
 using Cardamom.Utils.Suppliers.Ids;
@@ -75,7 +76,7 @@ namespace BattleForDune
                     new LinearCongruentialIdSupplier(0x9E3779B1, (uint)(2 * random.Next() + 1), random.Next()),
                     random);
 
-            var uiRegistry = new ViewConfigurationRegistry(["resources/textures/units/hark_light.png"]);
+            var uiRegistry = ViewConfigurationRegistry.FromFile("resources/view/registry.json");
 
             var shader = 
                 new RenderShader.Builder()
@@ -100,7 +101,7 @@ namespace BattleForDune
             ui.Bind(
                 new KeyboardListener(SimpleKeyMapper.Us, [Keys.Left, Keys.Right, Keys.Up, Keys.Down]));
 
-            var uiProcessor = new UiEventProcessor(components);
+            var uiProcessor = new UiEventProcessor(uiRegistry, components);
             var uiEventPump = new EventPump<UiEventProcessor>(uiProcessor);
             var controller = new BattleScreenController(uiEventPump, uiProcessor);
             var screen = new BattleScreen(controller, sceneFactory.CreateBattle(128));
@@ -120,11 +121,11 @@ namespace BattleForDune
             {
                 for (int i = 0; i < 50; ++i)
                 {
-                    world.AddUnit(new(0), new(0), 0, new(random.Next(64), random.Next(64)));
+                    world.AddUnit(new(0), new(0), 0, Geometry.Projection.OffsetToAxial(new(i, 25)));
                 }
                 for (int i = 0; i < 50; ++i)
                 {
-                    world.AddUnit(new(0), new(1), 1, new(random.Next(64), random.Next(64)));
+                    world.AddUnit(new(0), new(1), 1, Geometry.Projection.OffsetToAxial(new(i, 26)));
                 }
                 while (true)
                 {

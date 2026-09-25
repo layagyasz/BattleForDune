@@ -1,5 +1,6 @@
 ﻿using BattleForDune.Core;
 using BattleForDune.FastLookup;
+using BattleForDune.View.Config;
 using Cardamom.Graphics;
 using Cardamom.Graphics.TexturePacking;
 using OpenTK.Graphics.OpenGL4;
@@ -10,7 +11,7 @@ namespace BattleForDune.View
     public class UnitTextureCache(
         ViewConfigurationRegistry registry, Font font, RenderShader shader, int capacity)
     {
-        private static Vector2i ElementSize = new(64, 96);
+        private static Vector2i ElementSize = new(128, 128);
         private static Vector3 Scale = new(1f, 1f, 1f);
         private static readonly Vector3[] Vertices =
         {
@@ -79,7 +80,7 @@ namespace BattleForDune.View
         private static readonly Vertex3[] _vertices = new Vertex3[6];
         private void RenderUnit(RegistryKey key, Text text, RenderTexture target)
         {
-            using Texture texture = Texture.FromFile(_registry.GetUnitTexture(key));
+            using Texture texture = Texture.FromFile(_registry.GetUnit(key).MarkerPath);
             AddSegment(
                 _vertices,
                 texture,

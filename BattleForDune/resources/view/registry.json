@@ -1,0 +1,5 @@
+{
+  "Units": [ "resources/units::*.json" ],
+  "Damage": "resources/view/damage.json",
+  "Effects": "resources/view/effects.json"
+}

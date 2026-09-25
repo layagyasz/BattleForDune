@@ -1,4 +1,5 @@
 ﻿using BattleForDune.Controller;
+using BattleForDune.View.Config;
 using Cardamom.Graphics;
 using Cardamom.Graphics.Camera;
 using Cardamom.Ui.Controller.Element;

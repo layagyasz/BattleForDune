@@ -22,13 +22,14 @@ namespace BattleForDune.View
         private static readonly float sqrt3_2 = 0.5f * MathF.Sqrt(3);
         private static readonly Vector3[] _corners =
         {
-            new(-sqrt3_2, 0f, 1.5f * -sqrt3_2),
-            new(sqrt3_2, 0f, 1.5f * -sqrt3_2),
-            new(-sqrt3_2, 0f, 1.5f * sqrt3_2),
-            new(-sqrt3_2, 0f, 1.5f * sqrt3_2),
-            new(sqrt3_2, 0f, 1.5f * -sqrt3_2),
-            new(sqrt3_2, 0f, 1.5f * sqrt3_2)
+            new(-1, 0f, -1f),
+            new(1, 0f, -1f),
+            new(-1, 0f, 1f),
+            new(-1, 0f, 1f),
+            new(1, 0f, -1f),
+            new(1, 0f, 1f)
         };
+        private static readonly Vector3 _offset = new(0, 0, -0.5f * sqrt3_2);
         private static readonly Vertex3[] _buffer = new Vertex3[6];
 
         private readonly UnitTextureCache _textures = textures;
@@ -41,7 +42,7 @@ namespace BattleForDune.View
             SetVertices(
                 _buffer, 
                 0, 
-                Geometry.Projection.AxialToCartesian(position),
+                Geometry.Projection.AxialToCartesian(position) + _offset,
                 Color4.White, 
                 _textures.Get(prototypeKey));
             _vertices.Allocate(out var handle);

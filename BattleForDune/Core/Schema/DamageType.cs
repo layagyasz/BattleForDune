@@ -1,15 +1,18 @@
-﻿namespace BattleForDune.Core.Schema
+﻿using System.Text.Json.Serialization;
+
+namespace BattleForDune.Core.Schema
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DamageType : byte
     {
-        Physical,
-        Heat,
-        Cold,
         Caustic,
+        Cold,
+        Concussion,
+        Heat,
+        Physical,
         Poison,
-        Shock,
+        Psychic,
         Radiation,
-        Sonic,
-        Psychic
+        Shock
     }
 }

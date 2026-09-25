@@ -1,0 +1,38 @@
+[
+  {
+    "DamageType": "Caustic",
+    "Color": "#66cc66"
+  },
+  {
+    "DamageType": "Cold",
+    "Color": "#6699cc"
+  },
+  {
+    "DamageType": "Concussion",
+    "Color": "#66cc99"
+  },
+  {
+    "DamageType": "Heat",
+    "Color": "#cc9966"
+  },
+  {
+    "DamageType": "Physical",
+    "Color": "#cc6666"
+  },
+  {
+    "DamageType": "Poison",
+    "Color": "#9966cc"
+  },
+  {
+    "DamageType": "Psychic",
+    "Color": "#cc6699"
+  },
+  {
+    "DamageType": "Radiation",
+    "Color": "#cccc66"
+  },
+  {
+    "DamageType": "Shock",
+    "Color": "#66cccc"
+  }
+]
