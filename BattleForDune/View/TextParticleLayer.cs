@@ -36,7 +36,7 @@ namespace BattleForDune.View
             // TODO: random velocity and starting position
             int count = 
                 BuildMesh(
-                    _buffer, @string, color, Geometry.Projection.ToCartesian(position), new(0, 0, -2), _time);
+                    _buffer, @string, color, Geometry.Projection.AxialToCartesian(position), new(0, 0, -2), _time);
             if (_cursor + count >= _capacity)
             {
                 _cursor = 0;

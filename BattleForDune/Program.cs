@@ -82,13 +82,18 @@ namespace BattleForDune
                     .SetFragment("resources/shaders/default.frag")
                     .SetVertex("resources/shaders/default.vert")
                     .Build();
+            var gridShader =
+                new RenderShader.Builder()
+                    .SetFragment("resources/shaders/default_no_tex.frag")
+                    .SetVertex("resources/shaders/instanced.vert")
+                    .Build();
             var textParticleShader =
                 new RenderShader.Builder()
-                    .SetFragment("resources/shaders/text_particle.frag")
+                    .SetFragment("resources/shaders/default.frag")
                     .SetVertex("resources/shaders/text_particle.vert")
                     .Build();
             var font = new Font("resources/fonts/ExpandedHerbertarian.ttf");
-            var sceneFactory = new SceneFactory(uiRegistry, shader, textParticleShader, font);
+            var sceneFactory = new SceneFactory(uiRegistry, shader, gridShader, textParticleShader, font);
 
             var ui = new UiWindow(window);
             ui.Bind(new MouseListener());

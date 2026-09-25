@@ -99,7 +99,7 @@ namespace BattleForDune.View
 
             if (indexToRemove < lastIndex)
             {
-                _vertices.Copy(lastIndex, indexToRemove, _blockSize);
+                _vertices.Copy(_blockSize * lastIndex, _blockSize * indexToRemove, _blockSize);
 
                 int movingHandle = _indexToHandle[lastIndex];
                 _handleToIndex[movingHandle] = indexToRemove;

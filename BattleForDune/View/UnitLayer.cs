@@ -41,7 +41,7 @@ namespace BattleForDune.View
             SetVertices(
                 _buffer, 
                 0, 
-                Geometry.Projection.ToCartesian(position),
+                Geometry.Projection.AxialToCartesian(position),
                 Color4.White, 
                 _textures.Get(prototypeKey));
             _vertices.Allocate(out var handle);
