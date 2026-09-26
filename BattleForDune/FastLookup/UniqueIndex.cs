@@ -71,6 +71,7 @@ namespace BattleForDune.FastLookup
                 {
                     break;
                 }
+                entry = ref _table[index];
             }
             handle = -1;
             return false;

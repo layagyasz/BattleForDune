@@ -20,6 +20,9 @@ namespace BattleForDune.View.Config
         [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<DamageRenderInfo> Damage { get; set; }
 
+        [JsonConverter(typeof(FromMultipleFileJsonConverter))]
+        public required List<TileRenderInfo> Tiles { get; set; }
+
         public DamageRenderInfo GetDamage(DamageType damageType)
         {
             return Damage[(int)damageType];
@@ -28,6 +31,11 @@ namespace BattleForDune.View.Config
         public EffectRenderInfo GetEffect(RegistryKey key)
         {
             return Effects[key.Value];
+        }
+
+        public TileRenderInfo GetTile(RegistryKey key)
+        {
+            return Tiles[key.Value];
         }
 
         public UnitRenderInfo GetUnit(RegistryKey key)
@@ -45,6 +53,7 @@ namespace BattleForDune.View.Config
             result.Units.Sort();
             result.Effects.Sort();
             result.Damage.Sort();
+            result.Tiles.Sort();
             return result;
         }
     }

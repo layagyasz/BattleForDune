@@ -53,7 +53,6 @@ namespace BattleForDune.View
             foreach (var key in unitKeys)
             {
                 RenderUnit(key, text, renderTexture);
-                renderTexture.GetTexture().CopyToImage().SaveToFile("test.png");
                 if (_page.Add(renderTexture.GetTexture(), out var box) 
                     && _segments.Allocate(box, out var handle))
                 {

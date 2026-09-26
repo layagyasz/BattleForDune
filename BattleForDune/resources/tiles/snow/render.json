@@ -1,0 +1,14 @@
+[
+  {
+    "Key": 0,
+    "ImagePath": "resources/tiles/snow/snow_001.png"
+  },
+  {
+    "Key": 1,
+    "ImagePath": "resources/tiles/snow/snow_002.png"
+  },
+  {
+    "Key": 2,
+    "ImagePath": "resources/tiles/snow/snow_003.png"
+  }
+]

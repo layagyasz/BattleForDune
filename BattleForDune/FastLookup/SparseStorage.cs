@@ -40,6 +40,7 @@ namespace BattleForDune.FastLookup
         {
             _values[handle] = default;
             RecycleHandle(handle);
+            _count--;
             return true;
         }
 
@@ -53,6 +54,7 @@ namespace BattleForDune.FastLookup
                 if (predicate.Matches(in value))
                 {
                     callback.Notify(handle, ref value);
+                    _values[handle] = default;
                     RecycleHandle(handle);
                 }
             }

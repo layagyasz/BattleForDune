@@ -8,12 +8,14 @@ using BattleForDune.Core.Components.Effects.Types;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Schema;
+using BattleForDune.Geometry;
 using BattleForDune.View;
 using BattleForDune.View.Config;
 using Cardamom.Graphics;
 using Cardamom.Ui;
 using Cardamom.Utils.Suppliers.Ids;
 using Cardamom.Window;
+using MathNet.Numerics.Random;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -104,18 +106,38 @@ namespace BattleForDune
             var uiProcessor = new UiEventProcessor(uiRegistry, components);
             var uiEventPump = new EventPump<UiEventProcessor>(uiProcessor);
             var controller = new BattleScreenController(uiEventPump, uiProcessor);
-            var screen = new BattleScreen(controller, sceneFactory.CreateBattle(128));
+            var screen = new BattleScreen(
+                controller, sceneFactory.CreateBattle(CreateMap(new(100, 100), random), 128));
             ui.SetRoot(screen);
 
             var processor = new LocalEventProcessor(components, [uiEventPump]);
-            var world = new LocalWorld(components, new(processor), 100, random);
+            var world = new LocalWorld(components, new(processor), 50, random);
 
-            var thread = new Thread(TestThread(world, random));
+            var thread = new Thread(TestThread(world));
             thread.Start();
             ui.Start();
         }
 
-        private static ParameterizedThreadStart TestThread(LocalWorld world, Random random)
+        private static DenseHexGrid<Tile> CreateMap(Vector2i size, Random random)
+        {
+            var map = new DenseHexGrid<Tile>(size);
+            var bytes = new byte[size.X * size.Y / 2];
+            random.NextBytes(bytes);
+            for (int i=0; i<map.Height; ++i)
+            {
+                for (int j=0; j<map.Width; ++j)
+                {
+                    var tile = i * map.Width + j;
+                    var bIndex = tile / 2;
+                    var bMod = tile & 1;
+                    var transform = (byte)(bytes[bIndex] >> (4 * bMod));
+                    map.Set(j, i, new Tile(new((ushort) random.Next(3)), new(transform)));
+                }
+            }
+            return map;
+        }
+
+        private static ParameterizedThreadStart TestThread(LocalWorld world)
         {
             return _ =>
             {

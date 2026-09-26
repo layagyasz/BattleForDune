@@ -1,4 +1,6 @@
 ﻿using BattleForDune.Controller;
+using BattleForDune.Core.Schema;
+using BattleForDune.Geometry;
 using BattleForDune.View.Config;
 using Cardamom.Graphics;
 using Cardamom.Graphics.Camera;
@@ -13,19 +15,22 @@ namespace BattleForDune.View
         RenderShader textParticleShader, 
         Font font)
     {
-        private readonly MapLayer.Factory _mapLayerFactory = new(gridShader);
+        private readonly MapLayer.Factory _mapLayerFactory = new(shader, gridShader);
         private readonly UnitLayer.Factory _unitLayerFactory = new(shader);
         private readonly TextParticleLayer.Factory _textParticleLayerFactory = new(font, textParticleShader);
 
-        public BattleScene CreateBattle(int capacity)
+        public BattleScene CreateBattle(DenseHexGrid<Tile> map, int capacity)
         {
             var camera = new SubjectiveCamera3d(1000);
             camera.SetPitch(-0.5f * MathF.PI);
             camera.SetYaw(0.5f * MathF.PI);
             camera.SetDistance(100);
 
-            var textures = new UnitTextureCache(registry, font, shader, 32);
-            textures.AddAll([new(0)]);
+            var unitTextures = new UnitTextureCache(registry, font, shader, 32);
+            unitTextures.AddAll([new(0)]);
+
+            var tileTextures = new TileTextureCache(registry, shader, 32);
+            tileTextures.AddAll(map.Values().Select(tile => tile.TileKey).Distinct());
 
             return new(
                 new PassthroughController(
@@ -36,8 +41,8 @@ namespace BattleForDune.View
                         MouseWheelSensitivity = 2
                     }),
                 camera,
-                _mapLayerFactory.Create(new(100, 100)),
-                _unitLayerFactory.Create(textures, capacity),
+                _mapLayerFactory.Create(tileTextures, map),
+                _unitLayerFactory.Create(unitTextures, capacity),
                 _textParticleLayerFactory.Create(4096));
         }
     }

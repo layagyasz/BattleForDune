@@ -70,6 +70,8 @@ namespace BattleForDune.FastLookup
                 _values[lastValSlot].Index = denseIndex;
             }
 
+            _keys[_count] = 0;
+
             return true;
         }
 
@@ -117,6 +119,7 @@ namespace BattleForDune.FastLookup
             }
 
             _values[gapIndex].Index = -1;
+            _values[gapIndex].Key = 0;
         }
     }
 }
