@@ -21,14 +21,14 @@ namespace BattleForDune.View
 
         private static readonly float sqrt3_2 = 0.5f * MathF.Sqrt(3);
         private static readonly Vector3[] _corners =
-        {
+        [
             new(-1, 0f, -1f),
             new(1, 0f, -1f),
             new(-1, 0f, 1f),
             new(-1, 0f, 1f),
             new(1, 0f, -1f),
             new(1, 0f, 1f)
-        };
+        ];
         private static readonly Vector3 _offset = new(0, 0, -0.5f * sqrt3_2);
         private static readonly Vertex3[] _buffer = new Vertex3[6];
 
@@ -48,6 +48,14 @@ namespace BattleForDune.View
             _vertices.Allocate(out var handle);
             _vertices.Set(handle, _buffer);
             _index.Add(unitId.Value, handle);
+        }
+
+        public void Remove(EntityId unitId)
+        {
+            if (_index.RemoveOnly(unitId.Value, out var handle))
+            {
+                _vertices.Free(handle);
+            }
         }
 
         public void Draw(IRenderTarget target, IUiContext context)

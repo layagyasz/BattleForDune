@@ -14,7 +14,7 @@ namespace BattleForDune.View
         private static Vector2i ElementSize = new(128, 128);
         private static Vector3 Scale = new(1f, 1f, 1f);
         private static readonly Vector3[] Vertices =
-        {
+        [
             Scale * new Vector3(-1f, -1f, 0f),
             Scale * new Vector3(1f, -1f, 0f),
             Scale * new Vector3(-1f, 1f, 0f),
@@ -22,7 +22,7 @@ namespace BattleForDune.View
             Scale * new Vector3(-1f, 1f, 0f),
             Scale * new Vector3(1f, -1f, 0f),
             Scale * new Vector3(1f, 1f, 0f),
-        };
+        ];
 
         private static readonly float TextScale = 0.01f;
         private static readonly uint TextSize = 12;

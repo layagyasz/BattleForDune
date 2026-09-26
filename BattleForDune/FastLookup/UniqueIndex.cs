@@ -55,6 +55,7 @@ namespace BattleForDune.FastLookup
         public bool RemoveOnly(int key, out int handle)
         {
             int index = key & _mask;
+            int initial = index;
 
             ref var entry = ref _table[index];
             while (entry.Handle != -1)
@@ -66,6 +67,10 @@ namespace BattleForDune.FastLookup
                     return true;
                 }
                 index = (index + 1) & _mask;
+                if (index == initial)
+                {
+                    break;
+                }
             }
             handle = -1;
             return false;

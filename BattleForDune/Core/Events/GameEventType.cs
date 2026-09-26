@@ -8,6 +8,8 @@
         Damage,
         FinalizeInitiative,
         Initiative,
+        Kill,
+        RemoveEffect,
         Tick,
         UpdateStat,
         UseAbility

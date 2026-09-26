@@ -14,7 +14,7 @@ namespace BattleForDune.Core.Components
 
         private readonly IdSet _units = new(1024);
         private readonly TeamComponent _teams = new(1024);
-        private readonly FactionComponent _factions = new(8);
+        private readonly FactionComponent _factions = new(1024);
         private readonly PositionComponent _positions = new(1024);
         private readonly StatComponent _stats = new(1024);
         private readonly InitiativeComponent _initiative = new(1024);

@@ -30,8 +30,8 @@ namespace BattleForDune.FastLookup
                 }
             }
 
-            int index = _count++;
-            _values[index] = value;
+            _count++;
+            _values[handle] = value;
 
             return true;
         }

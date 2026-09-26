@@ -45,8 +45,15 @@ namespace BattleForDune.View
                 case GameEventType.Damage:
                     var damage = @event.ReadPayload<DamageEvent>();
                     var damageView = _registry.GetDamage(damage.DamageType);
-                    pos = _world.GetPositions().TryGet(damage.TargetId, out var _);
-                    _textParticleLayer?.Add(damage.Damage.ToString(), pos, damageView.Color);
+                    pos = _world.GetPositions().TryGet(damage.TargetId, out var isFound);
+                    if (isFound)
+                    {
+                        _textParticleLayer?.Add(damage.Damage.ToString(), pos, damageView.Color);
+                    }
+                    return;
+                case GameEventType.Kill:
+                    var kill = @event.ReadPayload<KillEvent>();
+                    _unitLayer?.Remove(kill.TargetId);
                     return;
             }
         }

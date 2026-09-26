@@ -1,10 +1,10 @@
 ﻿using BattleForDune.FastLookup;
-using System.Runtime.CompilerServices;
 
 namespace BattleForDune.Core.Components
 {
     public class SimpleComponent<T>(int capacity) : IGameComponent<T>
     {
+        private static T _null = default;
         private readonly SparseStorage<T> _values = new(capacity);
         private readonly UniqueIndex _index = new(capacity);
 
@@ -26,7 +26,7 @@ namespace BattleForDune.Core.Components
                 return ref _values.Get(handle);
             }
             isFound = false;
-            return ref Unsafe.NullRef<T>();
+            return ref _null;
         }
 
         public bool Remove(EntityId id)
