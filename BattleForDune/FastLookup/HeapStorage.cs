@@ -59,6 +59,11 @@ namespace BattleForDune.FastLookup
             return ref _values[_handleToHeap[handle]];
         }
 
+        public ref TValue Peek()
+        {
+            return ref _values[_heap[0]];
+        }
+
         public TValue PopMin(out int handle)
         {
             if (_count == 0)

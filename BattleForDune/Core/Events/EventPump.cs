@@ -1,5 +1,4 @@
-﻿using BattleForDune.Core.Events.Types;
-using System.Threading.Channels;
+﻿using System.Threading.Channels;
 
 namespace BattleForDune.Core.Events
 {
@@ -12,7 +11,7 @@ namespace BattleForDune.Core.Events
         {
             _processor = processor;
             var options = 
-                new BoundedChannelOptions(capacity: 1024)
+                new BoundedChannelOptions(1024)
                 {
                     FullMode = BoundedChannelFullMode.Wait,
                     SingleWriter = true,

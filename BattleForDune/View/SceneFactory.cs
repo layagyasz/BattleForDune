@@ -29,7 +29,7 @@ namespace BattleForDune.View
             var unitTextures = new UnitTextureCache(registry, font, shader, 32);
             unitTextures.AddAll([new(0)]);
 
-            var tileTextures = new TileTextureCache(registry, shader, 32);
+            var tileTextures = new TileTextureCache(registry, 32);
             tileTextures.AddAll(map.Values().Select(tile => tile.TileKey).Distinct());
 
             return new(

@@ -12,6 +12,7 @@ namespace BattleForDune.Core.Components
         private readonly LinearCongruentialIdSupplier _ids = ids;
         private readonly Random _random = random;
 
+        private byte _turn;
         private readonly IdSet _units = new(1024);
         private readonly TeamComponent _teams = new(1024);
         private readonly FactionComponent _factions = new(1024);
@@ -20,6 +21,7 @@ namespace BattleForDune.Core.Components
         private readonly InitiativeComponent _initiative = new(1024);
         private readonly EffectComponent _effects = new(1024);
         private readonly AbilityComponent _abilities = new(1024);
+        private readonly TimerComponent _timers = new(1024);
 
         public EntityId NextId()
         {
@@ -61,6 +63,11 @@ namespace BattleForDune.Core.Components
             return _positions;
         }
 
+        public Random GetRandom()
+        {
+            return _random;
+        }
+
         public ConfigurationRegistry GetRegistry()
         {
             return _registry;
@@ -74,6 +81,21 @@ namespace BattleForDune.Core.Components
         public TeamComponent GetTeams()
         {
             return _teams;
+        }
+
+        public TimerComponent GetTimers()
+        {
+            return _timers;
+        }
+
+        public byte GetTurn()
+        {
+            return _turn;
+        }
+
+        public byte IncrementTurn()
+        {
+            return ++_turn;
         }
 
         public byte Roll(Die die)

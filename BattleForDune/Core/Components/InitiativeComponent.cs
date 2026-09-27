@@ -4,12 +4,12 @@
     {
         private int _count;
         private readonly EntityId[] _ids = new EntityId[capacity];
-        private readonly sbyte[] _invInitiative = new sbyte[capacity];
+        private readonly float[] _invInitiative = new float[capacity];
 
-        public void Add(EntityId id, sbyte initiative)
+        public void Add(EntityId id, float initiative)
         {
             _ids[_count] = id;
-            _invInitiative[_count++] = (sbyte)-initiative;
+            _invInitiative[_count++] = -initiative;
         }
 
         public void Clear()

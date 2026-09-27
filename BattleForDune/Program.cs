@@ -15,7 +15,6 @@ using Cardamom.Graphics;
 using Cardamom.Ui;
 using Cardamom.Utils.Suppliers.Ids;
 using Cardamom.Window;
-using MathNet.Numerics.Random;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -111,7 +110,7 @@ namespace BattleForDune
             ui.SetRoot(screen);
 
             var processor = new LocalEventProcessor(components, [uiEventPump]);
-            var world = new LocalWorld(components, new(processor), 50, random);
+            var world = new LocalWorld(components, new(processor), 1, random);
 
             var thread = new Thread(TestThread(world));
             thread.Start();

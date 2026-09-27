@@ -85,14 +85,30 @@ namespace BattleForDune.Core
             {
                 if (effect.EffectKey == @event.EffectKey)
                 {
-                    if (effect.IsMergeable)
+                    if (!effect.IsMergeable)
                     {
-                        effect.Remove(_world, in sink);
-                        effect.MergeStacks(@event.Stacks);
-                        effect.MergePower(@event.Power);
-                        effect.Apply(_world, in sink);
+                        break;
                     }
-                    // TODO: Reschedule timeout.
+
+                    effect.Remove(_world, in sink);
+                    effect.MergeStacks(@event.Stacks);
+                    effect.MergePower(@event.Power);
+                    effect.Apply(_world, in sink);
+
+                    if (@event.Duration >= 0)
+                    {
+                        byte newExpiration = (byte)(_world.GetTurn() + @event.Duration);
+                        if (_world.GetTimers().TryGet(effect.Id, out var currentExpiration)
+                            && newExpiration > currentExpiration)
+                        {
+                            _world.GetTimers().Remove(effect.Id);
+                            _world.GetTimers().Add(effect.Id, newExpiration);
+                        }
+                    }
+                    else
+                    {
+                        _world.GetTimers().Remove(effect.Id);
+                    }
                     return;
                 }
             }
@@ -105,7 +121,10 @@ namespace BattleForDune.Core
             newEffect.MergePower(@event.Power);
             _world.GetEffects().Add(newEffect);
             newEffect.Apply(_world, in sink);
-            // TODO: Schedule timeout when duration > 0
+            if (@event.Duration >= 0)
+            {
+                _world.GetTimers().Add(newEffect.Id, (byte)(_world.GetTurn() + @event.Duration));
+            }
         }
 
         private void ApplyAddUnit<TSink>(in AddUnitEvent @event, TSink sink) where TSink : IGameEventSink
@@ -132,7 +151,7 @@ namespace BattleForDune.Core
             foreach (var passive in prototype.Passives)
             {
                 sink.Queue(
-                    new AddEffectEvent(@event.UnitId, 0xFF, @event.UnitId, 0, 0, 0, passive, 0, 0));
+                    new AddEffectEvent(@event.UnitId, 0xFF, @event.UnitId, 0, 0, -1, passive, 0, 0));
             }
         }
 
@@ -214,6 +233,7 @@ namespace BattleForDune.Core
                 return;
             }
             _world.GetEffects().Remove(@event.InstanceId);
+            _world.GetTimers().Remove(@event.InstanceId);
         }
 
         private void ApplyTick<TSink>(in TickEvent @event, TSink sink) where TSink : IGameEventSink
@@ -223,6 +243,7 @@ namespace BattleForDune.Core
                 return;
             }
             _world.GetInitiative().Clear();
+            _world.IncrementTurn();
         }
 
         private void ApplyUpdateStat<TSink>(in UpdateStatEvent @event, TSink sink) where TSink : IGameEventSink
@@ -347,7 +368,7 @@ namespace BattleForDune.Core
         {
             @event.Roll = _world.Roll(new(1, 20, 0, @event.Advantage));
             _world.Intercept(ref @event);
-            @event.Initiative = (sbyte)(@event.Skill + @event.Roll);
+            @event.Initiative = @event.Skill + @event.Roll + _world.GetRandom().NextSingle();
             _world.Handle(in @event, sink);
             ApplyInitiative(in @event, sink);
         }

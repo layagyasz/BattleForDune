@@ -11,6 +11,6 @@ namespace BattleForDune.Core.Events.Types
         public sbyte Skill = skill;
         public sbyte Advantage = advantage;
         public byte Roll;
-        public sbyte Initiative;
+        public float Initiative;
     }
 }

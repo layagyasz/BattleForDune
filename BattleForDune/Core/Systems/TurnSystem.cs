@@ -13,9 +13,9 @@ namespace BattleForDune.Core.Systems
 
         public readonly void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
-            foreach (var unitId in world.GetUnits().AsSpan())
+            foreach (var unitId in world.GetInitiative().AsSpan())
             {
-                DoTurn(new(unitId), world, sink);
+                DoTurn(unitId, world, sink);
             }
         }
 
@@ -47,6 +47,10 @@ namespace BattleForDune.Core.Systems
         private EntityId FindTarget(
             EntityId subjectId, byte subjectTeam, Ability ability, ComponentWorld world)
         {
+            if (ability.TargetType == TargetType.Self)
+            {
+                return subjectId;
+            }
             EntityId target = EntityId.None;
             int considered = 0;
             // TODO: Restrict targets to ability range.

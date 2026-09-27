@@ -9,7 +9,7 @@ namespace BattleForDune.Core.Events.Types
         EntityId targetId, 
         byte stacks, 
         byte power, 
-        byte duration,
+        sbyte duration,
         RegistryKey effectKey,
         sbyte skill,
         sbyte difficulty) : IGameEvent
@@ -22,7 +22,7 @@ namespace BattleForDune.Core.Events.Types
         public EntityId InstanceId;
         public byte Stacks = stacks;
         public byte Power = power;
-        public byte Duration = duration;
+        public sbyte Duration = duration;
         public RegistryKey EffectKey = effectKey;
         public sbyte Skill = skill;
         public sbyte Difficulty = difficulty;
