@@ -102,7 +102,7 @@ namespace BattleForDune.FastLookup
                 _indexToHandle[indexToRemove] = movingHandle;
             }
 
-            _values[lastIndex] = default;
+            _values[lastIndex] = default!;
             _indexToHandle[lastIndex] = -1;
             _count--;
         }

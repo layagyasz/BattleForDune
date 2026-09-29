@@ -9,10 +9,7 @@ namespace BattleForDune.Core.Components
         private readonly SparseStorage<IGenericEffect> _effects = new(capacity);
         private readonly UniqueIndex _byId = new(capacity);
         private readonly MultiIndex _byOwner = new(capacity, capacity);
-
-        // TODO: This index does not support an effect having multiple event types.  Will need to implement
-        // a more complicated index for many-to-many relationships.
-        private readonly MultiIndex _byType = new(capacity, Enum.GetValues<GameEventType>().Length);
+        private readonly ComplexIndex _byType = new(Enum.GetValues<GameEventType>().Length, capacity, capacity);
 
         public bool Add(IGenericEffect effect)
         {
@@ -51,14 +48,14 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect> ByOwner(
-            EntityId ownerId)
+        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect, MultiIndex.IndexEnumerator> 
+            ByOwner(EntityId ownerId)
         {
             return new(_effects, _byOwner.GetEnumerator(ownerId.Value));
         }
 
-        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect> ByEventType(
-            GameEventType eventType)
+        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect, ComplexIndex.IndexEnumerator> 
+            ByEventType(GameEventType eventType)
         {
             return new(_effects, _byType.GetEnumerator((int)eventType));
         }

@@ -25,11 +25,11 @@ namespace BattleForDune.Core.Components
                 abilities = _abilities.Get(handle);
                 return true;
             }
-            abilities = default;
+            abilities = [];
             return false;
         }
 
-        public bool TryGet(EntityId ownerId, byte abilityId, out Ability ability)
+        public bool TryGet(EntityId ownerId, byte abilityId, out Ability? ability)
         {
             if (abilityId == 0xFF)
             {

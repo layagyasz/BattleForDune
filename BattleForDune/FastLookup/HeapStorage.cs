@@ -88,7 +88,7 @@ namespace BattleForDune.FastLookup
 
             RemoveAtHeapIndex(index);
 
-            _values[handle] = default;
+            _values[handle] = default!;
             _handleToHeap[handle] = -1;
             _nextHandle[handle] = _freeHandle;
             _freeHandle = handle;

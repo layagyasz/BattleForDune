@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections;
+using System.Numerics;
 
 namespace BattleForDune.FastLookup
 {
@@ -6,7 +7,7 @@ namespace BattleForDune.FastLookup
     {
         private record struct IndexNode(int Next, int Previous, int Key, int Handle);
 
-        public ref struct IndexEnumerator(MultiIndex index, int start, int targetKey)
+        public ref struct IndexEnumerator(MultiIndex index, int start, int targetKey) : IEnumerator<int>
         {
             private readonly MultiIndex _index = index;
             private readonly int _targetKey = targetKey;
@@ -14,11 +15,11 @@ namespace BattleForDune.FastLookup
             private int _currentHandle = -1;
 
             public readonly int Current => _currentHandle;
+            readonly object IEnumerator.Current => _currentHandle;
 
-            public readonly IndexEnumerator GetEnumerator()
-            {
-                return this;
-            }
+            public readonly IndexEnumerator GetEnumerator() => this;
+
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -33,6 +34,11 @@ namespace BattleForDune.FastLookup
                     }
                 }
                 return false;
+            }
+
+            public readonly void Reset()
+            {
+                throw new NotSupportedException();
             }
         }
 

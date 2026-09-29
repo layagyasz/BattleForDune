@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Reflection.Metadata;
 
 namespace BattleForDune.FastLookup
 {
@@ -38,43 +39,51 @@ namespace BattleForDune.FastLookup
 
         public bool TryGet(int key, out int handle)
         {
-            int index = key & _mask;
-            handle = -1;
-            while (_table[index].Handle != -1)
+            var index = FindIndex(key);
+            if (index != -1)
             {
-                if (_table[index].Key == key)
-                {
-                    handle = _table[index].Handle;
-                    return true;
-                }
-                index = (index + 1) & _mask;
+                handle = _table[index].Handle;
+                return true;
             }
-            return false;
+            else
+            {
+                handle = -1;
+                return false;
+            }
         }
 
         public bool RemoveOnly(int key, out int handle)
         {
-            int index = key & _mask;
-            int initial = index;
-
-            ref var entry = ref _table[index];
-            while (entry.Handle != -1)
+            var index = FindIndex(key);
+            if (index != -1)
             {
-                if (entry.Key == key)
-                {
-                    handle = entry.Handle;
-                    Rehash(index);
-                    return true;
-                }
-                index = (index + 1) & _mask;
-                if (index == initial)
+                handle = _table[index].Handle;
+                Rehash(index);
+                return true;
+            }
+            else
+            {
+                handle = -1;
+                return false;
+            }
+        }
+
+        private int FindIndex(int key)
+        {
+            for (int i = 0; i < _table.Length;++i)
+            {
+                var index = (key + i) & _mask;
+                ref var entry = ref _table[index];
+                if (entry.Handle == -1)
                 {
                     break;
                 }
-                entry = ref _table[index];
+                if (entry.Key == key)
+                {
+                    return index;
+                }
             }
-            handle = -1;
-            return false;
+            return -1;
         }
 
         public void RemoveAll(int key)

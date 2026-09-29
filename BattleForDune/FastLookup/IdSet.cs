@@ -41,6 +41,10 @@ namespace BattleForDune.FastLookup
             }
 
             int slot = FindSlotForInsert(val);
+            if (slot == -1)
+            {
+                return false;
+            }
             _values[slot].Key = val;
             _values[slot].Index = _count;
 
@@ -79,23 +83,32 @@ namespace BattleForDune.FastLookup
 
         private int FindSlot(int val)
         {
-            int slot = val & _mask;
-            while (_values[slot].Index != -1)
+            for (int i=0; i<_values.Length;++i)
             {
-                if (_values[slot].Key == val) return slot;
-                slot = (slot + 1) & _mask;
+                var slot = (val + i) & _mask;
+                if (_values[slot].Index == -1)
+                {
+                    return -1;
+                }
+                if (_values[slot].Key == val)
+                {
+                    return slot;
+                }
             }
             return -1;
         }
 
         private int FindSlotForInsert(int val)
         {
-            int slot = val & _mask;
-            while (_values[slot].Index != -1)
+            for (int i=0;i<_values.Length; ++i)
             {
-                slot = (slot + 1) & _mask;
+                var slot = (val + i) & _mask;
+                if (_values[slot].Index == -1)
+                {
+                    return slot;
+                }
             }
-            return slot;
+            return -1;
         }
 
         private void RehashCluster(int gapIndex)

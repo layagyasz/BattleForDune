@@ -4,7 +4,7 @@ namespace BattleForDune.Core.Components
 {
     public class SimpleComponent<T>(int capacity) : IGameComponent<T>
     {
-        private static T _null = default;
+        private static T _null = default!;
         private readonly SparseStorage<T> _values = new(capacity);
         private readonly UniqueIndex _index = new(capacity);
 

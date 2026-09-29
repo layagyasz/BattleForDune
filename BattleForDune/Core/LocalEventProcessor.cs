@@ -83,34 +83,35 @@ namespace BattleForDune.Core
             // Find an existing effect to merge with.
             foreach (var effect in _world.GetEffects().ByOwner(@event.TargetId))
             {
-                if (effect.EffectKey == @event.EffectKey)
+                if (effect.EffectKey != @event.EffectKey)
                 {
-                    if (!effect.IsMergeable)
-                    {
-                        break;
-                    }
+                    continue;
+                }
+                if (!effect.IsMergeable)
+                {
+                    break;
+                }
 
-                    effect.Remove(_world, in sink);
-                    effect.MergeStacks(@event.Stacks);
-                    effect.MergePower(@event.Power);
-                    effect.Apply(_world, in sink);
+                effect.Remove(_world, in sink);
+                effect.MergeStacks(@event.Stacks);
+                effect.MergePower(@event.Power);
+                effect.Apply(_world, in sink);
 
-                    if (@event.Duration >= 0)
-                    {
-                        byte newExpiration = (byte)(_world.GetTurn() + @event.Duration);
-                        if (_world.GetTimers().TryGet(effect.Id, out var currentExpiration)
-                            && newExpiration > currentExpiration)
-                        {
-                            _world.GetTimers().Remove(effect.Id);
-                            _world.GetTimers().Add(effect.Id, newExpiration);
-                        }
-                    }
-                    else
+                if (@event.Duration >= 0)
+                {
+                    byte newExpiration = (byte)(_world.GetTurn() + @event.Duration);
+                    if (_world.GetTimers().TryGet(effect.Id, out var currentExpiration)
+                        && newExpiration > currentExpiration)
                     {
                         _world.GetTimers().Remove(effect.Id);
+                        _world.GetTimers().Add(effect.Id, newExpiration);
                     }
-                    return;
                 }
+                else
+                {
+                    _world.GetTimers().Remove(effect.Id);
+                }
+                return;
             }
 
             // If no matching effects exist, add a new one.
@@ -277,7 +278,7 @@ namespace BattleForDune.Core
 
             if (hasAbility)
             {
-                AbilityIntercept(ability, ref @event);
+                AbilityIntercept(ability!, ref @event);
             }
             _world.Intercept(ref @event);
 
@@ -288,7 +289,7 @@ namespace BattleForDune.Core
 
             if (hasAbility)
             {
-                AbilityHandle(ability, in @event, sink);
+                AbilityHandle(ability!, in @event, sink);
             }
             _world.Handle(in @event, sink);
             ApplyAddEffect(in @event, sink);
@@ -310,7 +311,7 @@ namespace BattleForDune.Core
 
             if (hasAbility)
             {
-                AbilityIntercept(ability, ref @event);
+                AbilityIntercept(ability!, ref @event);
             }
             _world.Intercept(ref @event);
 
@@ -327,7 +328,7 @@ namespace BattleForDune.Core
 
             if (hasAbility)
             {
-                AbilityHandle(ability, in @event, sink);
+                AbilityHandle(ability!, in @event, sink);
             }
             _world.Handle(in @event, sink);
         }
@@ -339,7 +340,7 @@ namespace BattleForDune.Core
             bool hasAbility = _world.GetAbilities().TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
             {
-                AbilityIntercept(ability, ref @event);
+                AbilityIntercept(ability!, ref @event);
             }
             _world.Intercept(ref @event);
 
@@ -351,7 +352,7 @@ namespace BattleForDune.Core
 
             if (hasAbility)
             {
-                AbilityHandle(ability, in @event, sink);
+                AbilityHandle(ability!, in @event, sink);
             }
             _world.Handle(in @event, sink);
             ApplyDamage(in @event, sink);
@@ -378,13 +379,13 @@ namespace BattleForDune.Core
             bool hasAbility = _world.GetAbilities().TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
             {
-                AbilityIntercept(ability, ref @event);
+                AbilityIntercept(ability!, ref @event);
             }
             _world.Intercept(ref @event);
 
             if (hasAbility)
             {
-                AbilityHandle(ability, in @event, sink);
+                AbilityHandle(ability!, in @event, sink);
             }
             _world.Handle(in @event, sink);
             ApplyKill(in @event, sink);
@@ -395,13 +396,13 @@ namespace BattleForDune.Core
             bool hasAbility = _world.GetAbilities().TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
             {
-                AbilityIntercept(ability, ref @event);
+                AbilityIntercept(ability!, ref @event);
             }
             _world.Intercept(ref @event);
 
             if (hasAbility)
             {
-                AbilityHandle(ability, in @event, sink);
+                AbilityHandle(ability!, in @event, sink);
             }
             _world.Handle(in @event, sink);
             ApplyRemoveEffect(in @event, sink);
@@ -419,13 +420,13 @@ namespace BattleForDune.Core
             bool hasAbility = _world.GetAbilities().TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
             {
-                AbilityIntercept(ability, ref @event);
+                AbilityIntercept(ability!, ref @event);
             }
             _world.Intercept(ref @event);
 
             if (hasAbility)
             {
-                AbilityHandle(ability, in @event, sink);
+                AbilityHandle(ability!, in @event, sink);
             }
             _world.Handle(in @event, sink);
             ApplyUpdateStat(in @event, sink);
@@ -435,10 +436,10 @@ namespace BattleForDune.Core
         {
             if (_world.GetAbilities().TryGet(@event.SubjectId, @event.AbilityId, out var ability))
             {
-                AbilityIntercept(ability, ref @event);
+                AbilityIntercept(ability!, ref @event);
                 _world.Intercept(ref @event);
 
-                AbilityHandle(ability, in @event, sink);
+                AbilityHandle(ability!, in @event, sink);
                 _world.Handle(in @event, sink);
             }
         }
