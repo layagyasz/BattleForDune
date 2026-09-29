@@ -1,7 +1,7 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
-using static BattleForDune.Core.Components.Abilities.IGenericHandler;
+using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
@@ -9,7 +9,8 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
         DamageType DamageType,
         DamageVector DamageVector,
         Die Damage, 
-        sbyte ArmorPiercing) : IGameEventHandler<AttackEvent>, IGenericHandler
+        sbyte ArmorPiercing) 
+        : IAbilityHandler<AttackEvent>
     {
         public record class Prototype(
             DamageType DamageType,
@@ -17,7 +18,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
             Die Damage,
             sbyte ArmorPiercing) : IHandlerPrototype
         {
-            public IGenericHandler Materialize()
+            public IGenericAbilityHandler Materialize()
             {
                 return new BasicAttackHandler(DamageType, DamageVector, Damage, ArmorPiercing);
             }

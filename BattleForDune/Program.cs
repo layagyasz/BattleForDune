@@ -4,7 +4,7 @@ using BattleForDune.Core.Components;
 using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Abilities.Handlers;
 using BattleForDune.Core.Components.Effects;
-using BattleForDune.Core.Components.Effects.Types;
+using BattleForDune.Core.Components.Effects.Handlers;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Schema;
@@ -15,6 +15,7 @@ using Cardamom.Graphics;
 using Cardamom.Ui;
 using Cardamom.Utils.Suppliers.Ids;
 using Cardamom.Window;
+using MathNet.Numerics.Random;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -33,10 +34,18 @@ namespace BattleForDune
                     false);
 
             var effects =
-                new IGenericEffect.IEffectPrototype[]
+                new Effect.Prototype[]
                 {
-                    new DamageOverTimeEffect.Prototype(new(0), DamageType.Heat, DamageVector.Indirect),
-                    new UpdateStatEffect.Prototype(new(1), StatType.Initiative, new(0, 0, 0, 1))
+                    new(
+                        new(0), 
+                        [GameEventType.Tick], 
+                        true, 
+                        [new DamageOverTimeHandler.Prototype(DamageType.Heat, DamageVector.Indirect)]),
+                    new(
+                        new(1), 
+                        [], 
+                        false, 
+                        [new UpdateStatHandler.Prototype(StatType.Initiative, new(0, 0, 0, 1))])
                 };
             var abilities =
                 new Ability.Prototype[]
@@ -120,17 +129,15 @@ namespace BattleForDune
         private static DenseHexGrid<Tile> CreateMap(Vector2i size, Random random)
         {
             var map = new DenseHexGrid<Tile>(size);
-            var bytes = new byte[size.X * size.Y / 2];
-            random.NextBytes(bytes);
             for (int i=0; i<map.Height; ++i)
             {
                 for (int j=0; j<map.Width; ++j)
                 {
-                    var tile = i * map.Width + j;
-                    var bIndex = tile / 2;
-                    var bMod = tile & 1;
-                    var transform = (byte)(bytes[bIndex] >> (4 * bMod));
-                    map.Set(j, i, new Tile(new((ushort) random.Next(3)), new(transform)));
+                    map.Set(
+                        j, 
+                        i, 
+                        new Tile(
+                            new((ushort) random.Next(3)), new(random.NextBoolean(), (byte)random.Next(6))));
                 }
             }
             return map;

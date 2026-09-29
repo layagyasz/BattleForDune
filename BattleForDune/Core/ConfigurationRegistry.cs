@@ -7,12 +7,12 @@ namespace BattleForDune.Core
 {
     public class ConfigurationRegistry(
         Ability.Prototype[] abilities,
-        IGenericEffect.IEffectPrototype[] effects,
+        Effect.Prototype[] effects,
         Faction[] factions, 
         UnitPrototype[] unitPrototypes)
     {
         private readonly Ability.Prototype[] _abilities = abilities;
-        private readonly IGenericEffect.IEffectPrototype[] _effects = effects;
+        private readonly Effect.Prototype[] _effects = effects;
         private readonly Faction[] _factions = factions;
         private readonly UnitPrototype[] _unitPrototypes = unitPrototypes;
 
@@ -21,7 +21,7 @@ namespace BattleForDune.Core
             return _abilities[key.Value];
         }
 
-        public IGenericEffect.IEffectPrototype GetEffectPrototype(RegistryKey key)
+        public Effect.Prototype GetEffectPrototype(RegistryKey key)
         {
             return _effects[key.Value];
         }

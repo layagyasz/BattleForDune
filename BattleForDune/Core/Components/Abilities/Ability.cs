@@ -1,5 +1,6 @@
-﻿using BattleForDune.Core.Schema;
-using static BattleForDune.Core.Components.Abilities.IGenericHandler;
+﻿using BattleForDune.Core.Events;
+using BattleForDune.Core.Schema;
+using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities
 {
@@ -8,7 +9,7 @@ namespace BattleForDune.Core.Components.Abilities
         EntityId OwnerId, 
         TargetType TargetType, 
         ITargetComparator TargetComparator, 
-        IGenericHandler[] Handlers)
+        IGenericAbilityHandler[] Handlers)
     {
         public class Prototype(
             RegistryKey AbilityKey,
@@ -18,12 +19,35 @@ namespace BattleForDune.Core.Components.Abilities
         {
             public Ability Materialize(EntityId OwnerId)
             {
-                var handlers = new IGenericHandler[Handlers.Length];
+                var handlers = new IGenericAbilityHandler[Handlers.Length];
                 for (int i = 0; i < handlers.Length; ++i)
                 {
                     handlers[i] = Handlers[i].Materialize();
                 }
                 return new Ability(AbilityKey, OwnerId, TargetType, TargetComparator, handlers);
+            }
+        }
+
+        public void Intercept<T>(ref T @event, ComponentWorld world) where T : struct, IGameEvent
+        {
+            foreach (var handler in Handlers)
+            {
+                if (handler is IAbilityHandler<T> specificHandler)
+                {
+                    specificHandler.Intercept(ref @event, world);
+                }
+            }
+        }
+
+        public void Handle<T>(in T @event, IGameEventSink sink, ComponentWorld world)
+            where T : struct, IGameEvent
+        {
+            foreach (var handler in Handlers)
+            {
+                if (handler is IAbilityHandler<T> specificHandler)
+                {
+                    specificHandler.Handle(in @event, world, sink);
+                }
             }
         }
     }

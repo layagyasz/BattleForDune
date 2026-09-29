@@ -19,7 +19,7 @@ namespace BattleForDune.Core.Components
         private readonly PositionComponent _positions = new(1024);
         private readonly StatComponent _stats = new(1024);
         private readonly InitiativeComponent _initiative = new(1024);
-        private readonly EffectComponent _effects = new(1024);
+        private readonly EffectComponent _effects = new(registry, 1024);
         private readonly AbilityComponent _abilities = new(1024);
         private readonly TimerComponent _timers = new(1024);
 
@@ -107,7 +107,7 @@ namespace BattleForDune.Core.Components
         {
             foreach (var effect in _effects.ByEventType(@event.Type))
             {
-                ((IGameEventHandler<T>)effect).Intercept(ref @event, this);
+                effect.Intercept(ref @event, this);
             }
         }
 
@@ -115,7 +115,7 @@ namespace BattleForDune.Core.Components
         {
             foreach (var effect in _effects.ByEventType(@event.Type))
             {
-                ((IGameEventHandler<T>)effect).Handle(in @event, this, sink);
+                effect.Handle(in @event, this, sink);
             }
         }
     }

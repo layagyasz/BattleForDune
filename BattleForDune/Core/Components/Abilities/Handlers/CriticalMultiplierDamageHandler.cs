@@ -1,15 +1,14 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
-using static BattleForDune.Core.Components.Abilities.IGenericHandler;
+using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public record class CriticalMultiplierDamageHandler(float Multiplier) 
-        : IGameEventHandler<DamageEvent>, IGenericHandler
+    public record class CriticalMultiplierDamageHandler(float Multiplier) : IAbilityHandler<DamageEvent>
     {
         public record class Prototype(float Multiplier) : IHandlerPrototype
         {
-            public IGenericHandler Materialize()
+            public IGenericAbilityHandler Materialize()
             {
                 return new CriticalMultiplierDamageHandler(Multiplier);
             }

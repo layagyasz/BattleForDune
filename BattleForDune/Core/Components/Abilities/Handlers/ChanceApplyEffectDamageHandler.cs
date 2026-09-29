@@ -1,16 +1,16 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
-using static BattleForDune.Core.Components.Abilities.IGenericHandler;
+using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
     public record class ChanceApplyEffectDamageHandler(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
-        : IGameEventHandler<DamageEvent>, IGenericHandler
+        : IAbilityHandler<DamageEvent>
     {
         public record class Prototype(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
             : IHandlerPrototype
         {
-            public IGenericHandler Materialize()
+            public IGenericAbilityHandler Materialize()
             {
                 return new ChanceApplyEffectDamageHandler(EffectKey, Difficulty, Duration);
             }

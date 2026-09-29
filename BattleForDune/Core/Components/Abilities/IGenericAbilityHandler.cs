@@ -1,10 +1,10 @@
 ﻿namespace BattleForDune.Core.Components.Abilities
 {
-    public interface IGenericHandler
+    public interface IGenericAbilityHandler
     {
         public interface IHandlerPrototype
         {
-            IGenericHandler Materialize();
+            IGenericAbilityHandler Materialize();
         }
     }
 }

@@ -4,14 +4,15 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components
 {
-    public class EffectComponent(int capacity)
+    public class EffectComponent(ConfigurationRegistry registry, int capacity)
     {
-        private readonly SparseStorage<IGenericEffect> _effects = new(capacity);
+        private readonly ConfigurationRegistry _registry = registry;
+        private readonly SparseStorage<Effect> _effects = new(capacity);
         private readonly UniqueIndex _byId = new(capacity);
         private readonly MultiIndex _byOwner = new(capacity, capacity);
         private readonly ComplexIndex _byType = new(Enum.GetValues<GameEventType>().Length, capacity, capacity);
 
-        public bool Add(IGenericEffect effect)
+        public bool Add(Effect effect)
         {
             if (_effects.Allocate(effect, out var handle))
             {
@@ -20,7 +21,7 @@ namespace BattleForDune.Core.Components
                 {
                     _byOwner.Add(effect.OwnerId.Value, handle);
                 }
-                foreach (var @event in effect.SupportedEvents)
+                foreach (var @event in _registry.GetEffectPrototype(effect.EffectKey).SupportedEvents)
                 {
                     _byType.Add((int)@event, handle);
                 }
@@ -34,7 +35,7 @@ namespace BattleForDune.Core.Components
             if (_byId.RemoveOnly(id.Value, out var handle))
             {
                 ref var effect = ref _effects.Get(handle);
-                foreach (var @event in effect.SupportedEvents)
+                foreach (var @event in _registry.GetEffectPrototype(effect.EffectKey).SupportedEvents)
                 {
                     _byType.Remove((int)@event, handle);
                 }
@@ -48,13 +49,13 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect, MultiIndex.IndexEnumerator> 
+        public ComponentEnumerator<SparseStorage<Effect>, Effect, MultiIndex.IndexEnumerator> 
             ByOwner(EntityId ownerId)
         {
             return new(_effects, _byOwner.GetEnumerator(ownerId.Value));
         }
 
-        public ComponentEnumerator<SparseStorage<IGenericEffect>, IGenericEffect, ComplexIndex.IndexEnumerator> 
+        public ComponentEnumerator<SparseStorage<Effect>, Effect, ComplexIndex.IndexEnumerator> 
             ByEventType(GameEventType eventType)
         {
             return new(_effects, _byType.GetEnumerator((int)eventType));
