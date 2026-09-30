@@ -4,13 +4,13 @@ using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public record class CriticalMultiplierDamageHandler(float Multiplier) : IAbilityHandler<DamageEvent>
+    public record class DamageCriticalMultiplierHandler(float Multiplier) : IAbilityHandler<DamageEvent>
     {
         public record class Prototype(float Multiplier) : IHandlerPrototype
         {
             public IGenericAbilityHandler Materialize()
             {
-                return new CriticalMultiplierDamageHandler(Multiplier);
+                return new DamageCriticalMultiplierHandler(Multiplier);
             }
         }
 

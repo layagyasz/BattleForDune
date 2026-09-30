@@ -1,0 +1,28 @@
+[
+  {
+    "EffectKey": 0,
+    "SupportedEvents": [ "Tick" ],
+    "IsMergeable": true,
+    "Handlers": [
+      {
+        "$type": "DamageOverTime",
+        "DamageType": "Heat",
+        "DamageVector": [ "Indirect" ]
+      }
+    ]
+  },
+  {
+    "EffectKey": 1,
+    "SupportedEvents": [],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Initiative",
+        "Delta": {
+          "Advantage": 1
+        }
+      }
+    ]
+  }
+]

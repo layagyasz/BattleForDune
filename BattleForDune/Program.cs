@@ -32,52 +32,7 @@ namespace BattleForDune
                     "Battle for Dune",
                     new Vector2i(monitor.HorizontalResolution, monitor.VerticalResolution),
                     false);
-
-            var effects =
-                new Effect.Prototype[]
-                {
-                    new(
-                        new(0), 
-                        [GameEventType.Tick], 
-                        true, 
-                        [new DamageOverTimeHandler.Prototype(DamageType.Heat, DamageVector.Indirect)]),
-                    new(
-                        new(1), 
-                        [], 
-                        false, 
-                        [new UpdateStatHandler.Prototype(StatType.Initiative, new(0, 0, 0, 1))])
-                };
-            var abilities =
-                new Ability.Prototype[]
-                {
-                    new(
-                        new(0),
-                        TargetType.Enemy,
-                        new ITargetComparator.DefaultComparator(),
-                        [
-                            new AttackUseAbilityHandler.Prototype(0, 1, 0),
-                            new BasicAttackHandler.Prototype(
-                                DamageType.Physical, DamageVector.Direct, new(1, 6, 0, 0), 0),
-                            new CriticalMultiplierDamageHandler.Prototype(2f),
-                            new ChanceApplyEffectDamageHandler.Prototype(new(0), 18, 3)
-                        ])
-                };
-            var unitType =
-                new UnitPrototype(
-                    Key: new(0),
-                    Name: LocalizationKey.None,
-                    new StatBlockPrototype(
-                        Attack: 1,
-                        Defense: 1,
-                        Armor: 0,
-                        Shield: 0,
-                        Initiative: 0,
-                        Hitpoints: 10,
-                        Morale: 10,
-                        Threat: 0),
-                    [new(1)],
-                    [new(0)]);
-            var registry = new ConfigurationRegistry(abilities, effects, [], [unitType]);
+            var registry = ConfigurationRegistry.FromFile("resources/registry.json");
 
             var random = new Random();
             var components =

@@ -1,12 +1,14 @@
 ﻿using BattleForDune.Core.Schema;
+using System.Text.Json.Serialization;
 
 namespace BattleForDune.Core.Components.Abilities
 {
+    [JsonDerivedType(typeof(DefaultComparator), "Default")]
     public interface ITargetComparator
     {
         public int Compare(ComponentWorld world, EntityId subject, EntityId left, EntityId right);
 
-        public class DefaultComparator : ITargetComparator
+        public record class DefaultComparator : ITargetComparator
         {
             public static readonly DefaultComparator Instance = new();
 

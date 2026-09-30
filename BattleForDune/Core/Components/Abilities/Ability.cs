@@ -11,12 +11,21 @@ namespace BattleForDune.Core.Components.Abilities
         ITargetComparator TargetComparator, 
         IGenericAbilityHandler[] Handlers)
     {
-        public class Prototype(
+        public record class Prototype(
             RegistryKey AbilityKey,
             TargetType TargetType,
             ITargetComparator TargetComparator,
-            IHandlerPrototype[] Handlers)
+            IHandlerPrototype[] Handlers) : IComparable<Prototype>
         {
+            public int CompareTo(Prototype? other)
+            {
+                if (other == null)
+                {
+                    return 1;
+                }
+                return AbilityKey.CompareTo(other.AbilityKey);
+            }
+
             public Ability Materialize(EntityId OwnerId)
             {
                 var handlers = new IGenericAbilityHandler[Handlers.Length];

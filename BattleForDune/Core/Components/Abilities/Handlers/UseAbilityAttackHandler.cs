@@ -5,14 +5,14 @@ using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public class AttackUseAbilityHandler(sbyte Attack, byte CritRange, sbyte ShieldPiercing) 
+    public class UseAbilityAttackHandler(sbyte Attack, byte CritRange, sbyte ShieldPiercing) 
         : IAbilityHandler<UseAbilityEvent>
     {
         public record class Prototype(sbyte Attack, byte CritRange, sbyte ShieldPiercing) : IHandlerPrototype
         {
             public IGenericAbilityHandler Materialize()
             {
-                return new AttackUseAbilityHandler(Attack, CritRange, ShieldPiercing);
+                return new UseAbilityAttackHandler(Attack, CritRange, ShieldPiercing);
             }
         }
 

@@ -1,5 +1,5 @@
 {
-  "Units": [ "resources/units::*.json" ],
+  "Units": [ "resources/units::render.json" ],
   "Damage": "resources/view/damage.json",
   "Effects": "resources/view/effects.json",
   "Tiles": [ "resources/tiles::*.json" ]

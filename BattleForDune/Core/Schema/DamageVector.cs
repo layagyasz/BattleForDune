@@ -1,6 +1,10 @@
-﻿namespace BattleForDune.Core.Schema
+﻿using Cardamom.Json;
+using System.Text.Json.Serialization;
+
+namespace BattleForDune.Core.Schema
 {
     [Flags]
+    [JsonConverter(typeof(FlagJsonConverter<DamageVector>))]
     public enum DamageVector : byte
     {
         None = 0,

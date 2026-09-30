@@ -4,7 +4,7 @@ using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public record class ChanceApplyEffectDamageHandler(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
+    public record class DamageChanceApplyEffectHandler(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
         : IAbilityHandler<DamageEvent>
     {
         public record class Prototype(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
@@ -12,7 +12,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
         {
             public IGenericAbilityHandler Materialize()
             {
-                return new ChanceApplyEffectDamageHandler(EffectKey, Difficulty, Duration);
+                return new DamageChanceApplyEffectHandler(EffectKey, Difficulty, Duration);
             }
         }
 

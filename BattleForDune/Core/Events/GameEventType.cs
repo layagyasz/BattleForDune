@@ -1,5 +1,8 @@
-﻿namespace BattleForDune.Core.Events
+﻿using System.Text.Json.Serialization;
+
+namespace BattleForDune.Core.Events
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum GameEventType : byte
     {
         AddEffect,

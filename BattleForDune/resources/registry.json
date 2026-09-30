@@ -1,0 +1,6 @@
+{
+  "Abilities": "resources/abilities.json",
+  "Effects": "resources/effects.json",
+  "Factions": "resources/factions.json",
+  "Units": [ "resources/units::config.json" ]
+}

@@ -5,7 +5,7 @@ using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public record class BasicAttackHandler(
+    public record class AttackBasicHandler(
         DamageType DamageType,
         DamageVector DamageVector,
         Die Damage, 
@@ -20,7 +20,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
         {
             public IGenericAbilityHandler Materialize()
             {
-                return new BasicAttackHandler(DamageType, DamageVector, Damage, ArmorPiercing);
+                return new AttackBasicHandler(DamageType, DamageVector, Damage, ArmorPiercing);
             }
         }
 

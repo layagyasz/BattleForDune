@@ -1,0 +1,13 @@
+[
+  {
+    "UnitKey": 0,
+    "Stats": {
+      "Attack": 1,
+      "Defense": 1,
+      "Hitpoints": 10,
+      "Morale": 10
+    },
+    "Passives": [ 1 ],
+    "Abilities": [ 0 ]
+  }
+]

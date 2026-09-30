@@ -29,7 +29,7 @@ namespace BattleForDune.FastLookup
             _mask &= ~(1 << SafeEnumToInt(value));
         }
 
-        public static int SafeEnumToInt(TEnum enumValue)
+        private static int SafeEnumToInt(TEnum enumValue)
         {
             if (Unsafe.SizeOf<TEnum>() == 1)
             {

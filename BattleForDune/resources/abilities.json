@@ -1,0 +1,34 @@
+[
+  {
+    "AbilityKey": 0,
+    "TargetType": [ "Enemy" ],
+    "TargetComparator": {
+      "$type": "Default"
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAttack",
+        "Attack": 0,
+        "CriticalRange": 1,
+        "ShieldPiercing": 0
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Physical",
+        "DamageVector": [ "Direct" ],
+        "Damage": "1d6",
+        "ArmorPiercing": 0
+      },
+      {
+        "$type": "DamageCriticalMultiplier",
+        "Multiplier": 2.0
+      },
+      {
+        "$type": "DamageChanceApplyEffect",
+        "EffectKey": 0,
+        "Difficulty": 18,
+        "Duration": 3
+      }
+    ]
+  }
+]
