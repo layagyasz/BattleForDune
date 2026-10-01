@@ -7,14 +7,6 @@ namespace BattleForDune.Core.Components.Effects.Handlers
     public record class UpdateStatHandler(StatType Stat, Stat Delta)
         : IGenericEffectHandler
     {
-        public record class Prototype(StatType Stat, Stat Delta) : IGenericEffectHandler.IHandlerPrototype
-        {
-            public IGenericEffectHandler Materialize()
-            {
-                return new UpdateStatHandler(Stat, Delta);
-            }
-        }
-
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
             where TSink : IGameEventSink
         {

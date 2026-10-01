@@ -15,7 +15,7 @@ namespace BattleForDune.Core.Components.Effects
             RegistryKey EffectKey, 
             GameEventType[] SupportedEvents, 
             bool IsMergeable, 
-            IGenericEffectHandler.IHandlerPrototype[] Handlers) : IComparable<Prototype>
+            IGenericEffectHandler[] Handlers) : IComparable<Prototype>
         {
             public int CompareTo(Prototype? other)
             {
@@ -28,12 +28,7 @@ namespace BattleForDune.Core.Components.Effects
 
             public Effect Materialize(EntityId id, EntityId ownerId, EntityId sourceId, byte abilityId)
             {
-                var handlers = new IGenericEffectHandler[Handlers.Length];
-                for (int i = 0; i < handlers.Length; ++i)
-                {
-                    handlers[i] = Handlers[i].Materialize();
-                }
-                return new(EffectKey, id, ownerId, sourceId, abilityId, handlers);
+                return new(EffectKey, id, ownerId, sourceId, abilityId, Handlers);
             }
         }
 

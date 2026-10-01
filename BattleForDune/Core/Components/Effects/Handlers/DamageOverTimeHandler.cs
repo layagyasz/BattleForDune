@@ -9,15 +9,6 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         DamageVector DamageVector)
         : IEffectHandler<TickEvent>
     {
-        public record class Prototype(DamageType DamageType, DamageVector DamageVector) 
-            : IGenericEffectHandler.IHandlerPrototype
-        {
-            public IGenericEffectHandler Materialize()
-            {
-                return new DamageOverTimeHandler(DamageType, DamageVector);
-            }
-        }
-
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
             where TSink : IGameEventSink { }
 

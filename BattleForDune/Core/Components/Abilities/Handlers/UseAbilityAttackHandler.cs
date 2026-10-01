@@ -1,21 +1,12 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
-using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public class UseAbilityAttackHandler(sbyte Attack, byte CritRange, sbyte ShieldPiercing) 
+    public record class UseAbilityAttackHandler(sbyte Attack, byte CritRange, sbyte ShieldPiercing) 
         : IAbilityHandler<UseAbilityEvent>
     {
-        public record class Prototype(sbyte Attack, byte CritRange, sbyte ShieldPiercing) : IHandlerPrototype
-        {
-            public IGenericAbilityHandler Materialize()
-            {
-                return new UseAbilityAttackHandler(Attack, CritRange, ShieldPiercing);
-            }
-        }
-
         public void Intercept(ref UseAbilityEvent @event, ComponentWorld world) { }
 
         public void Handle<TSink>(

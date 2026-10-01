@@ -11,16 +11,6 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         EnumSet<StatType> Stat)
         : IEffectHandler<DamageEvent>
     {
-        public record class Prototype(
-            RegistryKey Key, EnumSet<DamageType> DamageType, DamageVector DamageVector, EnumSet<StatType> Stat)
-            : IGenericEffectHandler.IHandlerPrototype
-        {
-            public IGenericEffectHandler Materialize()
-            {
-                return new DamageImmunityHandler(DamageType, DamageVector, Stat);
-            }
-        }
-
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
             where TSink : IGameEventSink { }
 

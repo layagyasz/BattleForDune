@@ -1,6 +1,5 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Schema;
-using static BattleForDune.Core.Components.Abilities.IGenericAbilityHandler;
 
 namespace BattleForDune.Core.Components.Abilities
 {
@@ -15,7 +14,7 @@ namespace BattleForDune.Core.Components.Abilities
             RegistryKey AbilityKey,
             TargetType TargetType,
             ITargetComparator TargetComparator,
-            IHandlerPrototype[] Handlers) : IComparable<Prototype>
+            IGenericAbilityHandler[] Handlers) : IComparable<Prototype>
         {
             public int CompareTo(Prototype? other)
             {
@@ -28,12 +27,7 @@ namespace BattleForDune.Core.Components.Abilities
 
             public Ability Materialize(EntityId OwnerId)
             {
-                var handlers = new IGenericAbilityHandler[Handlers.Length];
-                for (int i = 0; i < handlers.Length; ++i)
-                {
-                    handlers[i] = Handlers[i].Materialize();
-                }
-                return new Ability(AbilityKey, OwnerId, TargetType, TargetComparator, handlers);
+                return new Ability(AbilityKey, OwnerId, TargetType, TargetComparator, Handlers);
             }
         }
 

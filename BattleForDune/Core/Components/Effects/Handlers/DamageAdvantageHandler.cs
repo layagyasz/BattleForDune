@@ -11,16 +11,6 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         sbyte Advantage)
         : IEffectHandler<DamageEvent>
     {
-        public record class Prototype(
-            EnumSet<DamageType> DamageType, DamageVector DamageVector, sbyte Advantage)
-            : IGenericEffectHandler.IHandlerPrototype
-        {
-            public IGenericEffectHandler Materialize()
-            {
-                return new DamageAdvantageHandler(DamageType, DamageVector, Advantage);
-            }
-        }
-
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
             where TSink : IGameEventSink { }
 
