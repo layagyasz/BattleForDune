@@ -1,6 +1,7 @@
 [
   {
     "AbilityKey": 0,
+    "Range": 1,
     "TargetType": [ "Enemy" ],
     "TargetComparator": {
       "$type": "Default"

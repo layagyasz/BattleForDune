@@ -66,7 +66,7 @@ namespace BattleForDune.FastLookup
                 return false;
             }
             var index = AllocateItemNode();
-            var item = _items[index];
+            ref var item = ref _items[index];
             item.Position = position;
             item.Element = element;
             return InsertInternal(0, index, 0);
@@ -88,6 +88,7 @@ namespace BattleForDune.FastLookup
                 return InsertInternal(node.ChildOrItemLink + childIndex, itemIndex, depth + 1);
             }
 
+            item.NextItemIndex = node.ChildOrItemLink;
             node.ChildOrItemLink = itemIndex;
             node.ItemCount++;
 
@@ -130,8 +131,6 @@ namespace BattleForDune.FastLookup
             {
                 int nextItemIndex = _items[currentItemIndex].NextItemIndex;
                 ref var item = ref _items[currentItemIndex];
-
-                FreeItemNode(currentItemIndex);
 
                 int childOffset = GetChildIndexContainingPoint(ref node, item.Position);
                 InsertInternal(childStart + childOffset, currentItemIndex, depth + 1);
@@ -276,7 +275,7 @@ namespace BattleForDune.FastLookup
                 return true;
             }
 
-                if (node.IsLeaf)
+            if (node.IsLeaf)
             {
                 int itemIndex = node.ChildOrItemLink;
                 while (itemIndex != -1)
@@ -310,7 +309,7 @@ namespace BattleForDune.FastLookup
             int midR = node.Bounds.TopLeft.R + (node.Bounds.Size.R / 2);
 
             bool isRight = point.Q >= midQ;
-            bool isBottom = point.Q >= midR;
+            bool isBottom = point.R >= midR;
 
             if (!isRight && !isBottom)
             {

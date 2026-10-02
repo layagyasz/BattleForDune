@@ -20,5 +20,10 @@ namespace BattleForDune.Geometry
         {
             return new((sbyte)(left.Q - right.Q), (sbyte)(left.R - right.R));
         }
+
+        public override string ToString()
+        {
+            return $"({Q}, {R}, {S})";
+        }
     }
 }

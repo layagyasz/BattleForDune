@@ -4,14 +4,16 @@ using BattleForDune.Core.Schema;
 namespace BattleForDune.Core.Components.Abilities
 {
     public record class Ability(
-        RegistryKey AbilityKey, 
-        EntityId OwnerId, 
+        EntityId OwnerId,
+        RegistryKey AbilityKey,
+        sbyte Range,
         TargetType TargetType, 
         ITargetComparator TargetComparator, 
         IGenericAbilityHandler[] Handlers)
     {
         public record class Prototype(
             RegistryKey AbilityKey,
+            sbyte Range,
             TargetType TargetType,
             ITargetComparator TargetComparator,
             IGenericAbilityHandler[] Handlers) : IComparable<Prototype>
@@ -27,7 +29,7 @@ namespace BattleForDune.Core.Components.Abilities
 
             public Ability Materialize(EntityId OwnerId)
             {
-                return new Ability(AbilityKey, OwnerId, TargetType, TargetComparator, Handlers);
+                return new Ability(OwnerId, AbilityKey, Range, TargetType, TargetComparator, Handlers);
             }
         }
 

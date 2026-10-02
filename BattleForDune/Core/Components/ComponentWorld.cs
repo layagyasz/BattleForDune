@@ -16,7 +16,8 @@ namespace BattleForDune.Core.Components
         private readonly IdSet _units = new(1024);
         private readonly TeamComponent _teams = new(1024);
         private readonly FactionComponent _factions = new(1024);
-        private readonly PositionComponent _positions = new(1024);
+        // TODO: Pass size in from map
+        private readonly PositionComponent _positions = new(new(new(0, 0), new(64, 32)), 1024);
         private readonly StatComponent _stats = new(1024);
         private readonly InitiativeComponent _initiative = new(1024);
         private readonly EffectComponent _effects = new(registry, 1024);
