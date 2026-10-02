@@ -12,6 +12,7 @@ namespace BattleForDune.Core.Events
         FinalizeInitiative,
         Initiative,
         Kill,
+        Move,
         RemoveEffect,
         Tick,
         UpdateStat,

@@ -4,7 +4,7 @@ using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
 using BattleForDune.FastLookup;
-using System.Diagnostics;
+using BattleForDune.Geometry;
 
 namespace BattleForDune.Core.Systems
 {
@@ -67,6 +67,7 @@ namespace BattleForDune.Core.Systems
             foreach (var unitId in world.GetInitiative().AsSpan())
             {
                 DoTurn(unitId, world, sink);
+                Thread.Sleep(_delay);
             }
         }
 
@@ -79,6 +80,22 @@ namespace BattleForDune.Core.Systems
                 return;
             }
 
+            if (DoAbility(unitId, team, world, sink))
+            {
+                sink.Flush();
+                return;
+            }
+
+            if (DoMove(unitId, team, world, sink))
+            {
+                sink.Flush();
+                return;
+            }
+        }
+
+        private bool DoAbility<TSink>(EntityId unitId, byte team, ComponentWorld world, TSink sink)
+            where TSink : IGameEventSink
+        {
             if (world.GetAbilities().TryGet(unitId, out var abilities))
             {
                 for (int i = 0; i < abilities.Length; ++i)
@@ -87,12 +104,72 @@ namespace BattleForDune.Core.Systems
                     if (target != EntityId.None)
                     {
                         sink.Queue(new UseAbilityEvent(unitId, 0, target));
-                        break;
+                        return true;
                     }
                 }
             }
-            sink.Flush();
-            Thread.Sleep(_delay);
+            return false;
+        }
+
+        private bool DoMove<TSink>(EntityId unitId, byte team, ComponentWorld world, TSink sink)
+            where TSink : IGameEventSink
+        {
+            ref var position = ref world.GetPositions().TryGet(unitId, out var isFound);
+            if (!isFound)
+            {
+                return false;
+            }
+            var target = FindMoveTarget(unitId, position, team, world);
+            if (target == EntityId.None)
+            {
+                return false;
+            }
+
+            var targetPosition = world.GetPositions().TryGet(target, out isFound);
+            if (!isFound)
+            {
+                return false;
+            }
+
+            // TODO: Use depth limited a* for path finding
+            var distance = Hexes.Distance(position, targetPosition);
+            var move = Hexes.Lerp(position, targetPosition, 1f / distance);
+            if (world.GetPositions().IsOccupied(move))
+            {
+                return false;
+            }
+
+            sink.Queue(new MoveEvent(unitId, position, move));
+            return true;
+        }
+
+        private EntityId FindMoveTarget(
+            EntityId subjectId, Hex2b position, byte subjectTeam, ComponentWorld world)
+        {
+            // TODO: Use quad tree find nearest
+            EntityId target = EntityId.None;
+            int distance = 0;
+            foreach (var option in world.GetUnits().AsSpan())
+            {
+                var optionId = new EntityId(option);
+                var optionPosition = world.GetPositions().TryGet(optionId, out var isFound);
+                if (!isFound)
+                {
+                    continue;
+                }
+                if (GetTargetType(subjectId, subjectTeam, optionId, world) != TargetType.Enemy)
+                {
+                    continue;
+                }
+
+                var d = Hexes.Distance(position, optionPosition);
+                if (target == EntityId.None || d < distance)
+                {
+                    target = optionId;
+                    distance = d;
+                }
+            }
+            return target;
         }
 
         private EntityId FindTarget(EntityId subjectId, byte subjectTeam, Ability ability, ComponentWorld world)

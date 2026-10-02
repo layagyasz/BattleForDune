@@ -21,6 +21,11 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
+        public bool IsOccupied(Hex2b position)
+        {
+            return _quadTree.IsOccupied(position);
+        }
+
         public void QueryRange<TCallback>(Hex2b position, byte range, ref TCallback callback) 
             where TCallback : struct, ICallback<int>, allows ref struct
         {

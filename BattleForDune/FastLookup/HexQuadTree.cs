@@ -5,6 +5,16 @@ namespace BattleForDune.FastLookup
 {
     public class HexQuadTree<T> where T : IEquatable<T>
     {
+        private ref struct OccupiedAccumulator : ICallback<T>
+        {
+            public bool IsFound { get; private set; }
+
+            public void Notify(int handle, ref T value)
+            {
+                IsFound = true;
+            }
+        }
+
         private struct Node(HexRect2b bounds)
         {
             public HexRect2b Bounds = bounds;
@@ -57,6 +67,13 @@ namespace BattleForDune.FastLookup
                 _items[i].NextItemIndex = i + 1;
             }
             _items[maxItems - 1].NextItemIndex = -1;
+        }
+
+        public bool IsOccupied(Hex2b position)
+        {
+            var accumulator = new OccupiedAccumulator();
+            Query(position, 0, ref accumulator);
+            return accumulator.IsFound;
         }
 
         public bool Insert(Hex2b position, T element)

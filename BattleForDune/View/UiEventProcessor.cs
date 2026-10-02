@@ -3,7 +3,6 @@ using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Geometry;
 using BattleForDune.View.Config;
-using OpenTK.Mathematics;
 
 namespace BattleForDune.View
 {
@@ -54,6 +53,10 @@ namespace BattleForDune.View
                 case GameEventType.Kill:
                     var kill = @event.ReadPayload<KillEvent>();
                     _unitLayer?.Remove(kill.TargetId);
+                    return;
+                case GameEventType.Move:
+                    var move = @event.ReadPayload<MoveEvent>();
+                    _unitLayer?.Move(move.SubjectId, move.Destination);
                     return;
             }
         }

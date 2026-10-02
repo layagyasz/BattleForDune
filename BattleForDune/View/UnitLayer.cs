@@ -35,6 +35,8 @@ namespace BattleForDune.View
         private readonly UnitTextureCache _textures = textures;
         private readonly DenseVertexBuffer<Vertex3> _vertices = new(capacity, 6);
         private readonly UniqueIndex _index = new(capacity);
+        // TODO: Make indices generic
+        private readonly UniqueIndex _prototypes = new(capacity);
         private readonly RenderShader _shader = shader;
 
         public void Add(EntityId unitId, RegistryKey prototypeKey, Hex2b position)
@@ -47,7 +49,24 @@ namespace BattleForDune.View
                 _textures.Get(prototypeKey));
             _vertices.Allocate(out var handle);
             _vertices.Set(handle, _buffer);
+
             _index.Add(unitId.Value, handle);
+            _prototypes.Add(unitId.Value, prototypeKey.Value);
+        }
+
+        public void Move(EntityId unitId, Hex2b position)
+        {
+            if (_index.TryGet(unitId.Value, out var handle) 
+                && _prototypes.TryGet(unitId.Value, out var prototypeKey))
+            {
+                SetVertices(
+                    _buffer,
+                    0,
+                    Geometry.Projection.AxialToCartesian(position) + _offset,
+                    Color4.White,
+                    _textures.Get(new RegistryKey((ushort)prototypeKey)));
+                _vertices.Set(handle, _buffer);
+            }
         }
 
         public void Remove(EntityId unitId)
@@ -55,6 +74,7 @@ namespace BattleForDune.View
             if (_index.RemoveOnly(unitId.Value, out var handle))
             {
                 _vertices.Free(handle);
+                _prototypes.RemoveOnly(unitId.Value, out var _);
             }
         }
 

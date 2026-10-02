@@ -50,6 +50,11 @@ namespace BattleForDune.Core
                     Process(ref kill, sink);
                     Notify(in kill);
                     return;
+                case GameEventType.Move:
+                    var move = @event.ReadPayload<MoveEvent>();
+                    Process(ref move, sink);
+                    Notify(in move);
+                    return;
                 case GameEventType.RemoveEffect:
                     var removeEffect = @event.ReadPayload<RemoveEffectEvent>();
                     Process(ref removeEffect, sink);
@@ -225,6 +230,16 @@ namespace BattleForDune.Core
             }
         }
 
+        private void ApplyMove<TSink>(in MoveEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _world.GetPositions().Remove(@event.SubjectId);
+            _world.GetPositions().Add(@event.SubjectId, @event.Destination);
+        }
+
         private void ApplyRemoveEffect<TSink>(in RemoveEffectEvent @event, TSink sink) 
             where TSink : IGameEventSink
         {
@@ -388,6 +403,13 @@ namespace BattleForDune.Core
             }
             _world.Handle(in @event, sink);
             ApplyKill(in @event, sink);
+        }
+
+        private void Process<TSink>(ref MoveEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            _world.Handle(in @event, sink);
+            ApplyMove(in @event, sink);
         }
 
         private void Process<TSink>(ref RemoveEffectEvent @event, TSink sink) where TSink : IGameEventSink
