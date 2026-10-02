@@ -35,10 +35,12 @@ namespace BattleForDune
             var registry = ConfigurationRegistry.FromFile("resources/registry.json");
 
             var random = new Random();
+            var map = CreateMap(new(64, 64), random);
             var components =
                 new ComponentWorld(
                     new LinearCongruentialIdSupplier(0x9E3779B1, (uint)(2 * random.Next() + 1), random.Next()),
                     registry,
+                    map,
                     random);
 
             var uiRegistry = ViewConfigurationRegistry.FromFile("resources/view/registry.json");
@@ -69,8 +71,7 @@ namespace BattleForDune
             var uiProcessor = new UiEventProcessor(uiRegistry, components);
             var uiEventPump = new EventPump<UiEventProcessor>(uiProcessor);
             var controller = new BattleScreenController(uiEventPump, uiProcessor);
-            var screen = new BattleScreen(
-                controller, sceneFactory.CreateBattle(CreateMap(new(100, 100), random), 128));
+            var screen = new BattleScreen(controller, sceneFactory.CreateBattle(map, 128));
             ui.SetRoot(screen);
 
             var processor = new LocalEventProcessor(components, [uiEventPump]);

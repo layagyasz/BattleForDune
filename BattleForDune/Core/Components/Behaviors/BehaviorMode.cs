@@ -2,7 +2,7 @@
 {
     public enum BehaviorMode : byte
     {
-        Default,
-        Broken
+        Default = 0,
+        Broken = 1
     }
 }

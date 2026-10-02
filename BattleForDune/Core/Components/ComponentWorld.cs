@@ -1,24 +1,28 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Schema;
 using BattleForDune.FastLookup;
+using BattleForDune.Geometry;
 using Cardamom.Utils.Suppliers.Ids;
+using OpenTK.Mathematics;
+using System.Numerics;
 
 namespace BattleForDune.Core.Components
 {
     public class ComponentWorld(
-        LinearCongruentialIdSupplier ids, ConfigurationRegistry registry, Random random) : IGameEventRouter
+        LinearCongruentialIdSupplier ids, ConfigurationRegistry registry, DenseHexGrid<Tile> map, Random random) 
+        : IGameEventRouter
     {
         private readonly LinearCongruentialIdSupplier _ids = ids;
 
         public ConfigurationRegistry Registry { get; init; } = registry;
+        public DenseHexGrid<Tile> Map { get; init; } = map;
         public Random Random { get; init; } = random;
 
         public byte Turn { get; private set; }
         public IdSet Units { get; init; } = new(1024);
         public TeamComponent Teams { get; init; } = new(1024);
         public FactionComponent Factions { get; init; } = new(1024);
-        // TODO: Pass size in from map
-        public PositionComponent Positions { get; init; } = new(new(new(0, 0), new(64, 32)), 1024);
+        public PositionComponent Positions { get; init; } = new(Upsize(map.Size), 1024);
         public BehaviorComponent Behaviors { get; init; } = new(1024);
         public StatComponent Stats { get; init; } = new(1024);
         public InitiativeComponent Inititiative { get; init; } = new(1024);
@@ -60,6 +64,13 @@ namespace BattleForDune.Core.Components
             {
                 effect.Handle(in @event, this, sink);
             }
+        }
+
+        private static HexRect2b Upsize(Vector2i size)
+        {
+            byte width = (byte)BitOperations.RoundUpToPowerOf2((uint)size.X);
+            byte height = (byte)BitOperations.RoundUpToPowerOf2((uint)size.Y);
+            return new HexRect2b(new(), new(width, height >> 1));
         }
     }
 }

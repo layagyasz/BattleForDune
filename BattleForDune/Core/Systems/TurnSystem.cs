@@ -147,7 +147,7 @@ namespace BattleForDune.Core.Systems
             // TODO: Use depth limited a* for path finding
             var distance = Hexes.Distance(position, targetPosition);
             var move = Hexes.Lerp(position, targetPosition, direction / distance);
-            if (world.Positions.IsOccupied(move))
+            if (!world.Map.Contains(move) || world.Positions.IsOccupied(move))
             {
                 return false;
             }
