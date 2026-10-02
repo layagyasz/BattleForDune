@@ -1,8 +1,10 @@
 ﻿using BattleForDune.Core.Components.Abilities;
 using BattleForDune.FastLookup;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BattleForDune.Core.Components
 {
+    // TODO: Use inline array?
     public class AbilityComponent(int capacity) : IGameComponent<Ability[]>
     {
         private readonly SparseStorage<Ability[]> _abilities = new(capacity);
@@ -29,7 +31,7 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public bool TryGet(EntityId ownerId, byte abilityId, out Ability? ability)
+        public bool TryGet(EntityId ownerId, byte abilityId, [MaybeNullWhen(false)] out Ability ability)
         {
             if (abilityId == 0xFF)
             {

@@ -37,8 +37,8 @@ namespace BattleForDune
             var random = new Random();
             var components =
                 new ComponentWorld(
-                    registry,
                     new LinearCongruentialIdSupplier(0x9E3779B1, (uint)(2 * random.Next() + 1), random.Next()),
+                    registry,
                     random);
 
             var uiRegistry = ViewConfigurationRegistry.FromFile("resources/view/registry.json");

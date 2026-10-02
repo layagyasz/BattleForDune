@@ -7,8 +7,10 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
     public record class AttackBasicHandler(
         DamageType DamageType,
         DamageVector DamageVector,
+        StatType Stat,
         Die Damage, 
-        sbyte ArmorPiercing) 
+        sbyte ArmorPiercing,
+        bool IsPrimary) 
         : IAbilityHandler<AttackEvent>
     {
         public void Intercept(ref AttackEvent @event, ComponentWorld world) { }
@@ -20,23 +22,26 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
             {
                 return;
             }
-            ref var stats = ref world.GetStats().TryGet(@event.TargetId, out var isFound);
+            ref var stats = ref world.Stats.TryGet(@event.TargetId, out var isFound);
             if (!isFound)
             {
                 return;
             }
+            byte reduction = 
+                Stat == StatType.Hitpoints 
+                    ? (byte)Math.Max(0, stats[StatType.Armor].Value - ArmorPiercing) : (byte)0;
             var damage =
                 new DamageEvent(
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
-                    isPrimary: true,
+                    IsPrimary,
                     @event.IsCritical,
                     DamageType,
                     DamageVector,
-                    StatType.Hitpoints,
+                    Stat,
                     Damage,
-                    (byte)Math.Max(0, stats[StatType.Armor].Value - ArmorPiercing));
+                    reduction);
             sink.Queue(in damage);
         }
     }

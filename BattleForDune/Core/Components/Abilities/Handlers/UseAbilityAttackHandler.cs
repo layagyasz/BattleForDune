@@ -17,12 +17,12 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                 return;
             }
 
-            ref var stats = ref world.GetStats().TryGet(@event.SubjectId, out bool isFound);
+            ref var stats = ref world.Stats.TryGet(@event.SubjectId, out bool isFound);
             if (!isFound)
             {
                 return;
             }
-            ref var targetStats = ref world.GetStats().TryGet(@event.TargetId, out isFound);
+            ref var targetStats = ref world.Stats.TryGet(@event.TargetId, out isFound);
             if (!isFound)
             {
                 return;

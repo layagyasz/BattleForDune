@@ -16,12 +16,12 @@ namespace BattleForDune.Core.Components.Abilities
             {
                 // TODO: Compare position.
 
-                ref var leftStats = ref world.GetStats().TryGet(left, out bool isFound);
+                ref var leftStats = ref world.Stats.TryGet(left, out bool isFound);
                 if (!isFound)
                 {
                     return -1;
                 }
-                ref var rightStats = ref world.GetStats().TryGet(right, out isFound);
+                ref var rightStats = ref world.Stats.TryGet(right, out isFound);
                 if (!isFound)
                 {
                     return 1;

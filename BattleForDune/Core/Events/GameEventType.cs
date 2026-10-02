@@ -8,6 +8,7 @@ namespace BattleForDune.Core.Events
         AddEffect,
         AddUnit,
         Attack,
+        Break,
         Damage,
         FinalizeInitiative,
         Initiative,

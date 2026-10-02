@@ -1,5 +1,6 @@
 ﻿using BattleForDune.Core.Components;
 using BattleForDune.Core.Components.Abilities;
+using BattleForDune.Core.Components.Behaviors;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
@@ -64,9 +65,10 @@ namespace BattleForDune.Core.Systems
 
         public readonly void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
-            foreach (var unitId in world.GetInitiative().AsSpan())
+            foreach (var unitId in world.Inititiative.AsSpan())
             {
                 DoTurn(unitId, world, sink);
+                sink.Flush();
                 Thread.Sleep(_delay);
             }
         }
@@ -74,21 +76,31 @@ namespace BattleForDune.Core.Systems
         private void DoTurn<TSink>(EntityId unitId, ComponentWorld world, TSink sink) 
             where TSink : IGameEventSink
         {
-            var team = world.GetTeams().TryGet(unitId, out bool isFound);
+            var team = world.Teams.TryGet(unitId, out bool isFound);
             if (!isFound)
             {
                 return;
             }
 
-            if (DoAbility(unitId, team, world, sink))
+            var behavior = world.Behaviors.TryGet(unitId, out isFound);
+            if (!isFound)
             {
-                sink.Flush();
                 return;
             }
 
-            if (DoMove(unitId, team, world, sink))
+            if (behavior.Mode == BehaviorMode.Broken)
             {
-                sink.Flush();
+                DoMove(unitId, team, -1f, world, sink);
+                return;
+            }
+
+            if (DoAbility(unitId, team, world, sink))
+            {
+                return;
+            }
+
+            if (DoMove(unitId, team, 1f, world, sink))
+            {
                 return;
             }
         }
@@ -96,7 +108,7 @@ namespace BattleForDune.Core.Systems
         private bool DoAbility<TSink>(EntityId unitId, byte team, ComponentWorld world, TSink sink)
             where TSink : IGameEventSink
         {
-            if (world.GetAbilities().TryGet(unitId, out var abilities))
+            if (world.Abilities.TryGet(unitId, out var abilities))
             {
                 for (int i = 0; i < abilities.Length; ++i)
                 {
@@ -111,10 +123,11 @@ namespace BattleForDune.Core.Systems
             return false;
         }
 
-        private bool DoMove<TSink>(EntityId unitId, byte team, ComponentWorld world, TSink sink)
+        private static bool DoMove<TSink>(
+            EntityId unitId, byte team, float direction, ComponentWorld world, TSink sink)
             where TSink : IGameEventSink
         {
-            ref var position = ref world.GetPositions().TryGet(unitId, out var isFound);
+            ref var position = ref world.Positions.TryGet(unitId, out var isFound);
             if (!isFound)
             {
                 return false;
@@ -125,7 +138,7 @@ namespace BattleForDune.Core.Systems
                 return false;
             }
 
-            var targetPosition = world.GetPositions().TryGet(target, out isFound);
+            var targetPosition = world.Positions.TryGet(target, out isFound);
             if (!isFound)
             {
                 return false;
@@ -133,8 +146,8 @@ namespace BattleForDune.Core.Systems
 
             // TODO: Use depth limited a* for path finding
             var distance = Hexes.Distance(position, targetPosition);
-            var move = Hexes.Lerp(position, targetPosition, 1f / distance);
-            if (world.GetPositions().IsOccupied(move))
+            var move = Hexes.Lerp(position, targetPosition, direction / distance);
+            if (world.Positions.IsOccupied(move))
             {
                 return false;
             }
@@ -143,16 +156,16 @@ namespace BattleForDune.Core.Systems
             return true;
         }
 
-        private EntityId FindMoveTarget(
+        private static EntityId FindMoveTarget(
             EntityId subjectId, Hex2b position, byte subjectTeam, ComponentWorld world)
         {
             // TODO: Use quad tree find nearest
             EntityId target = EntityId.None;
             int distance = 0;
-            foreach (var option in world.GetUnits().AsSpan())
+            foreach (var option in world.Units.AsSpan())
             {
                 var optionId = new EntityId(option);
-                var optionPosition = world.GetPositions().TryGet(optionId, out var isFound);
+                var optionPosition = world.Positions.TryGet(optionId, out var isFound);
                 if (!isFound)
                 {
                     continue;
@@ -174,7 +187,7 @@ namespace BattleForDune.Core.Systems
 
         private EntityId FindTarget(EntityId subjectId, byte subjectTeam, Ability ability, ComponentWorld world)
         {
-            ref var position = ref world.GetPositions().TryGet(subjectId, out var isFound);
+            ref var position = ref world.Positions.TryGet(subjectId, out var isFound);
             if (!isFound)
             {
                 return EntityId.None;
@@ -193,7 +206,7 @@ namespace BattleForDune.Core.Systems
                     _random);
             if (ability.Range < 0)
             {
-                foreach (var option in world.GetUnits().AsSpan())
+                foreach (var option in world.Units.AsSpan())
                 {
                     var refOption = option;
                     accumulator.Notify(0, ref refOption);
@@ -201,7 +214,7 @@ namespace BattleForDune.Core.Systems
             }
             else
             {
-                world.GetPositions().QueryRange(position, (byte)ability.Range, ref accumulator);
+                world.Positions.QueryRange(position, (byte)ability.Range, ref accumulator);
             }
             return accumulator.GetTarget();
         }
@@ -213,7 +226,7 @@ namespace BattleForDune.Core.Systems
             {
                 return TargetType.Self;
             }
-            var targetTeam = world.GetTeams().TryGet(targetId, out bool isFound);
+            var targetTeam = world.Teams.TryGet(targetId, out bool isFound);
             if (!isFound)
             {
                 return TargetType.None;

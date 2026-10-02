@@ -17,7 +17,17 @@
         "$type": "AttackBasic",
         "DamageType": "Physical",
         "DamageVector": [ "Direct" ],
+        "Stat": "Hitpoints",
         "Damage": "1d6",
+        "ArmorPiercing": 0,
+        "IsPrimary": true
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Psychic",
+        "DamageVector": [ "Direct" ],
+        "Stat": "Morale",
+        "Damage": "1d4",
         "ArmorPiercing": 0
       },
       {

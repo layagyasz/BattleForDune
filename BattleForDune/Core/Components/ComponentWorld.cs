@@ -6,23 +6,25 @@ using Cardamom.Utils.Suppliers.Ids;
 namespace BattleForDune.Core.Components
 {
     public class ComponentWorld(
-        ConfigurationRegistry registry, LinearCongruentialIdSupplier ids, Random random) : IGameEventRouter
+        LinearCongruentialIdSupplier ids, ConfigurationRegistry registry, Random random) : IGameEventRouter
     {
-        private readonly ConfigurationRegistry _registry = registry;
         private readonly LinearCongruentialIdSupplier _ids = ids;
-        private readonly Random _random = random;
 
-        private byte _turn;
-        private readonly IdSet _units = new(1024);
-        private readonly TeamComponent _teams = new(1024);
-        private readonly FactionComponent _factions = new(1024);
+        public ConfigurationRegistry Registry { get; init; } = registry;
+        public Random Random { get; init; } = random;
+
+        public byte Turn { get; private set; }
+        public IdSet Units { get; init; } = new(1024);
+        public TeamComponent Teams { get; init; } = new(1024);
+        public FactionComponent Factions { get; init; } = new(1024);
         // TODO: Pass size in from map
-        private readonly PositionComponent _positions = new(new(new(0, 0), new(64, 32)), 1024);
-        private readonly StatComponent _stats = new(1024);
-        private readonly InitiativeComponent _initiative = new(1024);
-        private readonly EffectComponent _effects = new(registry, 1024);
-        private readonly AbilityComponent _abilities = new(1024);
-        private readonly TimerComponent _timers = new(1024);
+        public PositionComponent Positions { get; init; } = new(new(new(0, 0), new(64, 32)), 1024);
+        public BehaviorComponent Behaviors { get; init; } = new(1024);
+        public StatComponent Stats { get; init; } = new(1024);
+        public InitiativeComponent Inititiative { get; init; } = new(1024);
+        public EffectComponent Effects { get; init; } = new(registry, 1024);
+        public AbilityComponent Abilities { get; init; } = new(1024);
+        public TimerComponent Timers { get; init; } = new(1024);
 
         public EntityId NextId()
         {
@@ -34,79 +36,19 @@ namespace BattleForDune.Core.Components
             return new(id);
         }
 
-        public IdSet GetUnits()
-        {
-            return _units;
-        }
-
-        public AbilityComponent GetAbilities()
-        {
-            return _abilities;
-        }
-
-        public EffectComponent GetEffects()
-        {
-            return _effects;
-        }
-
-        public FactionComponent GetFactions()
-        {
-            return _factions;
-        }
-
-        public InitiativeComponent GetInitiative()
-        {
-            return _initiative;
-        }
-
-        public PositionComponent GetPositions()
-        {
-            return _positions;
-        }
-
-        public Random GetRandom()
-        {
-            return _random;
-        }
-
-        public ConfigurationRegistry GetRegistry()
-        {
-            return _registry;
-        }
-
-        public StatComponent GetStats()
-        {
-            return _stats;
-        }
-
-        public TeamComponent GetTeams()
-        {
-            return _teams;
-        }
-
-        public TimerComponent GetTimers()
-        {
-            return _timers;
-        }
-
-        public byte GetTurn()
-        {
-            return _turn;
-        }
-
         public byte IncrementTurn()
         {
-            return ++_turn;
+            return ++Turn;
         }
 
         public byte Roll(Die die)
         {
-            return die.Roll(_random);
+            return die.Roll(Random);
         }
 
         public void Intercept<T>(ref T @event) where T : struct, IGameEvent
         {
-            foreach (var effect in _effects.ByEventType(@event.Type))
+            foreach (var effect in Effects.ByEventType(@event.Type))
             {
                 effect.Intercept(ref @event, this);
             }
@@ -114,7 +56,7 @@ namespace BattleForDune.Core.Components
 
         public void Handle<T>(in T @event, IGameEventSink sink) where T : struct, IGameEvent
         {
-            foreach (var effect in _effects.ByEventType(@event.Type))
+            foreach (var effect in Effects.ByEventType(@event.Type))
             {
                 effect.Handle(in @event, this, sink);
             }

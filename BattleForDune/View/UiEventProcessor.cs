@@ -3,6 +3,7 @@ using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Geometry;
 using BattleForDune.View.Config;
+using OpenTK.Mathematics;
 
 namespace BattleForDune.View
 {
@@ -27,13 +28,14 @@ namespace BattleForDune.View
 
         public void Process<TSink>(ref GameEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            // TODO: Break into individual methods
             Hex2b pos;
             switch (@event.Type)
             {
                 case GameEventType.AddEffect:
                     var effect = @event.ReadPayload<AddEffectEvent>();
                     var effectView = _registry.GetEffect(effect.EffectKey);
-                    pos = _world.GetPositions().TryGet(effect.TargetId, out var _);
+                    pos = _world.Positions.TryGet(effect.TargetId, out var _);
                     // TODO: localize and color per damage type
                     _textParticleLayer?.Add(effectView.Name.ToUpper(), pos, effectView.Color);
                     return;
@@ -41,10 +43,16 @@ namespace BattleForDune.View
                     var unit = @event.ReadPayload<AddUnitEvent>();
                     _unitLayer?.Add(unit.UnitId, unit.UnitPrototypeKey, unit.Position);
                     return;
+                case GameEventType.Break:
+                    var @break = @event.ReadPayload<BreakEvent>();
+                    pos = _world.Positions.TryGet(@break.TargetId, out var _);
+                    // TODO: localize
+                    _textParticleLayer?.Add("BROKEN", pos, Color4.Magenta);
+                    return;
                 case GameEventType.Damage:
                     var damage = @event.ReadPayload<DamageEvent>();
                     var damageView = _registry.GetDamage(damage.DamageType);
-                    pos = _world.GetPositions().TryGet(damage.TargetId, out var isFound);
+                    pos = _world.Positions.TryGet(damage.TargetId, out var isFound);
                     if (isFound)
                     {
                         _textParticleLayer?.Add(damage.Damage.ToString(), pos, damageView.Color);
