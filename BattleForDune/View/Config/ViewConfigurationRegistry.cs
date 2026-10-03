@@ -45,7 +45,7 @@ namespace BattleForDune.View.Config
 
         public static ViewConfigurationRegistry FromFile(string path)
         {
-            var options = new JsonSerializerOptions();
+            var options = new JsonSerializerOptions() {  ReadCommentHandling = JsonCommentHandling.Skip };
             options.Converters.Add(new ColorJsonConverter());
             options.Converters.Add(new RegistryKeyJsonConverter());
             using var stream = new FileStream(path, FileMode.Open);

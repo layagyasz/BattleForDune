@@ -4,10 +4,10 @@
     "Stats": {
       "Attack": 1,
       "Defense": 1,
-      "Hitpoints": 10,
+      "Hitpoints": 20,
       "Morale": 10
     },
-    "Passives": [ 1 ],
+    "Passives": [],
     "Abilities": [ 0 ]
   }
 ]

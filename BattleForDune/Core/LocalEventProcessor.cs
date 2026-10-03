@@ -217,7 +217,11 @@ namespace BattleForDune.Core
                 }
                 else if (@event.Stat == StatType.Morale)
                 {
-                    sink.Queue(new BreakEvent(@event.SubjectId, @event.AbilityId, @event.TargetId));
+                    ref var behavior = ref _world.Behaviors.TryGet(@event.TargetId, out isFound);
+                    if (isFound && behavior.Mode != BehaviorMode.Broken)
+                    {
+                        sink.Queue(new BreakEvent(@event.SubjectId, @event.AbilityId, @event.TargetId));
+                    }
                 }
             }
 
@@ -268,8 +272,7 @@ namespace BattleForDune.Core
             {
                 return;
             }
-            _world.Positions.Remove(@event.SubjectId);
-            _world.Positions.Add(@event.SubjectId, @event.Destination);
+            _world.Positions.Move(@event.SubjectId, @event.Destination);
         }
 
         private void ApplyRemoveEffect<TSink>(in RemoveEffectEvent @event, TSink sink) 

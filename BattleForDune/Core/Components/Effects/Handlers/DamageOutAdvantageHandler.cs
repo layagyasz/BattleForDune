@@ -5,22 +5,24 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class DamageAdvantageHandler(
+    public record class DamageOutAdvantageHandler(
         EnumSet<DamageType> DamageType,
         DamageVector DamageVector,
         sbyte Advantage)
         : IEffectHandler<DamageEvent>
     {
-        public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
-            where TSink : IGameEventSink { }
+        public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)
+            where TSink : IGameEventSink
+        { }
 
         public void Remove<TSink>(Effect parent, ComponentWorld world, in TSink sink)
-            where TSink : IGameEventSink { }
+            where TSink : IGameEventSink
+        { }
 
         public void Intercept(Effect parent, ref DamageEvent @event, ComponentWorld world)
         {
-            if (@event.TargetId == parent.OwnerId 
-                && DamageType.Contains(@event.DamageType) 
+            if (@event.SubjectId == parent.OwnerId
+                && DamageType.Contains(@event.DamageType)
                 && DamageVector.HasFlag(@event.DamageVector))
             {
                 @event.Die.Advantage += Advantage;

@@ -27,7 +27,7 @@ namespace BattleForDune.View
             camera.SetDistance(100);
 
             var unitTextures = new UnitTextureCache(registry, font, shader, 32);
-            unitTextures.AddAll([new(0)]);
+            unitTextures.AddAll([new(0), new(1)]);
 
             var tileTextures = new TileTextureCache(registry, 32);
             tileTextures.AddAll(map.Values().Select(tile => tile.TileKey).Distinct());

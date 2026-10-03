@@ -33,12 +33,6 @@
       {
         "$type": "DamageCriticalMultiplier",
         "Multiplier": 2.0
-      },
-      {
-        "$type": "DamageChanceApplyEffect",
-        "EffectKey": 0,
-        "Difficulty": 18,
-        "Duration": 3
       }
     ]
   }

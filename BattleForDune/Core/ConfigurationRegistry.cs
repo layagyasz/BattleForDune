@@ -26,8 +26,14 @@ namespace BattleForDune.Core
 
         public static ConfigurationRegistry FromFile(string path)
         {
-            var options = new JsonSerializerOptions() { IncludeFields = true };
+            var options = 
+                new JsonSerializerOptions()
+                {
+                    IncludeFields = true,
+                    ReadCommentHandling = JsonCommentHandling.Skip 
+                };
             options.Converters.Add(new DieJsonConverter());
+            options.Converters.Add(new EnumSetJsonConverter());
             options.Converters.Add(new RegistryKeyJsonConverter());
             using var stream = new FileStream(path, FileMode.Open);
             var result = JsonSerializer.Deserialize<ConfigurationRegistry>(stream, options)!;

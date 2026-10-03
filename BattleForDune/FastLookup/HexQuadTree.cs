@@ -69,6 +69,26 @@ namespace BattleForDune.FastLookup
             _items[maxItems - 1].NextItemIndex = -1;
         }
 
+        public int Count()
+        {
+            return CountInternal(0);
+        }
+
+        private int CountInternal(int nodeIndex)
+        {
+            ref var node = ref _nodes[nodeIndex];
+            if (node.IsLeaf)
+            {
+                return node.ItemCount;
+            }
+            var result = 0;
+            for (int i=0; i<4; ++i)
+            {
+                result += CountInternal(node.ChildOrItemLink + i);
+            }
+            return result;
+        }
+
         public bool IsOccupied(Hex2b position)
         {
             var accumulator = new OccupiedAccumulator();
@@ -80,7 +100,7 @@ namespace BattleForDune.FastLookup
         {
             if (_freeItemHead == -1)
             {
-                return false;
+                throw new InternalBufferOverflowException();
             }
             var index = AllocateItemNode();
             ref var item = ref _items[index];
@@ -386,6 +406,8 @@ namespace BattleForDune.FastLookup
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void FreeItemNode(int index)
         {
+            _items[index].Element = default;
+            _items[index].Position = default;
             _items[index].NextItemIndex = _freeItemHead;
             _freeItemHead = index;
         }

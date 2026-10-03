@@ -1,4 +1,5 @@
 [
+  // Burn
   {
     "EffectKey": 0,
     "SupportedEvents": [ "Tick" ],
@@ -11,6 +12,21 @@
       }
     ]
   },
+  // Dauntless
+  {
+    "EffectKey": 2,
+    "SupportedEvents": [ "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "DamageImmunity",
+        "DamageType": [ "Psychic" ],
+        "DamageVector": [ "All" ],
+        "Stat": [ "Morale" ]
+      }
+    ]
+  },
+  // Fast Attack
   {
     "EffectKey": 1,
     "SupportedEvents": [],
@@ -22,6 +38,20 @@
         "Delta": {
           "Advantage": 1
         }
+      }
+    ]
+  },
+  // Terror
+  {
+    "EffectKey": 3,
+    "SupportedEvents": [ "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "DamageOutAdvantage",
+        "DamageType": [ "Psychic" ],
+        "DamageVector": [ "All" ],
+        "Advantage": 1
       }
     ]
   }

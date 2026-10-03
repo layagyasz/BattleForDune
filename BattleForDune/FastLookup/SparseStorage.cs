@@ -12,7 +12,7 @@ namespace BattleForDune.FastLookup
         private int _count = 0;
         public int Count => _count;
 
-        public ReadOnlySpan<T> AsSpan() => _values.AsSpan(0, _count);
+        public ReadOnlySpan<T> AsSpan() => _values.AsSpan(0, _maxHandle);
 
         public bool Allocate(T value, out int handle)
         {

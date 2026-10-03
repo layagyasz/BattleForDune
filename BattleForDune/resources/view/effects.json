@@ -8,5 +8,15 @@
     "Key": 1,
     "Color": "#66cc99",
     "Name": "fast attack"
+  },
+  {
+    "Key": 2,
+    "Color": "#cc6666",
+    "Name": "dauntless"
+  },
+  {
+    "Key": 3,
+    "Color": "#cc6666",
+    "Name": "terror"
   }
 ]

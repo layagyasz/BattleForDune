@@ -70,7 +70,7 @@ namespace BattleForDune.Core.Components
         {
             byte width = (byte)BitOperations.RoundUpToPowerOf2((uint)size.X);
             byte height = (byte)BitOperations.RoundUpToPowerOf2((uint)size.Y);
-            return new HexRect2b(new(), new(width, height >> 1));
+            return new HexRect2b(new(0, -height / 2), new(width, 3 * height / 2));
         }
     }
 }

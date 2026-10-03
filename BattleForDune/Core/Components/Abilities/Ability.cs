@@ -4,8 +4,6 @@ using BattleForDune.Core.Schema;
 namespace BattleForDune.Core.Components.Abilities
 {
     public record class Ability(
-        EntityId OwnerId,
-        RegistryKey AbilityKey,
         sbyte Range,
         TargetType TargetType, 
         ITargetComparator TargetComparator, 
@@ -29,7 +27,7 @@ namespace BattleForDune.Core.Components.Abilities
 
             public Ability Materialize(EntityId OwnerId)
             {
-                return new Ability(OwnerId, AbilityKey, Range, TargetType, TargetComparator, Handlers);
+                return new Ability(Range, TargetType, TargetComparator, Handlers);
             }
         }
 

@@ -43,6 +43,20 @@ namespace BattleForDune.Core.Components
             return ref _null;
         }
 
+        public bool Move(EntityId id, Hex2b value)
+        {
+            if (_index.TryGet(id.Value, out var handle))
+            {
+                ref var p = ref _values.Get(handle);
+                var current = p;
+                p = value;
+                _quadTree.Remove(current, id.Value);
+                _quadTree.Insert(p, id.Value);
+                return true;
+            }
+            return false;
+        }
+
         public bool Remove(EntityId id)
         {
             if (_index.RemoveOnly(id.Value, out var handle))

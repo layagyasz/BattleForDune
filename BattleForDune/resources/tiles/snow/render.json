@@ -10,5 +10,17 @@
   {
     "Key": 2,
     "ImagePath": "resources/tiles/snow/snow_003.png"
+  },
+  {
+    "Key": 3,
+    "ImagePath": "resources/tiles/snow/snow_004.png"
+  },
+  {
+    "Key": 4,
+    "ImagePath": "resources/tiles/snow/snow_005.png"
+  },
+  {
+    "Key": 5,
+    "ImagePath": "resources/tiles/snow/snow_006.png"
   }
 ]
