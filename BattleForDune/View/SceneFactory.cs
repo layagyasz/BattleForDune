@@ -22,9 +22,11 @@ namespace BattleForDune.View
         public BattleScene CreateBattle(DenseHexGrid<Tile> map, int capacity)
         {
             var camera = new SubjectiveCamera3d(1000);
+            camera.SetFocus(
+                Geometry.Projection.AxialToCartesian(Geometry.Projection.OffsetToAxial(map.Size / 2)));
             camera.SetPitch(-0.5f * MathF.PI);
             camera.SetYaw(0.5f * MathF.PI);
-            camera.SetDistance(100);
+            camera.SetDistance(10);
 
             var unitTextures = new UnitTextureCache(registry, font, shader, 32);
             unitTextures.AddAll([new(0), new(1)]);
@@ -43,7 +45,7 @@ namespace BattleForDune.View
                 camera,
                 _mapLayerFactory.Create(tileTextures, map),
                 _unitLayerFactory.Create(unitTextures, capacity),
-                _textParticleLayerFactory.Create(4096));
+                _textParticleLayerFactory.Create(8192));
         }
     }
 }

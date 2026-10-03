@@ -1,22 +1,22 @@
 [
   {
     "Key": 0,
-    "Color": "#cc9966",
+    "Color": "#ff9933",
     "Name": "burned"
   },
   {
     "Key": 1,
-    "Color": "#66cc99",
+    "Color": "#33ff99",
     "Name": "fast attack"
   },
   {
     "Key": 2,
-    "Color": "#cc6666",
+    "Color": "#ff3399",
     "Name": "dauntless"
   },
   {
     "Key": 3,
-    "Color": "#cc6666",
+    "Color": "#ff3399",
     "Name": "terror"
   }
 ]

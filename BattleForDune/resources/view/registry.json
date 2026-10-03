@@ -1,6 +1,7 @@
 {
-  "Units": [ "resources/units::render.json" ],
   "Damage": "resources/view/damage.json",
   "Effects": "resources/view/effects.json",
-  "Tiles": [ "resources/tiles::*.json" ]
+  "Events": "resources/view/events.json",
+  "Tiles": [ "resources/tiles::*.json" ],
+  "Units": [ "resources/units::render.json" ]
 }

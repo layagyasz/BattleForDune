@@ -88,7 +88,7 @@ namespace BattleForDune
                         j, 
                         i, 
                         new Tile(
-                            new((ushort) random.Next(6)), new(random.NextBoolean(), (byte)random.Next(6))));
+                            new((ushort) random.Next(24)), new(random.NextBoolean(), (byte)random.Next(6))));
                 }
             }
             return map;
@@ -100,11 +100,11 @@ namespace BattleForDune
             {
                 for (int i = 0; i < 50; ++i)
                 {
-                    world.AddUnit(new(1), new(0), 0, Geometry.Projection.OffsetToAxial(new(i, 25)));
+                    world.AddUnit(new(1), new(0), 0, Geometry.Projection.OffsetToAxial(new(i, 31)));
                 }
                 for (int i = 0; i < 50; ++i)
                 {
-                    world.AddUnit(new(0), new(1), 1, Geometry.Projection.OffsetToAxial(new(i, 26)));
+                    world.AddUnit(new(0), new(1), 1, Geometry.Projection.OffsetToAxial(new(i, 32)));
                 }
                 while (true)
                 {

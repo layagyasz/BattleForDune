@@ -3,7 +3,6 @@ using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Geometry;
 using BattleForDune.View.Config;
-using OpenTK.Mathematics;
 
 namespace BattleForDune.View
 {
@@ -28,7 +27,8 @@ namespace BattleForDune.View
 
         public void Process<TSink>(ref GameEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            // TODO: Break into individual methods
+            // TODO: break into individual methods
+            // TODO: localize
             Hex2b pos;
             switch (@event.Type)
             {
@@ -36,8 +36,7 @@ namespace BattleForDune.View
                     var effect = @event.ReadPayload<AddEffectEvent>();
                     var effectView = _registry.GetEffect(effect.EffectKey);
                     pos = _world.Positions.TryGet(effect.TargetId, out var _);
-                    // TODO: localize and color per damage type
-                    _textParticleLayer?.Add(effectView.Name.ToUpper(), pos, effectView.Color);
+                    _textParticleLayer?.Add(effectView.Name, pos, effectView.Color);
                     return;
                 case GameEventType.AddUnit:
                     var unit = @event.ReadPayload<AddUnitEvent>();
@@ -46,8 +45,8 @@ namespace BattleForDune.View
                 case GameEventType.Break:
                     var @break = @event.ReadPayload<BreakEvent>();
                     pos = _world.Positions.TryGet(@break.TargetId, out var _);
-                    // TODO: localize
-                    _textParticleLayer?.Add("BROKEN", pos, Color4.Magenta);
+                    var render = _registry.GetEvent(@event.Type);
+                    _textParticleLayer?.Add(render.Name, pos, render.Color);
                     return;
                 case GameEventType.Damage:
                     var damage = @event.ReadPayload<DamageEvent>();
