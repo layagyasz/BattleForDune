@@ -52,7 +52,7 @@ namespace BattleForDune.View
                 _cursor = 0;
             }
             _vertices.Sub(_buffer, _cursor, count);
-            _cursor = _cursor + count;
+            _cursor += count;
         }
 
         public void Draw(IRenderTarget target, IUiContext context)

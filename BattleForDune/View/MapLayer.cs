@@ -61,7 +61,7 @@ namespace BattleForDune.View
                 return vao;
             }
 
-            private static readonly int[] _reflection = { 1, 0, 5, 4, 3, 2 };
+            private static readonly int[] _reflection = [ 1, 0, 5, 4, 3, 2 ];
             private static Vector2 Transform(int index, Tile.Transformation transform)
             {
                 index = (index + transform.GetRotation()) % 6;

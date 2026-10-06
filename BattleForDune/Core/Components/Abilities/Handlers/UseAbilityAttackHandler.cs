@@ -4,7 +4,8 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public record class UseAbilityAttackHandler(sbyte Attack, byte CritRange, sbyte ShieldPiercing) 
+    public record class UseAbilityAttackHandler(
+        sbyte Attack, byte CritRange, sbyte AntiArmor, sbyte AntiShield) 
         : IAbilityHandler<UseAbilityEvent>
     {
         public void Intercept(ref UseAbilityEvent @event, ComponentWorld world) { }
@@ -28,17 +29,23 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                 return;
             }
 
+            var defense = 
+                Math.Max(
+                    0,
+                    Math.Max(
+                        targetStats[StatType.Armor].Total - AntiArmor, 
+                        targetStats[StatType.Shield].Total - AntiShield));
+
             var attack =
                 new AttackEvent(
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
                     skill: (sbyte)(Attack + stats[StatType.Attack].Total),
-                    difficulty: (sbyte)(10 + stats[StatType.Defense].Total 
-                        + Math.Max(0, targetStats[StatType.Shield].Total - ShieldPiercing)),
+                    difficulty: (sbyte)(10 + targetStats[StatType.Evasion].Total + defense),
                     critRange: CritRange,
                     advantage: (sbyte)(stats[StatType.Attack].Advantage 
-                        - targetStats[StatType.Defense].Advantage));
+                        - targetStats[StatType.Evasion].Advantage));
             sink.Queue(in attack);
         }
     }

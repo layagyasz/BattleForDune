@@ -3,6 +3,7 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Abilities
 {
+    // TODO: include ability level
     public record class Ability(
         sbyte Range,
         TargetType TargetType, 
@@ -25,7 +26,7 @@ namespace BattleForDune.Core.Components.Abilities
                 return AbilityKey.CompareTo(other.AbilityKey);
             }
 
-            public Ability Materialize(EntityId OwnerId)
+            public Ability Materialize()
             {
                 return new Ability(Range, TargetType, TargetComparator, Handlers);
             }

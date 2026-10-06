@@ -1,12 +1,9 @@
-﻿using System.Text.Json.Serialization;
-
-namespace BattleForDune.Core.Schema
+﻿namespace BattleForDune.Core.Schema
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum StatType : byte
     {
         Attack,
-        Defense,
+        Evasion,
         Armor,
         Shield,
         Initiative,

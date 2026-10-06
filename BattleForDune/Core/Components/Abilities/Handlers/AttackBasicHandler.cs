@@ -9,7 +9,6 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
         DamageVector DamageVector,
         StatType Stat,
         Die Damage, 
-        sbyte ArmorPiercing,
         bool IsPrimary) 
         : IAbilityHandler<AttackEvent>
     {
@@ -27,9 +26,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
             {
                 return;
             }
-            byte reduction = 
-                Stat == StatType.Hitpoints 
-                    ? (byte)Math.Max(0, stats[StatType.Armor].Value - ArmorPiercing) : (byte)0;
+
             var damage =
                 new DamageEvent(
                     @event.SubjectId,
@@ -40,8 +37,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                     DamageType,
                     DamageVector,
                     Stat,
-                    Damage,
-                    reduction);
+                    Damage);
             sink.Queue(in damage);
         }
     }

@@ -1,4 +1,5 @@
 [
+  // Assault Rifle
   {
     "AbilityKey": 0,
     "Range": 1,
@@ -11,15 +12,15 @@
         "$type": "UseAbilityAttack",
         "Attack": 0,
         "CriticalRange": 1,
-        "ShieldPiercing": 0
+        "AntiArmor": 0,
+        "AntiShield": 0
       },
       {
         "$type": "AttackBasic",
         "DamageType": "Physical",
         "DamageVector": [ "Direct" ],
         "Stat": "Hitpoints",
-        "Damage": "1d6",
-        "ArmorPiercing": 0,
+        "Damage": "1d8",
         "IsPrimary": true
       },
       {
@@ -27,8 +28,7 @@
         "DamageType": "Psychic",
         "DamageVector": [ "Direct" ],
         "Stat": "Morale",
-        "Damage": "1d4",
-        "ArmorPiercing": 0
+        "Damage": "1d6"
       },
       {
         "$type": "DamageCriticalMultiplier",

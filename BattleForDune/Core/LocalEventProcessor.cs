@@ -146,7 +146,7 @@ namespace BattleForDune.Core
             }
             var prototype = _world.Registry.GetUnitPrototype(@event.UnitPrototypeKey);
             _world.Units.Add(@event.UnitId.Value);
-            _world.Stats.Add(@event.UnitId, prototype.Stats.Materialize());
+            _world.Stats.Add(@event.UnitId, prototype.Stats.Materialize(@event.Level));
             _world.Positions.Add(@event.UnitId, @event.Position);
             _world.Behaviors.Add(@event.UnitId, new());
             _world.Teams.Add(@event.UnitId, @event.TeamId);
@@ -156,7 +156,7 @@ namespace BattleForDune.Core
             for (int i = 0; i < abilities.Length; ++i)
             {
                 abilities[i] =
-                    _world.Registry.GetAbilityPrototype(prototype.Abilities[i]).Materialize(@event.UnitId);
+                    _world.Registry.GetAbilityPrototype(prototype.Abilities[i]).Materialize();
             }
             _world.Abilities.Add(@event.UnitId, abilities);
 
@@ -402,6 +402,7 @@ namespace BattleForDune.Core
         private void Process<TSink>(ref DamageEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.Roll = _world.Roll(@event.Die);
+            @event.Damage = @event.Roll;
 
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
@@ -410,7 +411,6 @@ namespace BattleForDune.Core
             }
             _world.Intercept(ref @event);
 
-            @event.Damage = (byte)Math.Max(0, @event.Roll - @event.Reduction);
             if (@event.Damage == 0)
             {
                 @event.IsCanceled = true;

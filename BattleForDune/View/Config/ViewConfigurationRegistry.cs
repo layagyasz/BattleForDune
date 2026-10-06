@@ -12,6 +12,18 @@ namespace BattleForDune.View.Config
 {
     public class ViewConfigurationRegistry
     {
+        private static readonly JsonSerializerOptions _options = new()
+        {
+            ReadCommentHandling = JsonCommentHandling.Skip,
+        };
+
+        static ViewConfigurationRegistry()
+        {
+            _options.Converters.Add(new ColorJsonConverter());
+            _options.Converters.Add(new RegistryKeyJsonConverter());
+            _options.Converters.Add(new JsonStringEnumConverter());
+        }
+
         [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<DamageRenderInfo> Damage { get; set; }
 
@@ -62,12 +74,8 @@ namespace BattleForDune.View.Config
 
         public static ViewConfigurationRegistry FromFile(string path)
         {
-            var options = new JsonSerializerOptions() {  ReadCommentHandling = JsonCommentHandling.Skip };
-            options.Converters.Add(new ColorJsonConverter());
-            options.Converters.Add(new RegistryKeyJsonConverter());
-            options.Converters.Add(new JsonStringEnumConverter());
             using var stream = new FileStream(path, FileMode.Open);
-            var result = JsonSerializer.Deserialize<ViewConfigurationRegistry>(stream, options)!;
+            var result = JsonSerializer.Deserialize<ViewConfigurationRegistry>(stream, _options)!;
             result.Units.Sort();
             result.Effects.Sort();
             result.Damage.Sort();

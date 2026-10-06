@@ -3,31 +3,32 @@
 namespace BattleForDune.Core.Prototypes
 {
     public record struct StatBlockPrototype(
-        sbyte Attack,
-        sbyte Defense,
-        sbyte Armor,
-        sbyte Shield,
-        sbyte Initiative,
-        sbyte Hitpoints,
-        sbyte Morale,
-        sbyte Threat)
+        Progression Attack,
+        Progression Evasion,
+        Progression Armor,
+        Progression Shield,
+        Progression Initiative,
+        Progression Hitpoints,
+        Progression Morale,
+        Progression Threat)
     {
-        public readonly StatBlock Materialize()
+        public readonly StatBlock Materialize(byte level)
         {
             var block = new StatBlock();
-            block[StatType.Attack] = ToStat(Attack);
-            block[StatType.Defense] = ToStat(Defense);
-            block[StatType.Armor] = ToStat(Armor);
-            block[StatType.Shield] = ToStat(Shield);
-            block[StatType.Initiative] = ToStat(Initiative);
-            block[StatType.Hitpoints] = ToStat(Hitpoints);
-            block[StatType.Morale] = ToStat(Morale);
-            block[StatType.Threat] = ToStat(Threat);
+            block[StatType.Attack] = ToStat(Attack, level);
+            block[StatType.Evasion] = ToStat(Evasion, level);
+            block[StatType.Armor] = ToStat(Armor, level);
+            block[StatType.Shield] = ToStat(Shield, level);
+            block[StatType.Initiative] = ToStat(Initiative, level);
+            block[StatType.Hitpoints] = ToStat(Hitpoints, level);
+            block[StatType.Morale] = ToStat(Morale, level);
+            block[StatType.Threat] = ToStat(Threat, level);
             return block;
         }
 
-        private static Stat ToStat(sbyte value)
+        private static Stat ToStat(Progression progression, byte level)
         {
+            var value = (sbyte)progression.Materialize(level);
             return new(value, 0, value, 0);
         }
     }

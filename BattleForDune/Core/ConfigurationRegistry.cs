@@ -12,6 +12,21 @@ namespace BattleForDune.Core
 {
     public record class ConfigurationRegistry
     {
+        private static readonly JsonSerializerOptions _options = new()
+        {
+            IncludeFields = true,
+            ReadCommentHandling = JsonCommentHandling.Skip
+        };
+
+        static ConfigurationRegistry()
+        {
+            _options.Converters.Add(new DieJsonConverter());
+            _options.Converters.Add(new EnumSetJsonConverter());
+            _options.Converters.Add(new FlagJsonConverter());
+            _options.Converters.Add(new RegistryKeyJsonConverter());
+            _options.Converters.Add(new JsonStringEnumConverter());
+        }
+
         [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<Ability.Prototype> Abilities { get; set; }
 
@@ -26,17 +41,8 @@ namespace BattleForDune.Core
 
         public static ConfigurationRegistry FromFile(string path)
         {
-            var options = 
-                new JsonSerializerOptions()
-                {
-                    IncludeFields = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip 
-                };
-            options.Converters.Add(new DieJsonConverter());
-            options.Converters.Add(new EnumSetJsonConverter());
-            options.Converters.Add(new RegistryKeyJsonConverter());
             using var stream = new FileStream(path, FileMode.Open);
-            var result = JsonSerializer.Deserialize<ConfigurationRegistry>(stream, options)!;
+            var result = JsonSerializer.Deserialize<ConfigurationRegistry>(stream, _options)!;
             result.Abilities.Sort();
             result.Effects.Sort();
             result.Factions.Sort();

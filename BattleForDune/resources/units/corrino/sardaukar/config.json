@@ -2,10 +2,46 @@
   {
     "UnitKey": 1,
     "Stats": {
-      "Attack": 10,
-      "Defense": 1,
-      "Hitpoints": 20,
-      "Morale": 20
+      "Attack": {
+        "Base": 0,
+        "PerLevel": 1,
+        "Cap": 10
+      },
+      "Evasion": {
+        "Base": 0,
+        "PerLevel": 0.4,
+        "Cap": 3
+      },
+      "Armor": {
+        "Base": 6,
+        "PerLevel": 0,
+        "Cap": 6
+      },
+      "Shield": {
+        "Base": 8,
+        "PerLevel": 0,
+        "Cap": 8
+      },
+      "Initiative": {
+        "Base": 0,
+        "PerLevel": 0.4,
+        "Cap": 4
+      },
+      "Hitpoints": {
+        "Base": 20,
+        "PerLevel": 1,
+        "Cap": 30
+      },
+      "Morale": {
+        "Base": 10,
+        "PerLevel": 2,
+        "Cap": 30
+      },
+      "Threat": {
+        "Base": 0,
+        "PerLevel": 0,
+        "Cap": 0
+      }
     },
     "Passives": [ 2, 3 ],
     "Abilities": [ 0 ]

@@ -100,11 +100,11 @@ namespace BattleForDune
             {
                 for (int i = 0; i < 50; ++i)
                 {
-                    world.AddUnit(new(1), new(0), 0, Geometry.Projection.OffsetToAxial(new(i, 31)));
+                    world.AddUnit(new(1), 10, new(0), 0, Geometry.Projection.OffsetToAxial(new(i, 31)));
                 }
                 for (int i = 0; i < 50; ++i)
                 {
-                    world.AddUnit(new(0), new(1), 1, Geometry.Projection.OffsetToAxial(new(i, 32)));
+                    world.AddUnit(new(0), 10, new(1), 1, Geometry.Projection.OffsetToAxial(new(i, 32)));
                 }
                 while (true)
                 {

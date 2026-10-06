@@ -16,9 +16,10 @@ namespace BattleForDune.Core
         private readonly SystemWorld _systems = new(delay, random);
         private readonly EventPump<LocalEventProcessor> _events = eventPump;
 
-        public void AddUnit(RegistryKey prototypeKey, RegistryKey factionKey, byte teamId, Hex2b position)
+        public void AddUnit(
+            RegistryKey prototypeKey, byte level, RegistryKey factionKey, byte teamId, Hex2b position)
         {
-            _events.Queue(new AddUnitEvent(prototypeKey, factionKey, teamId, position));
+            _events.Queue(new AddUnitEvent(prototypeKey, level, factionKey, teamId, position));
             _events.Flush();
         }
 

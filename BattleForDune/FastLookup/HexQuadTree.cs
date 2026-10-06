@@ -406,7 +406,7 @@ namespace BattleForDune.FastLookup
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void FreeItemNode(int index)
         {
-            _items[index].Element = default;
+            _items[index].Element = default!;
             _items[index].Position = default;
             _items[index].NextItemIndex = _freeItemHead;
             _freeItemHead = index;

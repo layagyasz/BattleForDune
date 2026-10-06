@@ -13,8 +13,7 @@ namespace BattleForDune.Core.Events.Types
         DamageType damageType,
         DamageVector damageVector,
         StatType stat,
-        Die die,
-        byte reduction) : IGameEvent
+        Die die) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Damage;
         public bool IsCanceled { get; set; }
@@ -27,7 +26,6 @@ namespace BattleForDune.Core.Events.Types
         public DamageVector DamageVector = damageVector;
         public StatType Stat = stat;
         public Die Die = die;
-        public byte Reduction = reduction;
         public byte Roll;
         public byte Damage;
     }
