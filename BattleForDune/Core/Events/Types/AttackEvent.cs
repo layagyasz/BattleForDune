@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using BattleForDune.Core.Schema;
+using System.Runtime.InteropServices;
 
 namespace BattleForDune.Core.Events.Types
 {
@@ -6,10 +7,13 @@ namespace BattleForDune.Core.Events.Types
     public struct AttackEvent(
         EntityId subjectId,
         byte abilityId, 
-        EntityId targetId, 
+        EntityId targetId,
+        AbilityVector vector,
         sbyte skill,
-        byte critRange,
-        sbyte difficulty,
+        sbyte critRange,
+        sbyte defenseEvasion,
+        sbyte defenseArmor,
+        sbyte defenseShield,
         sbyte advantage) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Attack;
@@ -18,9 +22,12 @@ namespace BattleForDune.Core.Events.Types
         public EntityId SubjectId = subjectId;
         public byte AbilityId = abilityId;
         public EntityId TargetId = targetId;
+        public AbilityVector Vector = vector;
         public sbyte Skill = skill;
-        public byte CritRange = critRange;
-        public sbyte Difficulty = difficulty;
+        public sbyte CritRange = critRange;
+        public sbyte DefenseEvasion = defenseEvasion;
+        public sbyte DefenseArmor = defenseArmor;
+        public sbyte DefenseShield = defenseShield;
         public sbyte Advantage = advantage;
         public byte Roll;
     }

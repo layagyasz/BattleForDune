@@ -8,7 +8,7 @@
       {
         "$type": "DamageOverTime",
         "DamageType": "Heat",
-        "DamageVector": [ "Indirect" ]
+        "Vector": [ "Environmental" ]
       }
     ]
   },
@@ -21,7 +21,7 @@
       {
         "$type": "DamageImmunity",
         "DamageType": [ "Psychic" ],
-        "DamageVector": [ "All" ],
+        "Vector": [ "All" ],
         "Stat": [ "Morale" ]
       }
     ]
@@ -50,8 +50,108 @@
       {
         "$type": "DamageOutAdvantage",
         "DamageType": [ "Psychic" ],
-        "DamageVector": [ "All" ],
+        "Vector": [ "All" ],
         "Advantage": 1
+      }
+    ]
+  },
+  // Frozen
+  {
+    "EffectKey": 4,
+    "SupportedEvents": [],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Initiative",
+        "Delta": {
+          "Advantage": -1
+        }
+      }
+    ]
+  },
+  // Dazed
+  {
+    "EffectKey": 5,
+    "SupportedEvents": [],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Advantage": -1
+        }
+      }
+    ]
+  },
+  // Bleed
+  {
+    "EffectKey": 6,
+    "SupportedEvents": [ "Tick" ],
+    "IsMergeable": true,
+    "Handlers": [
+      {
+        "$type": "DamageOverTime",
+        "DamageType": "Physical",
+        "Vector": [ "Environmental" ]
+      }
+    ]
+  },
+  // Poisoned
+  {
+    "EffectKey": 7,
+    "SupportedEvents": [ "Tick" ],
+    "IsMergeable": true,
+    "Handlers": [
+      {
+        "$type": "DamageOverTime",
+        "DamageType": "Poison",
+        "Vector": [ "Environmental" ]
+      }
+    ]
+  },
+  // Feared
+  {
+    "EffectKey": 8,
+    "SupportedEvents": [ "Tick" ],
+    "IsMergeable": true,
+    "Handlers": [
+      {
+        "$type": "DamageInAdvantage",
+        "DamageType": [ "Psychic" ],
+        "Vector": [ "Psychic" ],
+        "Advantage": 1
+      }
+    ]
+  },
+  // Confused
+  {
+    "EffectKey": 9,
+    "SupportedEvents": [],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Attack",
+        "Delta": {
+          "Advantage": -1
+        }
+      }
+    ]
+  },
+  // Disrupted
+  {
+    "EffectKey": 10,
+    "SupportedEvents": [],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Shield",
+        "Delta": {
+          "Temporary": -20
+        }
       }
     ]
   }

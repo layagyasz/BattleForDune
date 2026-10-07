@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class DamageImmunityHandler(
         EnumSet<DamageType> DamageType,
-        DamageVector DamageVector,
+        AbilityVector Vector,
         EnumSet<StatType> Stat)
         : IEffectHandler<DamageEvent>
     {
@@ -21,7 +21,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         {
             if (@event.TargetId == parent.OwnerId
                 && DamageType.Contains(@event.DamageType)
-                && DamageVector.HasFlag(@event.DamageVector) 
+                && Vector.HasFlag(@event.Vector) 
                 && Stat.Contains(@event.Stat))
             {
                 @event.IsCanceled = true;

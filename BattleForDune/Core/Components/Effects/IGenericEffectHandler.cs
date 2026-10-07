@@ -4,10 +4,13 @@ using System.Text.Json.Serialization;
 
 namespace BattleForDune.Core.Components.Effects
 {
+    [JsonDerivedType(typeof(AttackInHandler), "AttackIn")]
+    [JsonDerivedType(typeof(AttackOutHandler), "AttackOut")]
     [JsonDerivedType(typeof(DamageImmunityHandler), "DamageImmunity")]
     [JsonDerivedType(typeof(DamageInAdvantageHandler), "DamageInAdvantage")]
     [JsonDerivedType(typeof(DamageOutAdvantageHandler), "DamageOutAdvantage")]
     [JsonDerivedType(typeof(DamageOverTimeHandler), "DamageOverTime")]
+    [JsonDerivedType(typeof(MassiveCriticalHandler), "MassiveCritical")]
     [JsonDerivedType(typeof(UpdateStatHandler), "UpdateStat")]
     public interface IGenericEffectHandler
     {

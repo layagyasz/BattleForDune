@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class DamageInAdvantageHandler(
         EnumSet<DamageType> DamageType,
-        DamageVector DamageVector,
+        AbilityVector Vector,
         sbyte Advantage)
         : IEffectHandler<DamageEvent>
     {
@@ -21,7 +21,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         {
             if (@event.TargetId == parent.OwnerId 
                 && DamageType.Contains(@event.DamageType) 
-                && DamageVector.HasFlag(@event.DamageVector))
+                && Vector.HasFlag(@event.Vector))
             {
                 @event.Die.Advantage += Advantage;
             }

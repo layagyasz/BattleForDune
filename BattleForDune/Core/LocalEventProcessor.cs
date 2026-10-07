@@ -364,9 +364,13 @@ namespace BattleForDune.Core
             }
             _world.Intercept(ref @event);
 
-            if (@event.Difficulty > 0 
+            var defense = 
+                10
+                + @event.DefenseEvasion 
+                + Math.Max((sbyte) 0, Math.Max(@event.DefenseShield, @event.DefenseArmor));
+            if (defense > 0 
                 && @event.Roll != 20 
-                && (@event.Roll + @event.Skill < @event.Difficulty || @event.Roll == 1))
+                && (@event.Roll + @event.Skill < defense || @event.Roll == 1))
             {
                 @event.IsCanceled = true;
             }
@@ -401,9 +405,6 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref DamageEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.Roll = _world.Roll(@event.Die);
-            @event.Damage = @event.Roll;
-
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
             {
@@ -411,6 +412,8 @@ namespace BattleForDune.Core
             }
             _world.Intercept(ref @event);
 
+            @event.Roll = _world.Roll(@event.Die);
+            @event.Damage = @event.Roll;
             if (@event.Damage == 0)
             {
                 @event.IsCanceled = true;

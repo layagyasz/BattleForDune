@@ -6,7 +6,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class DamageOverTimeHandler(
         DamageType DamageType,
-        DamageVector DamageVector)
+        AbilityVector Vector)
         : IEffectHandler<TickEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
@@ -28,7 +28,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                     isPrimary: false,
                     isCritical: false,
                     DamageType,
-                    DamageVector,
+                    Vector,
                     StatType.Hitpoints,
                     new(0, 0, (sbyte)parent.Power, 0)));
         }

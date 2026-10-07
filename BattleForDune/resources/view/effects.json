@@ -18,5 +18,40 @@
     "Key": 3,
     "Color": "#ff3399",
     "Name": "terror"
+  },
+  {
+    "Key": 4,
+    "Color": "#3399ff",
+    "Name": "frozen"
+  },
+  {
+    "Key": 5,
+    "Color": "#33ff99",
+    "Name": "dazed"
+  },
+  {
+    "Key": 6,
+    "Color": "#ff3333",
+    "Name": "bleed"
+  },
+  {
+    "Key": 7,
+    "Color": "#9933ff",
+    "Name": "poisoned"
+  },
+  {
+    "Key": 8,
+    "Color": "#ff3399",
+    "Name": "feared"
+  },
+  {
+    "Key": 9,
+    "Color": "#ffff33",
+    "Name": "confused"
+  },
+  {
+    "Key": 10,
+    "Color": "#33ffff",
+    "Name": "disrupted"
   }
 ]

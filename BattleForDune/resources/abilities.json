@@ -18,7 +18,7 @@
       {
         "$type": "AttackBasic",
         "DamageType": "Physical",
-        "DamageVector": [ "Direct" ],
+        "Vector": [ "Ranged" ],
         "Stat": "Hitpoints",
         "Damage": "1d8",
         "IsPrimary": true
@@ -26,7 +26,7 @@
       {
         "$type": "AttackBasic",
         "DamageType": "Psychic",
-        "DamageVector": [ "Direct" ],
+        "Vector": [ "Psychic" ],
         "Stat": "Morale",
         "Damage": "1d6"
       },

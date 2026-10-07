@@ -6,7 +6,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
 {
     public record class AttackBasicHandler(
         DamageType DamageType,
-        DamageVector DamageVector,
+        AbilityVector Vector,
         StatType Stat,
         Die Damage, 
         bool IsPrimary) 
@@ -35,7 +35,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                     IsPrimary,
                     @event.IsCritical,
                     DamageType,
-                    DamageVector,
+                    Vector,
                     Stat,
                     Damage);
             sink.Queue(in damage);

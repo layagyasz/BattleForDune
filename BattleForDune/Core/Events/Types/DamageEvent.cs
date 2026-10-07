@@ -11,7 +11,7 @@ namespace BattleForDune.Core.Events.Types
         bool isPrimary,
         bool isCritical, 
         DamageType damageType,
-        DamageVector damageVector,
+        AbilityVector vector,
         StatType stat,
         Die die) : IGameEvent
     {
@@ -23,7 +23,7 @@ namespace BattleForDune.Core.Events.Types
         public byte AbilityId = abilityId;
         public EntityId TargetId = targetId;
         public DamageType DamageType = damageType;
-        public DamageVector DamageVector = damageVector;
+        public AbilityVector Vector = vector;
         public StatType Stat = stat;
         public Die Die = die;
         public byte Roll;
