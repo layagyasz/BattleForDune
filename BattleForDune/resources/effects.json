@@ -36,7 +36,7 @@
         "$type": "UpdateStat",
         "Stat": "Initiative",
         "Delta": {
-          "Advantage": 1
+          "Value": 4
         }
       }
     ]
@@ -48,10 +48,10 @@
     "IsMergeable": false,
     "Handlers": [
       {
-        "$type": "DamageOutAdvantage",
+        "$type": "DamageOutModifier",
         "DamageType": [ "Psychic" ],
         "Vector": [ "All" ],
-        "Advantage": 1
+        "Modifier": 1
       }
     ]
   },
@@ -65,7 +65,7 @@
         "$type": "UpdateStat",
         "Stat": "Initiative",
         "Delta": {
-          "Advantage": -1
+          "Value": -4
         }
       }
     ]
@@ -80,7 +80,7 @@
         "$type": "UpdateStat",
         "Stat": "Evasion",
         "Delta": {
-          "Advantage": -1
+          "Value": -4
         }
       }
     ]
@@ -118,10 +118,10 @@
     "IsMergeable": true,
     "Handlers": [
       {
-        "$type": "DamageInAdvantage",
+        "$type": "DamageInModifier",
         "DamageType": [ "Psychic" ],
         "Vector": [ "Psychic" ],
-        "Advantage": 1
+        "Modifier": 1
       }
     ]
   },
@@ -135,7 +135,7 @@
         "$type": "UpdateStat",
         "Stat": "Attack",
         "Delta": {
-          "Advantage": -1
+          "Value": -4
         }
       }
     ]
@@ -150,7 +150,7 @@
         "$type": "UpdateStat",
         "Stat": "Shield",
         "Delta": {
-          "Temporary": -20
+          "Value": -10
         }
       }
     ]

@@ -29,7 +29,7 @@ namespace BattleForDune.Core.Prototypes
         private static Stat ToStat(Progression progression, byte level)
         {
             var value = (sbyte)progression.Materialize(level);
-            return new(value, 0, value, 0);
+            return new(value, 0, value);
         }
     }
 }

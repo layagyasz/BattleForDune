@@ -39,9 +39,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                     defenseEvasion: targetStats[StatType.Evasion].Total,
                     defenseArmor: (sbyte)(targetStats[StatType.Armor].Total - AntiArmor),
                     defenseShield: (sbyte)(targetStats[StatType.Shield].Total - AntiShield),
-                    critRange: CritRange,
-                    advantage: (sbyte)(stats[StatType.Attack].Advantage 
-                        - targetStats[StatType.Evasion].Advantage));
+                    critRange: CritRange);
             sink.Queue(in attack);
         }
     }

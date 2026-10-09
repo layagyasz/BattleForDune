@@ -22,21 +22,18 @@ namespace BattleForDune.Json
                 return new(
                     byte.Parse(value[..dSeparator]), 
                     byte.Parse(value.Slice(dSeparator + 1, aSeparator - dSeparator - 1)), 
-                    sbyte.Parse(value[(aSeparator + 1)..]),
-                    0);
+                    sbyte.Parse(value[(aSeparator + 1)..]));
             }
             else if (mSeparator >= 0)
             {
                 return new(
                     byte.Parse(value[..dSeparator]),
                     byte.Parse(value.Slice(dSeparator + 1, mSeparator - dSeparator - 1)),
-                    sbyte.Parse(value[mSeparator..]),
-                    0);
+                    sbyte.Parse(value[mSeparator..]));
             }
             else return new(
                 byte.Parse(value[..dSeparator]),
                 byte.Parse(value[(dSeparator + 1)..]),
-                0,
                 0);
         }
 

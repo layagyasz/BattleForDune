@@ -30,7 +30,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                     DamageType,
                     Vector,
                     StatType.Hitpoints,
-                    new(0, 0, (sbyte)parent.Power, 0)));
+                    new(0, 0, (sbyte)parent.Power)));
         }
     }
 }

@@ -321,7 +321,6 @@ namespace BattleForDune.Core
         private void Process<TSink>(ref AddEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.InstanceId = _world.NextId();
-            @event.Roll = _world.Roll(new(1, 20, 0, 0));
 
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
 
@@ -330,6 +329,8 @@ namespace BattleForDune.Core
                 ability!.Intercept(ref @event, _world);
             }
             _world.Intercept(ref @event);
+
+            @event.Roll = _world.Roll(new(1, 20, 0));
 
             if (@event.Roll + @event.Skill < @event.Difficulty)
             {
@@ -354,8 +355,6 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref AttackEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.Roll = _world.Roll(new(1, 20, 0, @event.Advantage));
-
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
 
             if (hasAbility)
@@ -364,10 +363,13 @@ namespace BattleForDune.Core
             }
             _world.Intercept(ref @event);
 
+            @event.Roll = _world.Roll(new(1, 20, 0));
+
             var defense = 
                 10
                 + @event.DefenseEvasion 
-                + Math.Max((sbyte) 0, Math.Max(@event.DefenseShield, @event.DefenseArmor));
+                + Math.Max((sbyte) 0, @event.DefenseArmor)
+                + Math.Max((sbyte) 0, @event.DefenseShield);
             if (defense > 0 
                 && @event.Roll != 20 
                 && (@event.Roll + @event.Skill < defense || @event.Roll == 1))
@@ -436,7 +438,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.Roll = _world.Roll(new(1, 20, 0, @event.Advantage));
+            @event.Roll = _world.Roll(new(1, 20, 0));
             _world.Intercept(ref @event);
             @event.Initiative = @event.Skill + @event.Roll + _world.Random.NextSingle();
             _world.Handle(in @event, sink);

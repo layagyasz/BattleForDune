@@ -5,6 +5,7 @@ using BattleForDune.Core.Schema;
 using BattleForDune.Json;
 using Cardamom.Json;
 using Cardamom.Json.Collections;
+using Cardamom.Json.Mathematics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -23,6 +24,7 @@ namespace BattleForDune.Core
             _options.Converters.Add(new DieJsonConverter());
             _options.Converters.Add(new EnumSetJsonConverter());
             _options.Converters.Add(new FlagJsonConverter());
+            _options.Converters.Add(new IntervalJsonConverter());
             _options.Converters.Add(new RegistryKeyJsonConverter());
             _options.Converters.Add(new JsonStringEnumConverter());
         }

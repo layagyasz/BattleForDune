@@ -5,10 +5,10 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class DamageOutAdvantageHandler(
+    public record class DamageOutModifierHandler(
         EnumSet<DamageType> DamageType,
         AbilityVector Vector,
-        sbyte Advantage)
+        sbyte Modifier)
         : IEffectHandler<DamageEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)
@@ -25,7 +25,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                 && DamageType.Contains(@event.DamageType)
                 && Vector.HasFlag(@event.Vector))
             {
-                @event.Die.Advantage += Advantage;
+                @event.Die.Modifier += Modifier;
             }
         }
 

@@ -1,10 +1,12 @@
-﻿namespace BattleForDune.Core.Prototypes
+﻿using Cardamom.Mathematics;
+
+namespace BattleForDune.Core.Prototypes
 {
-    public record struct Progression(float Base, float PerLevel, float Cap)
+    public record struct Progression(float Base, float PerLevel, Interval Interval)
     {
         public readonly float Materialize(byte level)
         {
-            return Math.Min(Cap, Base + level * PerLevel);
+            return Interval.Clamp(Base + level * PerLevel);
         }
     }
 }

@@ -3,44 +3,44 @@
     "UnitKey": 1,
     "Stats": {
       "Attack": {
-        "Base": 0,
-        "PerLevel": 1,
-        "Cap": 10
+        "Base": 2.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ 3, 6 ]
       },
       "Evasion": {
-        "Base": -2,
-        "PerLevel": 0.5,
-        "Cap": 3
+        "Base": -1.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ -2, 1 ]
       },
       "Armor": {
-        "Base": 6,
+        "Base": 3,
         "PerLevel": 0,
-        "Cap": 6
+        "Interval": [ 3, 3 ]
       },
       "Shield": {
-        "Base": 8,
+        "Base": 5,
         "PerLevel": 0,
-        "Cap": 8
+        "Interval": [ 5, 5 ]
       },
       "Initiative": {
-        "Base": 0,
-        "PerLevel": 0.4,
-        "Cap": 4
+        "Base": 0.3334,
+        "PerLevel": 0.3334,
+        "Interval": [ 0, 3 ]
       },
       "Hitpoints": {
         "Base": 20,
         "PerLevel": 1,
-        "Cap": 30
+        "Interval": [ 20, 30 ]
       },
       "Morale": {
         "Base": 10,
         "PerLevel": 2,
-        "Cap": 30
+        "Interval": [ 10, 30 ]
       },
       "Threat": {
         "Base": 0,
         "PerLevel": 0,
-        "Cap": 0
+        "Interval": [ 0, 0 ]
       }
     },
     "Passives": [ 2, 3 ],

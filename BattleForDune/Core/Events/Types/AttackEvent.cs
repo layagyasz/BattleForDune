@@ -13,8 +13,7 @@ namespace BattleForDune.Core.Events.Types
         sbyte critRange,
         sbyte defenseEvasion,
         sbyte defenseArmor,
-        sbyte defenseShield,
-        sbyte advantage) : IGameEvent
+        sbyte defenseShield) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Attack;
         public bool IsCanceled { get; set; }
@@ -28,7 +27,6 @@ namespace BattleForDune.Core.Events.Types
         public sbyte DefenseEvasion = defenseEvasion;
         public sbyte DefenseArmor = defenseArmor;
         public sbyte DefenseShield = defenseShield;
-        public sbyte Advantage = advantage;
         public byte Roll;
     }
 }

@@ -6,6 +6,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class AttackOutHandler(
         AbilityVector Vector,
+        BooleanFlag TargetShielded,
         sbyte AttackSkill,
         sbyte CritRange,
         sbyte DefenseEvasion, 
@@ -23,14 +24,25 @@ namespace BattleForDune.Core.Components.Effects.Handlers
 
         public void Intercept(Effect parent, ref AttackEvent @event, ComponentWorld world)
         {
-            if (@event.SubjectId == parent.OwnerId && Vector.HasFlag(@event.Vector))
+            if (@event.SubjectId != parent.OwnerId)
             {
-                @event.Skill += AttackSkill;
-                @event.CritRange += CritRange;
-                @event.DefenseEvasion += DefenseEvasion;
-                @event.DefenseArmor += DefenseArmor;
-                @event.DefenseShield += DefenseShield;
+                return;
             }
+            if (!Vector.HasFlag(@event.Vector))
+            {
+                return;
+            }
+            var targetStats = world.Stats.TryGet(@event.TargetId, out var isFound);
+            if (!isFound || !TargetShielded.HasFlag(targetStats[StatType.Shield].Total > 0))
+            {
+                return;
+            }
+
+            @event.Skill += AttackSkill;
+            @event.CritRange += CritRange;
+            @event.DefenseEvasion += DefenseEvasion;
+            @event.DefenseArmor += DefenseArmor;
+            @event.DefenseShield += DefenseShield;
         }
 
         public void Handle<TSink>(Effect parent, in AttackEvent @event, ComponentWorld world, in TSink sink)
