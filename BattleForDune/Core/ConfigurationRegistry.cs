@@ -33,28 +33,43 @@ namespace BattleForDune.Core
         public required List<Ability.Prototype> Abilities { get; set; }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
+        public required List<Archetype> Archetypes { get; set; }
+
+        [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<Effect.Prototype> Effects { get; set; }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<Faction> Factions { get; set; }
 
         [JsonConverter(typeof(FromMultipleFileJsonConverter))]
-        public required List<UnitPrototype> Units { get; set; }
+        public required List<UnitPrototype.Description> UnitDescriptions { get; set; }
+
+        public List<UnitPrototype> Units { get; set; } = [];
 
         public static ConfigurationRegistry FromFile(string path)
         {
             using var stream = new FileStream(path, FileMode.Open);
             var result = JsonSerializer.Deserialize<ConfigurationRegistry>(stream, _options)!;
             result.Abilities.Sort();
+            result.Archetypes.Sort();
             result.Effects.Sort();
             result.Factions.Sort();
-            result.Units.Sort();
+            result.UnitDescriptions.Sort();
+            foreach (var description in result.UnitDescriptions)
+            {
+                result.Units.Add(description.Build(result));
+            }
             return result;
         }
 
         public Ability.Prototype GetAbilityPrototype(RegistryKey key)
         {
             return Abilities[key.Value];
+        }
+
+        public Archetype GetArchetype(RegistryKey key)
+        {
+            return Archetypes[key.Value];
         }
 
         public Effect.Prototype GetEffectPrototype(RegistryKey key)

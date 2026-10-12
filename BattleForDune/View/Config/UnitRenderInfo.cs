@@ -2,10 +2,10 @@
 
 namespace BattleForDune.View.Config
 {
-    public record struct UnitRenderInfo : IComparable<UnitRenderInfo>
+    public readonly record struct UnitRenderInfo : IComparable<UnitRenderInfo>
     {
-        public required RegistryKey Key { get; set; }
-        public required string MarkerPath { get; set; }
+        public required RegistryKey Key { get; init; }
+        public required string MarkerPath { get; init; }
 
         public readonly int CompareTo(UnitRenderInfo other)
         {

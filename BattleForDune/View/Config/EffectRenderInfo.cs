@@ -3,11 +3,12 @@ using OpenTK.Mathematics;
 
 namespace BattleForDune.View.Config
 {
-    public record struct EffectRenderInfo : IComparable<EffectRenderInfo>
+    public readonly record struct EffectRenderInfo : IComparable<EffectRenderInfo>
     {
-        public required RegistryKey Key { get; set; }
-        public required Color4 Color { get; set; }
-        public required string Name { get; set; }
+        public required RegistryKey Key { get; init; }
+        public required Color4 Color { get; init; }
+        public required string Name { get; init; }
+        public bool IsHidden { get; init; }
 
         public readonly int CompareTo(EffectRenderInfo other)
         {

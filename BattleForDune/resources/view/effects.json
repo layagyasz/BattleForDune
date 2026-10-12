@@ -7,17 +7,20 @@
   {
     "Key": 1,
     "Color": "#33ff99",
-    "Name": "fast attack"
+    "Name": "fast attack",
+    "IsHidden": true
   },
   {
     "Key": 2,
     "Color": "#ff3399",
-    "Name": "dauntless"
+    "Name": "dauntless",
+    "IsHidden": true
   },
   {
     "Key": 3,
     "Color": "#ff3399",
-    "Name": "terror"
+    "Name": "terror",
+    "IsHidden": true
   },
   {
     "Key": 4,

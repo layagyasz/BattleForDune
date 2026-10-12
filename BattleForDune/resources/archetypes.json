@@ -1,0 +1,188 @@
+[
+  // Elite 6/3 Attack
+  {
+    "ArchetypeKey": 0,
+    "Stats": {
+      "Attack": {
+        "Base": 2.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ 3, 6 ]
+      },
+      "Evasion": {
+        "Base": 0.3334,
+        "PerLevel": 0.3334,
+        "Interval": [ 0, 3 ]
+      },
+      "Initiative": {
+        "Base": 0.3334,
+        "PerLevel": 0.3334,
+        "Interval": [ 0, 3 ]
+      },
+      "Hitpoints": {
+        "Base": 20,
+        "PerLevel": 1,
+        "Interval": [ 20, 30 ]
+      },
+      "Morale": {
+        "Base": 10,
+        "PerLevel": 2,
+        "Interval": [ 10, 30 ]
+      }
+    }
+  },
+  // Elite 6/3 Evade
+  {
+    "ArchetypeKey": 1,
+    "Stats": {
+      "Attack": {
+        "Base": 0.3334,
+        "PerLevel": 0.3334,
+        "Interval": [ 0, 3 ]
+      },
+      "Evasion": {
+        "Base": 2.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ 3, 6 ]
+      },
+      "Initiative": {
+        "Base": 2.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ 3, 6 ]
+      },
+      "Hitpoints": {
+        "Base": 20,
+        "PerLevel": 1,
+        "Interval": [ 20, 30 ]
+      },
+      "Morale": {
+        "Base": 10,
+        "PerLevel": 2,
+        "Interval": [ 10, 30 ]
+      }
+    }
+  },
+  // Elite 5/4 Attack
+  {
+    "ArchetypeKey": 2,
+    "Stats": {
+      "Attack": {
+        "Base": 1.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ 2, 5 ]
+      },
+      "Evasion": {
+        "Base": 1.3334,
+        "PerLevel": 0.3334,
+        "Interval": [ 1, 4 ]
+      },
+      "Initiative": {
+        "Base": 1.3334,
+        "PerLevel": 0.3334,
+        "Interval": [ 1, 4 ]
+      },
+      "Hitpoints": {
+        "Base": 20,
+        "PerLevel": 1,
+        "Interval": [ 20, 30 ]
+      },
+      "Morale": {
+        "Base": 10,
+        "PerLevel": 2,
+        "Interval": [ 10, 30 ]
+      }
+    }
+  },
+  // Elite 5/4 Evade
+  {
+    "ArchetypeKey": 3,
+    "Stats": {
+      "Attack": {
+        "Base": 1.3334,
+        "PerLevel": 0.3334,
+        "Interval": [ 1, 4 ]
+      },
+      "Evasion": {
+        "Base": 1.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ 2, 5 ]
+      },
+      "Initiative": {
+        "Base": 1.6667,
+        "PerLevel": 0.3334,
+        "Interval": [ 2, 5 ]
+      },
+      "Hitpoints": {
+        "Base": 20,
+        "PerLevel": 1,
+        "Interval": [ 20, 30 ]
+      },
+      "Morale": {
+        "Base": 10,
+        "PerLevel": 2,
+        "Interval": [ 10, 30 ]
+      }
+    }
+  },
+  // Standard 5/2 Attack
+  {
+    "ArchetypeKey": 4,
+    "Stats": {
+      "Attack": {
+        "Base": 2.5,
+        "PerLevel": 0.25,
+        "Interval": [ 2, 5 ]
+      },
+      "Evasion": {
+        "Base": 0,
+        "PerLevel": 0.25,
+        "Interval": [ 0, 2 ]
+      },
+      "Initiative": {
+        "Base": 0,
+        "PerLevel": 0.25,
+        "Interval": [ 0, 2 ]
+      },
+      "Hitpoints": {
+        "Base": 20,
+        "PerLevel": 1,
+        "Interval": [ 20, 30 ]
+      },
+      "Morale": {
+        "Base": 10,
+        "PerLevel": 2,
+        "Interval": [ 10, 30 ]
+      }
+    }
+  },
+  // Standard 5/2 Evade
+  {
+    "ArchetypeKey": 5,
+    "Stats": {
+      "Attack": {
+        "Base": 0,
+        "PerLevel": 0.25,
+        "Interval": [ 0, 2 ]
+      },
+      "Evasion": {
+        "Base": 2.5,
+        "PerLevel": 0.25,
+        "Interval": [ 2, 5 ]
+      },
+      "Initiative": {
+        "Base": 2.5,
+        "PerLevel": 0.25,
+        "Interval": [ 2, 5 ]
+      },
+      "Hitpoints": {
+        "Base": 20,
+        "PerLevel": 1,
+        "Interval": [ 20, 30 ]
+      },
+      "Morale": {
+        "Base": 10,
+        "PerLevel": 2,
+        "Interval": [ 10, 30 ]
+      }
+    }
+  }
+]

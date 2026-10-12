@@ -6,6 +6,10 @@ namespace BattleForDune.Core.Prototypes
     {
         public readonly float Materialize(byte level)
         {
+            if (Interval.Minimum == 0 && Interval.Maximum == 0)
+            {
+                return Base + level * PerLevel;
+            }
             return Interval.Clamp(Base + level * PerLevel);
         }
     }

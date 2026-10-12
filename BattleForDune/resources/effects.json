@@ -154,5 +154,20 @@
         }
       }
     ]
+  },
+  // Pahlevani-Base
+  {
+    "EffectKey": 11,
+    "SupportedEvents": [ "Attack" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "Any" ],
+        "AttackSkill": -4,
+        "DefenseShield": -10
+      }
+    ]
   }
 ]

@@ -35,8 +35,11 @@ namespace BattleForDune.View
                 case GameEventType.AddEffect:
                     var effect = @event.ReadPayload<AddEffectEvent>();
                     var effectView = _registry.GetEffect(effect.EffectKey);
-                    pos = _world.Positions.TryGet(effect.TargetId, out var _);
-                    _textParticleLayer?.Add(effectView.Name, pos, effectView.Color);
+                    if (!effectView.IsHidden)
+                    {
+                        pos = _world.Positions.TryGet(effect.TargetId, out var _);
+                        _textParticleLayer?.Add(effectView.Name, pos, effectView.Color);
+                    }
                     return;
                 case GameEventType.AddUnit:
                     var unit = @event.ReadPayload<AddUnitEvent>();

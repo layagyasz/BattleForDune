@@ -3,16 +3,42 @@
     public record class UnitPrototype(
         RegistryKey UnitKey, 
         StatBlockPrototype Stats,
-        RegistryKey[] Passives,
-        RegistryKey[] Abilities) : IComparable<UnitPrototype>
+        RegistryKey[] Abilities, 
+        RegistryKey[] Passives)
     {
-        public int CompareTo(UnitPrototype? other)
+        public record class Description(
+            RegistryKey UnitKey,
+            RegistryKey ArchetypeKey,
+            StatModifier[] Modifiers,
+            RegistryKey[] Abilities,
+            RegistryKey[] Passives) : IComparable<Description>
         {
-            if (other == null)
+            public int CompareTo(Description? other)
             {
-                return 1;
+                if (other == null)
+                {
+                    return 1;
+                }
+                return UnitKey.CompareTo(other.UnitKey);
             }
-            return UnitKey.CompareTo(other.UnitKey);
+
+            public UnitPrototype Build(ConfigurationRegistry registry)
+            {
+                var stats = registry.GetArchetype(ArchetypeKey).Stats;
+                foreach (var modifier in Modifiers)
+                {
+                    stats[modifier.Stat] = Combine(stats[modifier.Stat], modifier);
+                }
+                return new(UnitKey, stats, Abilities, Passives);
+            }
+
+            private static Progression Combine(Progression progression, StatModifier modifier)
+            {
+                return new(
+                    progression.Base + modifier.Modifier, 
+                    progression.PerLevel,
+                    new(progression.Interval.Minimum, Math.Min(progression.Interval.Maximum, modifier.Cap)));
+            }
         }
     }
 }

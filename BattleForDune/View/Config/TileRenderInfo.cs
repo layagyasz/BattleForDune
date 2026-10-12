@@ -2,10 +2,10 @@
 
 namespace BattleForDune.View.Config
 {
-    public struct TileRenderInfo : IComparable<TileRenderInfo>
+    public readonly struct TileRenderInfo : IComparable<TileRenderInfo>
     {
-        public required RegistryKey Key { get; set; }
-        public required string ImagePath { get; set; }
+        public required RegistryKey Key { get; init; }
+        public required string ImagePath { get; init; }
 
         public readonly int CompareTo(TileRenderInfo other)
         {

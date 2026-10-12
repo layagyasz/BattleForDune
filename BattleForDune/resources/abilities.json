@@ -10,10 +10,8 @@
     "Handlers": [
       {
         "$type": "UseAbilityAttack",
-        "Attack": 0,
-        "CriticalRange": 1,
-        "AntiArmor": 0,
-        "AntiShield": 0
+        "Vector": [ "Ranged" ],
+        "CriticalRange": 1
       },
       {
         "$type": "AttackBasic",
