@@ -29,6 +29,16 @@ namespace BattleForDune.Json
             public override EnumSet<TEnum> Read(
                 ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    switch (reader.GetString())
+                    {
+                        case "$all":
+                            return EnumSet<TEnum>.All();
+                        default:
+                            throw new JsonException($"Unsupported literal {reader.GetString()}");
+                    }
+                }
                 var result = (EnumSet<TEnum>)Activator.CreateInstance(typeToConvert)!;
                 var values = JsonSerializer.Deserialize<List<TEnum>>(ref reader, options)!;
                 foreach (var value in values)

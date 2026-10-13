@@ -14,6 +14,11 @@ namespace BattleForDune.FastLookup
             }
         }
 
+        public static EnumSet<TEnum> All()
+        {
+            return new() {  _mask =  -1 };
+        }
+
         public void Add(TEnum value)
         {
             _mask |= 1 << SafeEnumToInt(value);

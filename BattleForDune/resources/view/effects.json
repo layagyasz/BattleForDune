@@ -56,5 +56,47 @@
     "Key": 10,
     "Color": "#33ffff",
     "Name": "disrupted"
+  },
+  {
+    "Key": 11,
+    "Color": "#ffffff",
+    "Name": "pahlevani-base",
+    "IsHidden": true
+  },
+  {
+    "Key": 12,
+    "Color": "#ffffff",
+    "Name": "stena-shield",
+    "IsHidden": true
+  },
+  {
+    "Key": 13,
+    "Color": "#ffffff",
+    "Name": "xin-xin jian",
+    "IsHidden": true
+  },
+  {
+    "Key": 14,
+    "Color": "#ffffff",
+    "Name": "raqsh-e tehgeh",
+    "IsHidden": true
+  },
+  {
+    "Key": 15,
+    "Color": "#ffffff",
+    "Name": "kvatan-e ahanin",
+    "IsHidden": true
+  },
+  {
+    "Key": 16,
+    "Color": "#ffffff",
+    "Name": "prana-bindu",
+    "IsHidden": true
+  },
+  {
+    "Key": 17,
+    "Color": "#ffffff",
+    "Name": "al-sikkinayn",
+    "IsHidden": true
   }
 ]

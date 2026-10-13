@@ -76,9 +76,12 @@ namespace BattleForDune.Core.Components.Effects
             where T : struct, IGameEvent
             where TSink : IGameEventSink
         {
-            foreach (var effect in Handlers)
+            foreach (var handler in Handlers)
             {
-                ((IEffectHandler<T>)effect).Handle(this, in @event, world, sink);
+                if (handler is IEffectHandler<T> specificHandler)
+                {
+                    specificHandler.Handle(this, in @event, world, sink);
+                }
             }
         }
     }

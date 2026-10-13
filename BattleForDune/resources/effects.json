@@ -166,7 +166,210 @@
         "Vector": [ "Melee" ],
         "TargetShielded": [ "Any" ],
         "AttackSkill": -4,
-        "DefenseShield": -10
+        "DefenseShield": -20
+      }
+    ]
+  },
+  // Stena-Shield
+  {
+    "EffectKey": 12,
+    "SupportedEvents": [ "Attack", "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Value": -2,
+          "Max": -2
+        }
+      },
+      {
+        "$type": "UpdateStat",
+        "Stat": "Armor",
+        "Delta": {
+          "Value": 1,
+          "Max": 1
+        }
+      },
+      {
+        "$type": "UpdateStat",
+        "Stat": "Shield",
+        "Delta": {
+          "Value": 1,
+          "Max": 1
+        }
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "Any" ],
+        "AttackSkill": -4,
+        "DefenseShield": -20
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "All" ],
+        "TargetShielded": [ "Any" ],
+        "AttackSkill": -1
+      },
+      {
+        "$type": "DamageInModifier",
+        "DamageType": "$all",
+        "Vector": [ "All" ],
+        "Modifier": -1
+      }
+    ]
+  },
+  // Xin-xin Jian
+  {
+    "EffectKey": 13,
+    "SupportedEvents": [ "Attack", "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Value": 2,
+          "Max": 2
+        }
+      },
+      {
+        "$type": "UpdateStat",
+        "Stat": "Shield",
+        "Delta": {
+          "Value": -2,
+          "Max": -2
+        }
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "True" ],
+        "AttackSkill": -6,
+        "DefenseShield": -20,
+        "DefenseArmor": -2
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "False" ],
+        "AttackSkill": 2,
+        "DefenseArmor": -2
+      },
+      {
+        "$type": "MassiveCritical",
+        "Die": "1d6"
+      }
+    ]
+  },
+  // Raqsh-e Tehgeh (Ginazi)
+  {
+    "EffectKey": 14,
+    "SupportedEvents": [ "Attack" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Value": 2,
+          "Max": 2
+        }
+      },
+      {
+        "$type": "AttackIn",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "Any" ],
+        "DefenseArmor": 1
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "Any" ],
+        "DefenseShield": -20
+      }
+    ]
+  },
+  // Kvatan-e Ahanin (Sardaukar)
+  {
+    "EffectKey": 15,
+    "SupportedEvents": [ "Attack", "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Value": -2,
+          "Max": -2
+        }
+      },
+      {
+        "$type": "AttackIn",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "Any" ],
+        "DefenseArmor": 1
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "Any" ],
+        "AttackSkill": -1,
+        "DefenseArmor": -20,
+        "DefenseShield": -20
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Ranged" ],
+        "TargetShielded": [ "Any" ],
+        "AttackSkill": -2
+      }
+    ]
+  },
+  // Prana-Bindu (Bene Gesserit)
+  {
+    "EffectKey": 16,
+    "SupportedEvents": [],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Value": 4,
+          "Max": 4
+        }
+      }
+    ]
+  },
+  // al-Sikkinayn (Fremen)
+  {
+    "EffectKey": 17,
+    "SupportedEvents": [ "Attack", "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Value": 2,
+          "Max": 2
+        }
+      },
+      {
+        "$type": "AttackOut",
+        "Vector": [ "Melee" ],
+        "TargetShielded": [ "Any" ],
+        "AttackSkill": 2,
+        "CritRange": 1
+      },
+      {
+        "$type": "DamageOutModifier",
+        "DamageType": "$all",
+        "Vector": [ "Melee" ],
+        "Modifier": 2
       }
     ]
   }

@@ -16,7 +16,7 @@
         "Cap": 1
       }
     ],
-    "Abilities": [ 0 ],
-    "Passives": []
+    "Abilities": [ 1 ],
+    "Passives": [ 11 ]
   }
 ]
