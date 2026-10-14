@@ -1,7 +1,6 @@
 ﻿using BattleForDune.Core.Components;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
-using BattleForDune.Geometry;
 using BattleForDune.View.Config;
 
 namespace BattleForDune.View
@@ -27,48 +26,70 @@ namespace BattleForDune.View
 
         public void Process<TSink>(ref GameEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            // TODO: break into individual methods
             // TODO: localize
-            Hex2b pos;
             switch (@event.Type)
             {
                 case GameEventType.AddEffect:
-                    var effect = @event.ReadPayload<AddEffectEvent>();
-                    var effectView = _registry.GetEffect(effect.EffectKey);
-                    if (!effectView.IsHidden)
-                    {
-                        pos = _world.Positions.TryGet(effect.TargetId, out var _);
-                        _textParticleLayer?.Add(effectView.Name, pos, effectView.Color);
-                    }
+                    HandleAddEffect(@event.ReadPayload<AddEffectEvent>());
                     return;
                 case GameEventType.AddUnit:
-                    var unit = @event.ReadPayload<AddUnitEvent>();
-                    _unitLayer?.Add(unit.UnitId, unit.UnitPrototypeKey, unit.Position);
+                    HandleAddUnit(@event.ReadPayload<AddUnitEvent>());
                     return;
                 case GameEventType.Break:
-                    var @break = @event.ReadPayload<BreakEvent>();
-                    pos = _world.Positions.TryGet(@break.TargetId, out var _);
-                    var render = _registry.GetEvent(@event.Type);
-                    _textParticleLayer?.Add(render.Name, pos, render.Color);
+                    HandleBreak(@event.ReadPayload<BreakEvent>());
                     return;
                 case GameEventType.Damage:
-                    var damage = @event.ReadPayload<DamageEvent>();
-                    var damageView = _registry.GetDamage(damage.DamageType);
-                    pos = _world.Positions.TryGet(damage.TargetId, out var isFound);
-                    if (isFound)
-                    {
-                        _textParticleLayer?.Add(damage.Damage.ToString(), pos, damageView.Color);
-                    }
+                    HandleDamage(@event.ReadPayload<DamageEvent>());
                     return;
                 case GameEventType.Kill:
-                    var kill = @event.ReadPayload<KillEvent>();
-                    _unitLayer?.Remove(kill.TargetId);
+                    HandleKill(@event.ReadPayload<KillEvent>());
                     return;
                 case GameEventType.Move:
-                    var move = @event.ReadPayload<MoveEvent>();
-                    _unitLayer?.Move(move.SubjectId, move.Destination);
+                    HandleMove(@event.ReadPayload<MoveEvent>());
                     return;
             }
+        }
+
+        private void HandleAddEffect(AddEffectEvent @event)
+        {
+            var effectView = _registry.GetEffect(@event.EffectKey);
+            if (!effectView.IsHidden)
+            {
+                ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var _);
+                _textParticleLayer?.Add(effectView.Name, pos, effectView.Color);
+            }
+        }
+
+        private void HandleAddUnit(AddUnitEvent @event)
+        {
+            _unitLayer?.Add(@event.UnitId, @event.UnitPrototypeKey, @event.Position);
+        }
+
+        private void HandleBreak(BreakEvent @event)
+        {
+            ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var _);
+            var render = _registry.GetEvent(@event.Type);
+            _textParticleLayer?.Add(render.Name, pos, render.Color);
+        }
+
+        private void HandleDamage(DamageEvent @event)
+        {
+            var damageView = _registry.GetDamage(@event.DamageType);
+            ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var isFound);
+            if (isFound)
+            {
+                _textParticleLayer?.Add(@event.Damage.ToString(), pos, damageView.Color);
+            }
+        }
+
+        private void HandleKill(KillEvent @event)
+        {
+            _unitLayer?.Remove(@event.TargetId);
+        }
+
+        private void HandleMove(MoveEvent @event)
+        {
+            _unitLayer?.Move(@event.SubjectId, @event.Destination);
         }
     }
 }
