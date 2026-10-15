@@ -12,6 +12,12 @@ namespace BattleForDune.Core.Components
         LinearCongruentialIdSupplier ids, ConfigurationRegistry registry, DenseHexGrid<Tile> map, Random random) 
         : IGameEventRouter
     {
+        public enum WorldState : byte
+        {
+            Running,
+            Terminated
+        }
+
         private readonly LinearCongruentialIdSupplier _ids = ids;
 
         public ConfigurationRegistry Registry { get; init; } = registry;
@@ -19,6 +25,7 @@ namespace BattleForDune.Core.Components
         public Random Random { get; init; } = random;
 
         public byte Turn { get; private set; }
+        public WorldState State { get; private set; }
         public IdSet Units { get; init; } = new(1024);
         public TeamComponent Teams { get; init; } = new(1024);
         public FactionComponent Factions { get; init; } = new(1024);
@@ -48,6 +55,11 @@ namespace BattleForDune.Core.Components
         public byte Roll(Die die)
         {
             return die.Roll(Random);
+        }
+
+        public void Terminate()
+        {
+            State = WorldState.Terminated;
         }
 
         public void Intercept<T>(ref T @event) where T : struct, IGameEvent

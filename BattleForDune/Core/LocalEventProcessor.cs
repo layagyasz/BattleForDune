@@ -66,6 +66,11 @@ namespace BattleForDune.Core
                     Process(ref removeEffect, sink);
                     Notify(in removeEffect);
                     return;
+                case GameEventType.Terminate:
+                    var terminate = @event.ReadPayload<TerminateEvent>();
+                    Process(ref terminate, sink);
+                    Notify(in terminate);
+                    return;
                 case GameEventType.Tick:
                     var tick = @event.ReadPayload<TickEvent>();
                     Process(ref tick, sink);
@@ -286,6 +291,15 @@ namespace BattleForDune.Core
             _world.Timers.Remove(@event.InstanceId);
         }
 
+        private void ApplyTerminate<TSink>(in TerminateEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _world.Terminate();
+        }
+
         private void ApplyTick<TSink>(in TickEvent @event, TSink sink) where TSink : IGameEventSink
         {
             if (@event.IsCanceled)
@@ -484,6 +498,13 @@ namespace BattleForDune.Core
             }
             _world.Handle(in @event, sink);
             ApplyRemoveEffect(in @event, sink);
+        }
+
+        private void Process<TSink>(ref TerminateEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            _world.Handle(in @event, sink);
+            ApplyTerminate(in @event, sink);
         }
 
         private void Process<TSink>(ref TickEvent @event, TSink sink) where TSink : IGameEventSink

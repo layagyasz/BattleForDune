@@ -23,6 +23,14 @@ namespace BattleForDune.Core
             _events.Flush();
         }
 
+        public void Resolve()
+        {
+            while (_components.State != ComponentWorld.WorldState.Terminated)
+            {
+                Step();
+            }
+        }
+
         public void Step()
         {
             _systems.Run(_components, _events);

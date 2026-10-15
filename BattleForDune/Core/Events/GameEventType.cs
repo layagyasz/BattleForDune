@@ -12,6 +12,7 @@
         Kill,
         Move,
         RemoveEffect,
+        Terminate,
         Tick,
         UpdateStat,
         UseAbility
