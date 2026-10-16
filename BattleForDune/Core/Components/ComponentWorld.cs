@@ -33,7 +33,7 @@ namespace BattleForDune.Core.Components
         public BehaviorComponent Behaviors { get; init; } = new(1024);
         public StatComponent Stats { get; init; } = new(1024);
         public InitiativeComponent Inititiative { get; init; } = new(1024);
-        public EffectComponent Effects { get; init; } = new(registry, 1024);
+        public EffectComponent Effects { get; init; } = new(registry, 4 * 1024);
         public AbilityComponent Abilities { get; init; } = new(1024);
         public TimerComponent Timers { get; init; } = new(1024);
 

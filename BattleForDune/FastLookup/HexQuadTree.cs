@@ -295,14 +295,14 @@ namespace BattleForDune.FastLookup
             node.ItemCount = (byte)totalItems;
         }
 
-        public void Query<TCallback>(Hex2b position, byte radius, ref TCallback callback)
+        public void Query<TCallback>(Hex2b position, int radius, ref TCallback callback)
             where TCallback : struct, ICallback<T>, allows ref struct
         {
             QueryInternal(0, position, radius, ref callback);
         }
 
         private bool QueryInternal<TCallback>(
-            int nodeIndex, Hex2b position, byte radius, ref TCallback callback)
+            int nodeIndex, Hex2b position, int radius, ref TCallback callback)
             where TCallback : struct, ICallback<T>, allows ref struct
         {
             ref Node node = ref _nodes[nodeIndex];
@@ -337,6 +337,66 @@ namespace BattleForDune.FastLookup
             }
 
             return true;
+        }
+
+        public int QueryNearest<TPredicate>(Hex2b position, ref TPredicate predicate, out T nearest)
+            where TPredicate : IPredicate<T>, allows ref struct
+        {
+            return QueryNearestInternal(0, position, int.MaxValue, predicate, out nearest);
+        }
+
+        private int QueryNearestInternal<TPredicate>(
+            int nodeIndex, Hex2b position, int radius, TPredicate predicate, out T nearest)
+            where TPredicate : IPredicate<T>, allows ref struct
+        {
+            nearest = default!;
+
+            ref Node node = ref _nodes[nodeIndex];
+
+            if (!node.Bounds.Intersects(position, radius))
+            {
+                return radius;
+            }
+
+            if (node.IsLeaf)
+            {
+                int itemIndex = node.ChildOrItemLink;
+                while (itemIndex != -1)
+                {
+                    ref ItemNode itemNode = ref _items[itemIndex];
+                    if (predicate.Matches(itemNode.Element))
+                    {
+                        var newDistance = Hexes.Distance(itemNode.Position, position);
+                        if (newDistance < radius)
+                        {
+                            radius = newDistance;
+                            nearest = itemNode.Element;
+                        }
+                    }
+                    itemIndex = itemNode.NextItemIndex;
+                }
+                return radius;
+            }
+            else
+            {
+                int startQuad = GetChildIndexContainingPoint(ref node, position);
+                for (int i=0; i<4; ++i)
+                {
+                    var newDistance = 
+                        QueryNearestInternal(
+                            node.ChildOrItemLink + ((startQuad + i) & 3),
+                            position,
+                            radius, 
+                            predicate,
+                            out var temp);
+                    if (newDistance < radius)
+                    {
+                        radius = newDistance;
+                        nearest = temp;
+                    }
+                }
+                return radius;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

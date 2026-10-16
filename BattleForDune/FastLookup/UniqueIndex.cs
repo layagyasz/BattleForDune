@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using System.Reflection.Metadata;
 
 namespace BattleForDune.FastLookup
 {
@@ -70,13 +69,13 @@ namespace BattleForDune.FastLookup
 
         private int FindIndex(int key)
         {
-            for (int i = 0; i < _table.Length;++i)
+            for (int i = 0; i < _table.Length; ++i)
             {
                 var index = (key + i) & _mask;
                 ref var entry = ref _table[index];
                 if (entry.Handle == -1)
                 {
-                    break;
+                    return -1;
                 }
                 if (entry.Key == key)
                 {
@@ -119,6 +118,5 @@ namespace BattleForDune.FastLookup
 
             _table[gapIndex].Handle = -1;
         }
-
     }
 }

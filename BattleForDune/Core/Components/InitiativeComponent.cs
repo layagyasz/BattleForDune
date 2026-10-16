@@ -14,6 +14,8 @@
 
         public void Clear()
         {
+            Array.Clear(_ids, 0, _count);
+            Array.Clear(_invInitiative, 0, _count);
             _count = 0;
         }
 

@@ -31,13 +31,11 @@ namespace BattleForDune.Json
             {
                 if (reader.TokenType == JsonTokenType.String)
                 {
-                    switch (reader.GetString())
+                    return reader.GetString() switch
                     {
-                        case "$all":
-                            return EnumSet<TEnum>.All();
-                        default:
-                            throw new JsonException($"Unsupported literal {reader.GetString()}");
-                    }
+                        "$all" => EnumSet<TEnum>.All(),
+                        _ => throw new JsonException($"Unsupported literal {reader.GetString()}"),
+                    };
                 }
                 var result = (EnumSet<TEnum>)Activator.CreateInstance(typeToConvert)!;
                 var values = JsonSerializer.Deserialize<List<TEnum>>(ref reader, options)!;

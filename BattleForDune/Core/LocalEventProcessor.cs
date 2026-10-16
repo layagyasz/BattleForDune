@@ -172,7 +172,7 @@ namespace BattleForDune.Core
             }
         }
 
-        private void ApplyBreak<TSink>(in BreakEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplyBreak(in BreakEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -232,8 +232,7 @@ namespace BattleForDune.Core
 
         }
 
-        private void ApplyFinalizeInitiative<TSink>(in FinalizeInitiativeEvent @event, TSink sink) 
-            where TSink : IGameEventSink
+        private void ApplyFinalizeInitiative(in FinalizeInitiativeEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -242,7 +241,7 @@ namespace BattleForDune.Core
             _world.Inititiative.Sort();
         }
 
-        private void ApplyInitiative<TSink>(in InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplyInitiative(in InitiativeEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -271,7 +270,7 @@ namespace BattleForDune.Core
             }
         }
 
-        private void ApplyMove<TSink>(in MoveEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplyMove(in MoveEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -280,8 +279,7 @@ namespace BattleForDune.Core
             _world.Positions.Move(@event.SubjectId, @event.Destination);
         }
 
-        private void ApplyRemoveEffect<TSink>(in RemoveEffectEvent @event, TSink sink) 
-            where TSink : IGameEventSink
+        private void ApplyRemoveEffect(in RemoveEffectEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -291,7 +289,7 @@ namespace BattleForDune.Core
             _world.Timers.Remove(@event.InstanceId);
         }
 
-        private void ApplyTerminate<TSink>(in TerminateEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplyTerminate(in TerminateEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -300,7 +298,7 @@ namespace BattleForDune.Core
             _world.Terminate();
         }
 
-        private void ApplyTick<TSink>(in TickEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplyTick(in TickEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -310,7 +308,7 @@ namespace BattleForDune.Core
             _world.IncrementTurn();
         }
 
-        private void ApplyUpdateStat<TSink>(in UpdateStatEvent @event, TSink sink) where TSink : IGameEventSink
+        private void ApplyUpdateStat(in UpdateStatEvent @event)
         {
             if (@event.IsCanceled)
             {
@@ -416,7 +414,7 @@ namespace BattleForDune.Core
                 ability!.Handle(in @event, sink, _world);
             }
             _world.Handle(in @event, sink);
-            ApplyBreak(in @event, sink);
+            ApplyBreak(in @event);
         }
 
         private void Process<TSink>(ref DamageEvent @event, TSink sink) where TSink : IGameEventSink
@@ -447,7 +445,7 @@ namespace BattleForDune.Core
         {
             _world.Intercept(ref @event);
             _world.Handle(in @event, sink);
-            ApplyFinalizeInitiative(in @event, sink);
+            ApplyFinalizeInitiative(in @event);
         }
 
         private void Process<TSink>(ref InitiativeEvent @event, TSink sink) where TSink : IGameEventSink
@@ -456,7 +454,7 @@ namespace BattleForDune.Core
             _world.Intercept(ref @event);
             @event.Initiative = @event.Skill + @event.Roll + _world.Random.NextSingle();
             _world.Handle(in @event, sink);
-            ApplyInitiative(in @event, sink);
+            ApplyInitiative(in @event);
         }
 
         private void Process<TSink>(ref KillEvent @event, TSink sink) where TSink : IGameEventSink
@@ -480,7 +478,7 @@ namespace BattleForDune.Core
         {
             _world.Intercept(ref @event);
             _world.Handle(in @event, sink);
-            ApplyMove(in @event, sink);
+            ApplyMove(in @event);
         }
 
         private void Process<TSink>(ref RemoveEffectEvent @event, TSink sink) where TSink : IGameEventSink
@@ -497,21 +495,21 @@ namespace BattleForDune.Core
                 ability!.Handle(in @event, sink, _world);
             }
             _world.Handle(in @event, sink);
-            ApplyRemoveEffect(in @event, sink);
+            ApplyRemoveEffect(in @event);
         }
 
         private void Process<TSink>(ref TerminateEvent @event, TSink sink) where TSink : IGameEventSink
         {
             _world.Intercept(ref @event);
             _world.Handle(in @event, sink);
-            ApplyTerminate(in @event, sink);
+            ApplyTerminate(in @event);
         }
 
         private void Process<TSink>(ref TickEvent @event, TSink sink) where TSink : IGameEventSink
         {
             _world.Intercept(ref @event);
             _world.Handle(in @event, sink);
-            ApplyTick(in @event, sink);
+            ApplyTick(in @event);
         }
 
         private void Process<TSink>(ref UpdateStatEvent @event, TSink sink) where TSink : IGameEventSink
@@ -528,7 +526,7 @@ namespace BattleForDune.Core
                 ability!.Handle(in @event, sink, _world);
             }
             _world.Handle(in @event, sink);
-            ApplyUpdateStat(in @event, sink);
+            ApplyUpdateStat(in @event);
         }
 
         private void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink

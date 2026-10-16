@@ -17,13 +17,13 @@ namespace BattleForDune.Geometry
         ];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte Displacement(Hex2b delta)
+        public static int Displacement(Hex2b delta)
         {
-            return (byte)(((byte)Math.Abs(delta.Q) + (byte)Math.Abs(delta.R) + (byte)Math.Abs(delta.S)) >> 1);
+            return (Math.Abs(delta.Q) + Math.Abs(delta.R) + Math.Abs(delta.S)) >> 1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte Distance(Hex2b left, Hex2b right)
+        public static int Distance(Hex2b left, Hex2b right)
         {
             return Displacement(left - right);
         }

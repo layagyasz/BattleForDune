@@ -38,9 +38,9 @@ namespace BattleForDune.Core.Systems
                     return;
                 }
             }
-
             // At most one active team found.
             sink.Queue(new TerminateEvent(firstTeam));
+            sink.Flush();
         }
     }
 }

@@ -32,6 +32,12 @@ namespace BattleForDune.Core.Components
             _quadTree.Query(position, range, ref callback);
         }
 
+        public int QueryNearest<TPredicate>(Hex2b position, ref TPredicate predicate, out int nearest) 
+            where TPredicate : IPredicate<int>, allows ref struct
+        {
+            return _quadTree.QueryNearest(position, ref predicate, out nearest);
+        }
+
         public ref Hex2b TryGet(EntityId id, out bool isFound)
         {
             if (_index.TryGet(id.Value, out int handle))

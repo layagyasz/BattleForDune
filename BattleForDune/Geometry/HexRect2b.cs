@@ -15,7 +15,7 @@ namespace BattleForDune.Geometry
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Hex2b position, byte radius)
+        public bool Intersects(Hex2b position, int radius)
         {
             var closestQ = Math.Max(TopLeft.Q, Math.Min(position.Q, TopLeft.Q + Size.Q));
             var closestR = Math.Max(TopLeft.R, Math.Min(position.R, TopLeft.R + Size.R));

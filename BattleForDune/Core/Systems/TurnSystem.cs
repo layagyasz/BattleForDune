@@ -60,6 +60,20 @@ namespace BattleForDune.Core.Systems
             }
         };
 
+        private readonly ref struct TargetPredicate(
+            EntityId subjectId, byte subjectTeam, ComponentWorld world, TargetType targetType) : IPredicate<int>
+        {
+            private readonly EntityId _subjectId = subjectId;
+            private readonly byte _subjectTeam = subjectTeam;
+            private readonly ComponentWorld _world = world;
+            private readonly TargetType _targetType = targetType;
+
+            public readonly bool Matches(in int targetId)
+            {
+                return GetTargetType(_subjectId, _subjectTeam, new(targetId), _world) == _targetType;
+            }
+        }
+
         private readonly int _delay = delay;
         private readonly Random _random = random;
 
@@ -159,30 +173,9 @@ namespace BattleForDune.Core.Systems
         private static EntityId FindMoveTarget(
             EntityId subjectId, Hex2b position, byte subjectTeam, ComponentWorld world)
         {
-            // TODO: Use quad tree find nearest
-            EntityId target = EntityId.None;
-            int distance = 0;
-            foreach (var option in world.Units.AsSpan())
-            {
-                var optionId = new EntityId(option);
-                var optionPosition = world.Positions.TryGet(optionId, out var isFound);
-                if (!isFound)
-                {
-                    continue;
-                }
-                if (GetTargetType(subjectId, subjectTeam, optionId, world) != TargetType.Enemy)
-                {
-                    continue;
-                }
-
-                var d = Hexes.Distance(position, optionPosition);
-                if (target == EntityId.None || d < distance)
-                {
-                    target = optionId;
-                    distance = d;
-                }
-            }
-            return target;
+            var predicate = new TargetPredicate(subjectId, subjectTeam, world, TargetType.Enemy);
+            world.Positions.QueryNearest(position, ref predicate, out var target);
+            return new(target);
         }
 
         private EntityId FindTarget(EntityId subjectId, byte subjectTeam, Ability ability, ComponentWorld world)
