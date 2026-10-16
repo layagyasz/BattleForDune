@@ -27,7 +27,6 @@ namespace BattleForDune.View
                     _index.Add(key.Value, handle);
                 }
             }
-            _page.GetTexture().CopyToImage().SaveToFile("tiles.png");
         }
 
         public Box2i Get(RegistryKey key)

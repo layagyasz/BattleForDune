@@ -90,7 +90,7 @@ namespace BattleForDune.Runners
                         j,
                         i,
                         new Tile(
-                            new((ushort)random.Next(24)), new(random.NextBoolean(), (byte)random.Next(6))));
+                            new((ushort)random.Next(24, 56)), new(random.NextBoolean(), (byte)random.Next(6))));
                 }
             }
             return map;
