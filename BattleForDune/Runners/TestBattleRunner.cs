@@ -19,6 +19,8 @@ namespace BattleForDune.Runners
 {
     public class TestBattleRunner : IRunner
     {
+        private const byte TURN_LIMIT = 60;
+
         public void Run()
         {
             var monitor = Monitors.GetPrimaryMonitor();
@@ -70,7 +72,7 @@ namespace BattleForDune.Runners
             ui.SetRoot(screen);
 
             var processor = new LocalEventProcessor(components, [uiEventPump]);
-            var world = new LocalWorld(components, new(processor), 1, random);
+            var world = new LocalWorld(components, new(processor), TURN_LIMIT, 1, random);
 
             var thread = new Thread(TestThread(world));
             thread.Start();

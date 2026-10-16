@@ -364,14 +364,11 @@ namespace BattleForDune.FastLookup
                 while (itemIndex != -1)
                 {
                     ref ItemNode itemNode = ref _items[itemIndex];
-                    if (predicate.Matches(itemNode.Element))
+                    var newDistance = Hexes.Distance(itemNode.Position, position);
+                    if (newDistance < radius && predicate.Matches(itemNode.Element))
                     {
-                        var newDistance = Hexes.Distance(itemNode.Position, position);
-                        if (newDistance < radius)
-                        {
-                            radius = newDistance;
-                            nearest = itemNode.Element;
-                        }
+                        radius = newDistance;
+                        nearest = itemNode.Element;                    
                     }
                     itemIndex = itemNode.NextItemIndex;
                 }

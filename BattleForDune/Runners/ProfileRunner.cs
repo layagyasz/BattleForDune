@@ -11,6 +11,8 @@ namespace BattleForDune.Runners
 {
     public record class ProfileRunner : IRunner
     {
+        private const byte TURN_LIMIT = 60;
+
         public record struct TeamSetup(RegistryKey Unit, byte Level, int Count);
 
         private readonly TeamSetup _teamA;
@@ -53,8 +55,10 @@ namespace BattleForDune.Runners
             for (int i=0; i<_rounds; ++i)
             {
                 var winner = DoBattle(registry, map, random);
-                wins[winner]++;
-                Console.WriteLine(stopwatch.ElapsedMilliseconds);
+                if (winner < 2)
+                {
+                    wins[winner]++;
+                }
             }
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
             Console.WriteLine($"{wins[0]} {wins[1]}");
@@ -70,7 +74,7 @@ namespace BattleForDune.Runners
                     random);
             var collector = new TerminationCollector();
             var processor = new LocalEventProcessor(components, [collector]);
-            var world = new LocalWorld(components, new(processor), 0, random);
+            var world = new LocalWorld(components, new(processor), TURN_LIMIT, 0, random);
 
             for (int i = 0; i < _teamA.Count; ++i)
             {
@@ -79,7 +83,7 @@ namespace BattleForDune.Runners
                     _teamA.Level,
                     new(0), 
                     0,
-                    Geometry.Projection.OffsetToAxial(new(i % _width, 31 - i / _width)));
+                    Geometry.Projection.OffsetToAxial(new((64 - _width) / 2 + (i % _width), 31 - i / _width)));
             }
             for (int i = 0; i < _teamB.Count; ++i)
             {
@@ -88,7 +92,7 @@ namespace BattleForDune.Runners
                     _teamB.Level, 
                     new(1),
                     1, 
-                    Geometry.Projection.OffsetToAxial(new(i % _width, 32 + i / _width)));
+                    Geometry.Projection.OffsetToAxial(new((64 - _width) / 2 + (i % _width), 32 + i / _width)));
             }
             world.Resolve();
             return collector.WinningTeam;

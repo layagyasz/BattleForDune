@@ -5,13 +5,19 @@ using BattleForDune.Core.Events.Types;
 
 namespace BattleForDune.Core.Systems
 {
-    public readonly struct TerminateSystem : IGameSystem
+    public readonly struct TerminateSystem(byte turnLimit) : IGameSystem
     {
         private const byte NULL_TEAM = 255;
 
+        private readonly byte _turnLimit = turnLimit;
+
         public readonly void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
-            // TODO: also consider round limit
+            if (world.Turn >= _turnLimit)
+            {
+                sink.Queue(new TerminateEvent(NULL_TEAM));
+                sink.Flush();
+            }
 
             byte firstTeam = NULL_TEAM;
             foreach (var unitId in world.Units.AsSpan())
