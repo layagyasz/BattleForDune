@@ -4,6 +4,7 @@ using BattleForDune.Core.Components;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Schema;
 using BattleForDune.Geometry;
+using BattleForDune.Runners.Setup;
 using BattleForDune.View;
 using BattleForDune.View.Config;
 using Cardamom.Graphics;
@@ -17,10 +18,8 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace BattleForDune.Runners
 {
-    public class TestBattleRunner : IRunner
+    public class TestBattleRunner(BattleSetup Setup) : IRunner
     {
-        private const byte TURN_LIMIT = 60;
-
         public void Run()
         {
             var monitor = Monitors.GetPrimaryMonitor();
@@ -72,9 +71,11 @@ namespace BattleForDune.Runners
             ui.SetRoot(screen);
 
             var processor = new LocalEventProcessor(components, [uiEventPump]);
-            var world = new LocalWorld(components, new(processor), TURN_LIMIT, 1, random);
+            var eventPump = new EventPump<LocalEventProcessor>(processor);
+            var world = new LocalWorld(components, eventPump, Setup.TurnLimit, 1, random);
+            Setup.Setup(map.Size, eventPump);
 
-            var thread = new Thread(TestThread(world));
+            var thread = new Thread(world.Resolve);
             thread.Start();
             ui.Start();
         }
@@ -94,22 +95,6 @@ namespace BattleForDune.Runners
                 }
             }
             return map;
-        }
-
-        private static ParameterizedThreadStart TestThread(LocalWorld world)
-        {
-            return _ =>
-            {
-                for (int i = 0; i < 50; ++i)
-                {
-                    world.AddUnit(new(1), 10, new(0), 0, Geometry.Projection.OffsetToAxial(new(i, 31)));
-                }
-                for (int i = 0; i < 50; ++i)
-                {
-                    world.AddUnit(new(0), 10, new(1), 1, Geometry.Projection.OffsetToAxial(new(i, 32)));
-                }
-                world.Resolve();
-            };
         }
     }
 }
