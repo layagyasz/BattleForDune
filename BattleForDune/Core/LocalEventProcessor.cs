@@ -1,5 +1,6 @@
 ﻿using BattleForDune.Core.Components;
 using BattleForDune.Core.Components.Abilities;
+using BattleForDune.Core.Components.Actions;
 using BattleForDune.Core.Components.Behaviors;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
@@ -66,6 +67,11 @@ namespace BattleForDune.Core
                     Process(ref removeEffect, sink);
                     Notify(in removeEffect);
                     return;
+                case GameEventType.ResetActions:
+                    var reset = @event.ReadPayload<ResetActionsEvent>();
+                    Process(ref reset, sink);
+                    Notify(in reset);
+                    return;
                 case GameEventType.Terminate:
                     var terminate = @event.ReadPayload<TerminateEvent>();
                     Process(ref terminate, sink);
@@ -75,6 +81,11 @@ namespace BattleForDune.Core
                     var tick = @event.ReadPayload<TickEvent>();
                     Process(ref tick, sink);
                     Notify(in tick);
+                    return;
+                case GameEventType.UpdateActions:
+                    var update = @event.ReadPayload<UpdateActionsEvent>();
+                    Process(ref update, sink);
+                    Notify(in update);
                     return;
                 case GameEventType.UpdateStat:
                     var stat = @event.ReadPayload<UpdateStatEvent>();
@@ -153,6 +164,7 @@ namespace BattleForDune.Core
             _world.Units.Add(@event.UnitId.Value);
             _world.Stats.Add(@event.UnitId, prototype.Stats.Materialize(@event.Level));
             _world.Positions.Add(@event.UnitId, @event.Position);
+            _world.Actions.Add(@event.UnitId, ActionPoints.Create());
             _world.Behaviors.Add(@event.UnitId, new());
             _world.Teams.Add(@event.UnitId, @event.TeamId);
             _world.Factions.Add(@event.UnitId, @event.FactionKey);
@@ -259,6 +271,7 @@ namespace BattleForDune.Core
             _world.Units.Remove(@event.TargetId.Value);
             _world.Stats.Remove(@event.TargetId);
             _world.Positions.Remove(@event.TargetId);
+            _world.Actions.Remove(@event.TargetId);
             _world.Behaviors.Remove(@event.TargetId);
             _world.Teams.Remove(@event.TargetId);
             _world.Factions.Remove(@event.TargetId);
@@ -276,6 +289,11 @@ namespace BattleForDune.Core
             {
                 return;
             }
+            ref var actions = ref _world.Actions.TryGet(@event.SubjectId, out var isFound);
+            if (isFound)
+            {
+                actions.MovePoints -= 1;
+            }
             _world.Positions.Move(@event.SubjectId, @event.Destination);
         }
 
@@ -287,6 +305,20 @@ namespace BattleForDune.Core
             }
             _world.Effects.Remove(@event.InstanceId);
             _world.Timers.Remove(@event.InstanceId);
+        }
+
+        private void ApplyResetActions(in ResetActionsEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            ref var actions = ref _world.Actions.TryGet(@event.SubjectId, out var isFound);
+            if (isFound)
+            {
+                actions.AttackPoints = @event.Attacks;
+                actions.MovePoints = @event.Moves;
+            }
         }
 
         private void ApplyTerminate(in TerminateEvent @event)
@@ -308,6 +340,20 @@ namespace BattleForDune.Core
             _world.IncrementTurn();
         }
 
+        private void ApplyUpdateActions(in UpdateActionsEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            ref var actions = ref _world.Actions.TryGet(@event.TargetId, out bool isFound);
+            if (isFound)
+            {
+                actions.AttackPoints = (byte)Math.Max(0, actions.AttackPoints + @event.Attacks);
+                actions.MovePoints = (byte)Math.Max(0, actions.MovePoints + @event.Moves);
+            }
+        }
+
         private void ApplyUpdateStat(in UpdateStatEvent @event)
         {
             if (@event.IsCanceled)
@@ -327,6 +373,19 @@ namespace BattleForDune.Core
                 {
                     entry.Combine(@event.Delta);
                 }
+            }
+        }
+
+        private void ApplyUseAbility(in UseAbilityEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            ref var actions = ref _world.Actions.TryGet(@event.SubjectId, out var isFound);
+            if (isFound)
+            {
+                actions.AttackPoints -= 1;
             }
         }
 
@@ -498,6 +557,13 @@ namespace BattleForDune.Core
             ApplyRemoveEffect(in @event);
         }
 
+        private void Process<TSink>(ref ResetActionsEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            _world.Handle(in @event, sink);
+            ApplyResetActions(in @event);
+        }
+
         private void Process<TSink>(ref TerminateEvent @event, TSink sink) where TSink : IGameEventSink
         {
             _world.Intercept(ref @event);
@@ -510,6 +576,23 @@ namespace BattleForDune.Core
             _world.Intercept(ref @event);
             _world.Handle(in @event, sink);
             ApplyTick(in @event);
+        }
+
+        private void Process<TSink>(ref UpdateActionsEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            if (hasAbility)
+            {
+                ability!.Intercept(ref @event, _world);
+            }
+            _world.Intercept(ref @event);
+
+            if (hasAbility)
+            {
+                ability!.Handle(in @event, sink, _world);
+            }
+            _world.Handle(in @event, sink);
+            ApplyUpdateActions(in @event);
         }
 
         private void Process<TSink>(ref UpdateStatEvent @event, TSink sink) where TSink : IGameEventSink
@@ -539,6 +622,7 @@ namespace BattleForDune.Core
                 ability!.Handle(in @event, sink, _world);
                 _world.Handle(in @event, sink);
             }
+            ApplyUseAbility(in @event);
         }
 
         private void Notify<T>(in T @event) where T : struct, IGameEvent

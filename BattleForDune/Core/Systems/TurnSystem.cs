@@ -82,7 +82,6 @@ namespace BattleForDune.Core.Systems
             foreach (var unitId in world.Inititiative.AsSpan())
             {
                 DoTurn(unitId, world, sink);
-                sink.Flush();
                 Thread.Sleep(_delay);
             }
         }
@@ -102,20 +101,28 @@ namespace BattleForDune.Core.Systems
                 return;
             }
 
+            ref var actions = ref world.Actions.TryGet(unitId, out isFound);
+            if (!isFound)
+            {
+                return;
+            }
+
             if (behavior.Mode == BehaviorMode.Broken)
             {
-                DoMove(unitId, team, -1f, world, sink);
-                return;
+                while (actions.MovePoints > 0 && DoMove(unitId, team, -1f, world, sink))
+                {
+                    sink.Flush();
+                }
             }
-
-            if (DoAbility(unitId, team, world, sink))
+            else
             {
-                return;
-            }
-
-            if (DoMove(unitId, team, 1f, world, sink))
-            {
-                return;
+                while ((actions.AttackPoints > 0 && DoAbility(unitId, team, world, sink))
+                    || (actions.AttackPoints > 0 
+                        && actions.MovePoints > 0 
+                        && DoMove(unitId, team, 1f, world, sink)))
+                {
+                    sink.Flush();
+                }
             }
         }
 

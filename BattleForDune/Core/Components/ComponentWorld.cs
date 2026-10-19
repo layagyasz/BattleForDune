@@ -30,6 +30,7 @@ namespace BattleForDune.Core.Components
         public TeamComponent Teams { get; init; } = new(1024);
         public FactionComponent Factions { get; init; } = new(1024);
         public PositionComponent Positions { get; init; } = new(Upsize(map.Size), 1024);
+        public ActionComponent Actions { get; init; } = new(1024);
         public BehaviorComponent Behaviors { get; init; } = new(1024);
         public StatComponent Stats { get; init; } = new(1024);
         public InitiativeComponent Inititiative { get; init; } = new(1024);
