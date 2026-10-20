@@ -10,6 +10,7 @@ namespace BattleForDune.Core.Components.Effects
     [JsonDerivedType(typeof(DamageInModifierHandler), "DamageInModifier")]
     [JsonDerivedType(typeof(DamageOutModifierHandler), "DamageOutModifier")]
     [JsonDerivedType(typeof(DamageOverTimeHandler), "DamageOverTime")]
+    [JsonDerivedType(typeof(KillOutActionPointsHandler), "KillOutActionPoints")]
     [JsonDerivedType(typeof(MassiveCriticalHandler), "MassiveCritical")]
     [JsonDerivedType(typeof(UpdateStatHandler), "UpdateStat")]
     public interface IGenericEffectHandler

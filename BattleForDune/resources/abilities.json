@@ -74,5 +74,46 @@
         "Duration": 3
       }
     ]
+  },
+  // Crysknife
+  {
+    "AbilityKey": 2,
+    "Range": 1,
+    "TargetType": [ "Enemy" ],
+    "TargetComparator": {
+      "$type": "Default"
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAttack",
+        "Vector": [ "Melee" ],
+        "CriticalRange": 1
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Physical",
+        "Vector": [ "Melee" ],
+        "Stat": "Hitpoints",
+        "Damage": "1d6",
+        "IsPrimary": true
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Psychic",
+        "Vector": [ "Psychic" ],
+        "Stat": "Morale",
+        "Damage": "1d4"
+      },
+      {
+        "$type": "DamageCriticalMultiplier",
+        "Multiplier": 3.0
+      },
+      {
+        "$type": "DamageChanceApplyEffect",
+        "EffectKey": 6,
+        "Difficulty": 18,
+        "Duration": 3
+      }
+    ]
   }
 ]

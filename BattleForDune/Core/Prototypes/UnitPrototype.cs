@@ -8,7 +8,7 @@
     {
         public record class Description(
             RegistryKey UnitKey,
-            RegistryKey ArchetypeKey,
+            RegistryKey Archetype,
             StatModifier[] Modifiers,
             RegistryKey[] Abilities,
             RegistryKey[] Passives) : IComparable<Description>
@@ -24,7 +24,7 @@
 
             public UnitPrototype Build(ConfigurationRegistry registry)
             {
-                var stats = registry.GetArchetype(ArchetypeKey).Stats;
+                var stats = registry.GetArchetype(Archetype).Stats;
                 foreach (var modifier in Modifiers)
                 {
                     stats[modifier.Stat] = Combine(stats[modifier.Stat], modifier);

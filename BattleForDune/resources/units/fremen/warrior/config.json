@@ -1,0 +1,14 @@
+[
+  {
+    "UnitKey": 2,
+    "Archetype": 1,
+    "Modifiers": [
+      {
+        "Stat": "Armor",
+        "Modifier": 1
+      }
+    ],
+    "Abilities": [ 2 ],
+    "Passives": [ 17, 18 ]
+  }
+]

@@ -230,7 +230,8 @@ namespace BattleForDune.Core
             {
                 if (@event.Stat == StatType.Hitpoints)
                 {
-                    sink.Queue(new KillEvent(@event.SubjectId, @event.AbilityId, @event.TargetId));
+                    sink.Queue(
+                        new KillEvent(@event.SubjectId, @event.AbilityId, @event.TargetId, @event.IsPrimary));
                 }
                 else if (@event.Stat == StatType.Morale)
                 {

@@ -372,5 +372,18 @@
         "Modifier": 2
       }
     ]
+  },
+  // Cleave
+  {
+    "EffectKey": 18,
+    "SupportedEvents": [ "Kill" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "KillOutActionPoints",
+        "IsPrimaryDamage": [ "True" ],
+        "AttackPoints": 1
+      }
+    ]
   }
 ]

@@ -98,5 +98,11 @@
     "Color": "#ffffff",
     "Name": "al-sikkinayn",
     "IsHidden": true
+  },
+  {
+    "Key": 18,
+    "Color": "#ffffff",
+    "Name": "cleave",
+    "IsHidden": true
   }
 ]
