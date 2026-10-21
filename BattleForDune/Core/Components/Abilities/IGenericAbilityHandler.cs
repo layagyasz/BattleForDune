@@ -5,7 +5,7 @@ namespace BattleForDune.Core.Components.Abilities
 {
     [JsonDerivedType(typeof(UseAbilityAttackHandler), "UseAbilityAttack")]
     [JsonDerivedType(typeof(AttackBasicHandler), "AttackBasic")]
-    [JsonDerivedType(typeof(DamageChanceApplyEffectHandler), "DamageChanceApplyEffect")]
+    [JsonDerivedType(typeof(DamageChanceAddEffectHandler), "DamageChanceAddEffect")]
     [JsonDerivedType(typeof(DamageCriticalMultiplierHandler), "DamageCriticalMultiplier")]
     public interface IGenericAbilityHandler { }
 }

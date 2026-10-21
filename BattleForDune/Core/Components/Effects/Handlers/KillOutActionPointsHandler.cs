@@ -21,12 +21,21 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         public void Handle<TSink>(Effect parent, in KillEvent @event, ComponentWorld world, in TSink sink)
             where TSink : IGameEventSink
         {
-            if (@event.SubjectId == parent.OwnerId && IsPrimaryDamage.HasFlag(@event.IsPrimaryDamage))
+            if (@event.IsCanceled)
             {
-                sink.Queue(
-                    new UpdateActionsEvent(
-                        @event.SubjectId, @event.AbilityId, @event.SubjectId, ActionPoints, MovePoints));
+                return;
             }
+            if (@event.SubjectId != parent.OwnerId)
+            {
+                return;
+            }
+            if (!IsPrimaryDamage.HasFlag(@event.IsPrimaryDamage))
+            {
+                return;
+            }
+            sink.Queue(
+                new UpdateActionsEvent(
+                    @event.SubjectId, @event.AbilityId, @event.SubjectId, ActionPoints, MovePoints));
         }
     }
 }

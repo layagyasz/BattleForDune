@@ -12,20 +12,6 @@
       }
     ]
   },
-  // Dauntless
-  {
-    "EffectKey": 2,
-    "SupportedEvents": [ "Damage" ],
-    "IsMergeable": false,
-    "Handlers": [
-      {
-        "$type": "DamageImmunity",
-        "DamageType": [ "Psychic" ],
-        "Vector": [ "All" ],
-        "Stat": [ "Morale" ]
-      }
-    ]
-  },
   // Fast Attack
   {
     "EffectKey": 1,
@@ -38,6 +24,20 @@
         "Delta": {
           "Value": 4
         }
+      }
+    ]
+  },
+  // Dauntless
+  {
+    "EffectKey": 2,
+    "SupportedEvents": [ "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "DamageImmunity",
+        "DamageType": "$all",
+        "Vector": [ "All" ],
+        "Stat": [ "Morale" ]
       }
     ]
   },
@@ -383,6 +383,76 @@
         "$type": "KillOutActionPoints",
         "IsPrimaryDamage": [ "True" ],
         "AttackPoints": 1
+      }
+    ]
+  },
+  // Stunned
+  {
+    "EffectKey": 19,
+    "SupportedEvents": [ "ResetActions" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "ResetActions",
+        "IsBlockAttacks": true,
+        "IsBlockMoves": true
+      }
+    ]
+  },
+  // Contaminated
+  {
+    "EffectKey": 20,
+    "SupportedEvents": [ "Kill" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "KillInSpawn",
+        "UnitKey": 3
+      }
+    ]
+  },
+  // Contaminate
+  {
+    "EffectKey": 21,
+    "SupportedEvents": [ "Damage", "AddUnit" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "DamageOutChanceAddEffect",
+        "Vector": [ "Melee" ],
+        "EffectKey": 20,
+        "Difficulty": 18,
+        "Duration": -1
+      }
+    ]
+  },
+  // Mindless
+  {
+    "EffectKey": 22,
+    "SupportedEvents": [ "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Attack",
+        "Delta": {
+          "Value": 4,
+          "Max": 4
+        }
+      },
+      {
+        "$type": "UpdateStat",
+        "Stat": "Evasion",
+        "Delta": {
+          "Value": -4,
+          "Max": -4
+        }
+      },
+      {
+        "$type": "DamageOutModifier",
+        "DamageType": "$all",
+        "Vector": [ "Melee" ],
+        "Modifier": 2
       }
     ]
   }

@@ -3,7 +3,7 @@ using BattleForDune.Core.Events.Types;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public record class DamageChanceApplyEffectHandler(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
+    public record class DamageChanceAddEffectHandler(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
         : IAbilityHandler<DamageEvent>
     {
         public void Intercept(ref DamageEvent @event, ComponentWorld world) { }

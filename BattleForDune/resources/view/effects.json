@@ -104,5 +104,27 @@
     "Color": "#ffffff",
     "Name": "cleave",
     "IsHidden": true
+  },
+  {
+    "Key": 19,
+    "Color": "#33ff99",
+    "Name": "stunned"
+  },
+  {
+    "Key": 20,
+    "Color": "#9933ff",
+    "Name": "contaminated"
+  },
+  {
+    "Key": 21,
+    "Color": "#9933ff",
+    "Name": "contaminate",
+    "IsHidden": true
+  },
+  {
+    "Key": 22,
+    "Color": "#ffffff",
+    "Name": "mindless",
+    "IsHidden": true
   }
 ]

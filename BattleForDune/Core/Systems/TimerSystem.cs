@@ -8,8 +8,6 @@ namespace BattleForDune.Core.Systems
     {
         public readonly void Run<TSink>(ComponentWorld world, in TSink sink) where TSink : IGameEventSink
         {
-            sink.Queue(new TickEvent());
-            sink.Flush();
             while (true)
             {
                 if (world.Timers.Peek(out var timer) && timer.Turn <= world.Turn)

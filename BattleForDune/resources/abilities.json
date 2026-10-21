@@ -68,7 +68,7 @@
         "Multiplier": 2.0
       },
       {
-        "$type": "DamageChanceApplyEffect",
+        "$type": "DamageChanceAddEffect",
         "EffectKey": 6,
         "Difficulty": 18,
         "Duration": 3
@@ -109,10 +109,45 @@
         "Multiplier": 3.0
       },
       {
-        "$type": "DamageChanceApplyEffect",
+        "$type": "DamageChanceAddEffect",
         "EffectKey": 6,
         "Difficulty": 18,
         "Duration": 3
+      }
+    ]
+  },
+  // Unarmed
+  {
+    "AbilityKey": 3,
+    "Range": 1,
+    "TargetType": [ "Enemy" ],
+    "TargetComparator": {
+      "$type": "Default"
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAttack",
+        "Vector": [ "Melee" ],
+        "CriticalRange": 1
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Physical",
+        "Vector": [ "Melee" ],
+        "Stat": "Hitpoints",
+        "Damage": "0d0+1",
+        "IsPrimary": true
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Psychic",
+        "Vector": [ "Psychic" ],
+        "Stat": "Morale",
+        "Damage": "0d0+1"
+      },
+      {
+        "$type": "DamageCriticalMultiplier",
+        "Multiplier": 2.0
       }
     ]
   }

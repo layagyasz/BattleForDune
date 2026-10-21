@@ -5,11 +5,19 @@ namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct AddUnitEvent(
-        RegistryKey unitPrototypeKey, byte level, RegistryKey factionKey, byte teamId, Hex2b position) 
+        EntityId subjectId, 
+        byte abilityId,
+        RegistryKey unitPrototypeKey,
+        byte level,
+        RegistryKey factionKey, 
+        byte teamId,
+        Hex2b position) 
         : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.AddUnit;
         public bool IsCanceled { get; set; }
+        public EntityId SubjectId = subjectId;
+        public byte AbilityId = abilityId;
         public RegistryKey UnitPrototypeKey = unitPrototypeKey;
         public byte Level = level;
         public EntityId UnitId;

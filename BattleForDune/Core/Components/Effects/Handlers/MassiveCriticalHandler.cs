@@ -19,7 +19,18 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         public void Handle<TSink>(Effect parent, in DamageEvent @event, ComponentWorld world, in TSink sink)
             where TSink : IGameEventSink
         {
-            if (@event.SubjectId == parent.OwnerId && @event.IsCritical)
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            if (@event.SubjectId != parent.OwnerId)
+            {
+                return;
+            }
+            if (!@event.IsCritical)
+            {
+                return;
+            }
             {
                 sink.Queue(
                     new DamageEvent(
