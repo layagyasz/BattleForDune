@@ -162,12 +162,12 @@ namespace BattleForDune.Core
             }
             var prototype = _world.Registry.GetUnitPrototype(@event.UnitPrototypeKey);
             _world.Units.Add(@event.UnitId.Value);
+            _world.UnitMetadatas.Add(@event.UnitId, new(@event.UnitPrototypeKey, @event.Level));
             _world.Stats.Add(@event.UnitId, prototype.Stats.Materialize(@event.Level));
             _world.Positions.Add(@event.UnitId, @event.Position);
             _world.Actions.Add(@event.UnitId, ActionPoints.Create());
             _world.Behaviors.Add(@event.UnitId, new());
-            _world.Teams.Add(@event.UnitId, @event.TeamId);
-            _world.Factions.Add(@event.UnitId, @event.FactionKey);
+            _world.Allegiances.Add(@event.UnitId, new(@event.FactionKey, @event.TeamId));
 
             var abilities = new Ability[prototype.Abilities.Length];
             for (int i = 0; i < abilities.Length; ++i)
@@ -270,12 +270,12 @@ namespace BattleForDune.Core
                 return;
             }
             _world.Units.Remove(@event.TargetId.Value);
+            _world.UnitMetadatas.Remove(@event.TargetId);
             _world.Stats.Remove(@event.TargetId);
             _world.Positions.Remove(@event.TargetId);
             _world.Actions.Remove(@event.TargetId);
             _world.Behaviors.Remove(@event.TargetId);
-            _world.Teams.Remove(@event.TargetId);
-            _world.Factions.Remove(@event.TargetId);
+            _world.Allegiances.Remove(@event.TargetId);
             _world.Abilities.Remove(@event.TargetId);
 
             foreach (var effect in _world.Effects.ByOwner(@event.TargetId))

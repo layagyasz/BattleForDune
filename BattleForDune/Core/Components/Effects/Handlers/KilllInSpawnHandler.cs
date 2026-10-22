@@ -28,13 +28,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                 return;
             }
 
-            ref var sourceTeam = ref world.Teams.TryGet(parent.SourceId, out var isFound);
-            if (!isFound)
-            {
-                return;
-            }
-
-            ref var sourceFaction = ref world.Factions.TryGet(parent.SourceId, out isFound);
+            ref var sourceAllegiance = ref world.Allegiances.TryGet(parent.SourceId, out var isFound);
             if (!isFound)
             {
                 return;
@@ -46,15 +40,20 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                 return;
             }
 
-            // TODO: copy level from target?
+            ref var targetMetadata = ref world.UnitMetadatas.TryGet(@event.TargetId, out isFound);
+            if (!isFound)
+            {
+                return;
+            }
+
             sink.Queue(
                 new AddUnitEvent(
                     parent.SourceId, 
                     parent.AbilityId, 
                     UnitKey, 
-                    0,
-                    sourceFaction, 
-                    sourceTeam,
+                    targetMetadata.Level,
+                    sourceAllegiance.TrueFaction,
+                    sourceAllegiance.TrueTeam,
                     targetPosition));
         }
     }

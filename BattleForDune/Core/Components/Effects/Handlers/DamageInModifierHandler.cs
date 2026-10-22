@@ -8,6 +8,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
     public record class DamageInModifierHandler(
         EnumSet<DamageType> DamageType,
         AbilityVector Vector,
+        EnumSet<StatType> Stat,
         sbyte Modifier)
         : IEffectHandler<DamageEvent>
     {
@@ -21,7 +22,8 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         {
             if (@event.TargetId == parent.OwnerId 
                 && DamageType.Contains(@event.DamageType) 
-                && Vector.HasFlag(@event.Vector))
+                && Vector.HasFlag(@event.Vector)
+                && Stat.Contains(@event.Stat))
             {
                 @event.Die.Modifier += Modifier;
             }

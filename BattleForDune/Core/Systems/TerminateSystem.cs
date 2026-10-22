@@ -22,11 +22,12 @@ namespace BattleForDune.Core.Systems
             byte firstTeam = NULL_TEAM;
             foreach (var unitId in world.Units.AsSpan())
             {
-                ref var team = ref world.Teams.TryGet(new(unitId), out var isFound);
+                ref var allegiance = ref world.Allegiances.TryGet(new(unitId), out var isFound);
                 if (!isFound)
                 {
                     continue;
                 }
+                var team = allegiance.TrueTeam;
 
                 ref var behavior = ref world.Behaviors.TryGet(new(unitId), out isFound);
                 if (!isFound || behavior.Mode == BehaviorMode.Broken)

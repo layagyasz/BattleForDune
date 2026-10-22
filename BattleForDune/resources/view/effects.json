@@ -126,5 +126,11 @@
     "Color": "#ffffff",
     "Name": "mindless",
     "IsHidden": true
+  },
+  {
+    "Key": 23,
+    "Color": "#ffffff",
+    "Name": "toughness",
+    "IsHidden": true
   }
 ]

@@ -89,7 +89,12 @@ namespace BattleForDune.View
 
         private void HandleMove(MoveEvent @event)
         {
-            _unitLayer?.Move(@event.SubjectId, @event.Destination);
+            ref var metadata = ref _world.UnitMetadatas.TryGet(@event.SubjectId, out var isFound);
+            if (!isFound)
+            {
+                return;
+            }
+            _unitLayer?.Move(@event.SubjectId, metadata.UnitKey, @event.Destination);
         }
     }
 }

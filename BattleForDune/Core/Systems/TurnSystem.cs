@@ -89,11 +89,12 @@ namespace BattleForDune.Core.Systems
         private void DoTurn<TSink>(EntityId unitId, ComponentWorld world, TSink sink) 
             where TSink : IGameEventSink
         {
-            var team = world.Teams.TryGet(unitId, out bool isFound);
+            ref var allegiance = ref world.Allegiances.TryGet(unitId, out bool isFound);
             if (!isFound)
             {
                 return;
             }
+            var team = allegiance.Team;
 
             var behavior = world.Behaviors.TryGet(unitId, out isFound);
             if (!isFound)
@@ -226,12 +227,12 @@ namespace BattleForDune.Core.Systems
             {
                 return TargetType.Self;
             }
-            var targetTeam = world.Teams.TryGet(targetId, out bool isFound);
+            ref var targetAllegiance = ref world.Allegiances.TryGet(targetId, out bool isFound);
             if (!isFound)
             {
                 return TargetType.None;
             }
-            return subjectTeam == targetTeam ? TargetType.Friend : TargetType.Enemy;
+            return subjectTeam == targetAllegiance.Team ? TargetType.Friend : TargetType.Enemy;
         }
     }
 }

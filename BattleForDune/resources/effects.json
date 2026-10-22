@@ -51,6 +51,7 @@
         "$type": "DamageOutModifier",
         "DamageType": [ "Psychic" ],
         "Vector": [ "All" ],
+        "Stat": [ "Morale" ],
         "Modifier": 1
       }
     ]
@@ -59,7 +60,7 @@
   {
     "EffectKey": 4,
     "SupportedEvents": [],
-    "IsMergeable": false,
+    "IsMergeable": true,
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -74,7 +75,7 @@
   {
     "EffectKey": 5,
     "SupportedEvents": [],
-    "IsMergeable": false,
+    "IsMergeable": true,
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -121,6 +122,7 @@
         "$type": "DamageInModifier",
         "DamageType": [ "Psychic" ],
         "Vector": [ "Psychic" ],
+        "Stat": [ "Morale" ],
         "Modifier": 1
       }
     ]
@@ -129,7 +131,7 @@
   {
     "EffectKey": 9,
     "SupportedEvents": [],
-    "IsMergeable": false,
+    "IsMergeable": true,
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -144,7 +146,7 @@
   {
     "EffectKey": 10,
     "SupportedEvents": [],
-    "IsMergeable": false,
+    "IsMergeable": true,
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -217,6 +219,7 @@
         "$type": "DamageInModifier",
         "DamageType": "$all",
         "Vector": [ "All" ],
+        "Stat": [ "Hitpoints" ],
         "Modifier": -1
       }
     ]
@@ -369,6 +372,7 @@
         "$type": "DamageOutModifier",
         "DamageType": "$all",
         "Vector": [ "Melee" ],
+        "Stat": [ "Hitpoints" ],
         "Modifier": 2
       }
     ]
@@ -390,7 +394,7 @@
   {
     "EffectKey": 19,
     "SupportedEvents": [ "ResetActions" ],
-    "IsMergeable": false,
+    "IsMergeable": true,
     "Handlers": [
       {
         "$type": "ResetActions",
@@ -403,7 +407,7 @@
   {
     "EffectKey": 20,
     "SupportedEvents": [ "Kill" ],
-    "IsMergeable": false,
+    "IsMergeable": true,
     "Handlers": [
       {
         "$type": "KillInSpawn",
@@ -423,6 +427,13 @@
         "EffectKey": 20,
         "Difficulty": 18,
         "Duration": -1
+      },
+      {
+        "$type": "DamageOutChanceAddEffect",
+        "Vector": [ "Melee" ],
+        "EffectKey": 7,
+        "Difficulty": 0,
+        "Duration": 3
       }
     ]
   },
@@ -452,7 +463,23 @@
         "$type": "DamageOutModifier",
         "DamageType": "$all",
         "Vector": [ "Melee" ],
-        "Modifier": 2
+        "Stat": [ "Hitpoints" ],
+        "Modifier": 1
+      }
+    ]
+  },
+  // Toughness
+  {
+    "EffectKey": 23,
+    "SupportedEvents": [ "Damage" ],
+    "IsMergeable": false,
+    "Handlers": [
+      {
+        "$type": "DamageInModifier",
+        "DamageType": "$all",
+        "Vector": [ "All" ],
+        "Stat": [ "Hitpoints" ],
+        "Modifier": -1
       }
     ]
   }
