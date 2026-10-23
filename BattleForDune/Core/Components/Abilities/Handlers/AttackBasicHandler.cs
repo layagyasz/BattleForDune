@@ -28,15 +28,15 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
             }
 
             var damage =
-                new DamageEvent(
+                DamageEvent.Transitive(
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
-                    IsPrimary,
+                    IsPrimary, 
                     @event.IsCritical,
-                    DamageType,
-                    Vector,
-                    Stat,
+                    DamageType, 
+                    Vector, 
+                    Stat, 
                     Damage);
             sink.Queue(in damage);
         }

@@ -132,12 +132,12 @@ namespace BattleForDune.Core.Systems
         {
             if (world.Abilities.TryGet(unitId, out var abilities))
             {
-                for (int i = 0; i < abilities.Length; ++i)
+                for (byte i = 0; i < abilities.Length; ++i)
                 {
                     var target = FindTarget(unitId, team, abilities[i], world);
                     if (target != EntityId.None)
                     {
-                        sink.Queue(new UseAbilityEvent(unitId, 0, target));
+                        sink.Queue(UseAbilityEvent.Transitive(unitId, i, target));
                         return true;
                     }
                 }
@@ -174,7 +174,7 @@ namespace BattleForDune.Core.Systems
                 return false;
             }
 
-            sink.Queue(new MoveEvent(unitId, position, move));
+            sink.Queue(MoveEvent.Intransitive(unitId, position, move));
             return true;
         }
 

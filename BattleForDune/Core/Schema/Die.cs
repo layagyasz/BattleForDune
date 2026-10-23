@@ -6,14 +6,14 @@
         public byte Sides { get; set; } = sides;
         public sbyte Modifier { get; set; } = modifier;
 
-        public readonly byte Roll(Random random)
+        public readonly sbyte Roll(Random random)
         {
             int result = Modifier + Count;
             for (int i = 0; i < Count; ++i)
             {
                 result += random.Next(Sides);
             }
-            return (byte)Math.Max(result, 0);
+            return (sbyte)result;
         }
     }
 }

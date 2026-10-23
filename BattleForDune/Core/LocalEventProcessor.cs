@@ -161,13 +161,13 @@ namespace BattleForDune.Core
                 return;
             }
             var prototype = _world.Registry.GetUnitPrototype(@event.UnitPrototypeKey);
-            _world.Units.Add(@event.UnitId.Value);
-            _world.UnitMetadatas.Add(@event.UnitId, new(@event.UnitPrototypeKey, @event.Level));
-            _world.Stats.Add(@event.UnitId, prototype.Stats.Materialize(@event.Level));
-            _world.Positions.Add(@event.UnitId, @event.Position);
-            _world.Actions.Add(@event.UnitId, ActionPoints.Create());
-            _world.Behaviors.Add(@event.UnitId, new());
-            _world.Allegiances.Add(@event.UnitId, new(@event.FactionKey, @event.TeamId));
+            _world.Units.Add(@event.TargetId.Value);
+            _world.UnitMetadatas.Add(@event.TargetId, new(@event.UnitPrototypeKey, @event.Level));
+            _world.Stats.Add(@event.TargetId, prototype.Stats.Materialize(@event.Level));
+            _world.Positions.Add(@event.TargetId, @event.Position);
+            _world.Actions.Add(@event.TargetId, ActionPoints.Create());
+            _world.Behaviors.Add(@event.TargetId, new());
+            _world.Allegiances.Add(@event.TargetId, new(@event.FactionKey, @event.TeamId));
 
             var abilities = new Ability[prototype.Abilities.Length];
             for (int i = 0; i < abilities.Length; ++i)
@@ -175,12 +175,12 @@ namespace BattleForDune.Core
                 abilities[i] =
                     _world.Registry.GetAbilityPrototype(prototype.Abilities[i]).Materialize();
             }
-            _world.Abilities.Add(@event.UnitId, abilities);
+            _world.Abilities.Add(@event.TargetId, abilities);
 
             foreach (var passive in prototype.Passives)
             {
                 sink.Queue(
-                    new AddEffectEvent(@event.UnitId, 0xFF, @event.UnitId, 0, 0, -1, passive, 0, 0));
+                    AddEffectEvent.Intransitive(@event.TargetId, stacks: 0, power: 0, duration: -1, passive));
             }
         }
 
@@ -231,14 +231,15 @@ namespace BattleForDune.Core
                 if (@event.Stat == StatType.Hitpoints)
                 {
                     sink.Queue(
-                        new KillEvent(@event.SubjectId, @event.AbilityId, @event.TargetId, @event.IsPrimary));
+                        KillEvent.Transitive(
+                            @event.SubjectId, @event.AbilityId, @event.TargetId, @event.IsPrimary));
                 }
                 else if (@event.Stat == StatType.Morale)
                 {
                     ref var behavior = ref _world.Behaviors.TryGet(@event.TargetId, out isFound);
                     if (isFound && behavior.Mode != BehaviorMode.Broken)
                     {
-                        sink.Queue(new BreakEvent(@event.SubjectId, @event.AbilityId, @event.TargetId));
+                        sink.Queue(BreakEvent.Transitive(@event.SubjectId, @event.AbilityId, @event.TargetId));
                     }
                 }
             }
@@ -280,7 +281,7 @@ namespace BattleForDune.Core
 
             foreach (var effect in _world.Effects.ByOwner(@event.TargetId))
             {
-                sink.Queue(new RemoveEffectEvent(EntityId.None, 0, effect.Id));
+                sink.Queue(RemoveEffectEvent.Intransitive(effect.Id));
             }
         }
 
@@ -393,6 +394,7 @@ namespace BattleForDune.Core
         private void Process<TSink>(ref AddEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.InstanceId = _world.NextId();
+            @event.Roll = _world.Roll(new(1, 20, 0));
 
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
 
@@ -401,8 +403,6 @@ namespace BattleForDune.Core
                 ability!.Intercept(ref @event, _world);
             }
             _world.Intercept(ref @event);
-
-            @event.Roll = _world.Roll(new(1, 20, 0));
 
             if (@event.Roll + @event.Skill < @event.Difficulty)
             {
@@ -419,7 +419,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref AddUnitEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.UnitId = _world.NextId();
+            @event.TargetId = _world.NextId();
             _world.Intercept(ref @event);
             ApplyAddUnit(in @event, sink);
             _world.Handle(in @event, sink);
@@ -427,15 +427,14 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref AttackEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            @event.Roll = _world.Roll(new(1, 20, 0));
 
+            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
             }
             _world.Intercept(ref @event);
-
-            @event.Roll = _world.Roll(new(1, 20, 0));
 
             var defense = 
                 10
@@ -448,7 +447,7 @@ namespace BattleForDune.Core
             {
                 @event.IsCanceled = true;
             }
-            if (@event.Roll > 20 - @event.CritRange)
+            if (@event.Roll > 20 - @event.CriticalRange)
             {
                 @event.IsCritical = true;
             }
@@ -479,6 +478,8 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref DamageEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            @event.Roll = _world.Roll(@event.Die);
+
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
             if (hasAbility)
             {
@@ -486,9 +487,8 @@ namespace BattleForDune.Core
             }
             _world.Intercept(ref @event);
 
-            @event.Roll = _world.Roll(@event.Die);
-            @event.Damage = @event.Roll;
-            if (@event.Damage == 0)
+            @event.Damage = (byte)Math.Max((byte) 0, @event.Roll);
+            if (@event.Damage <= 0)
             {
                 @event.IsCanceled = true;
             }

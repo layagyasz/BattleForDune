@@ -53,7 +53,7 @@ namespace BattleForDune.Core.Components
             return ++Turn;
         }
 
-        public byte Roll(Die die)
+        public sbyte Roll(Die die)
         {
             return die.Roll(Random);
         }
@@ -77,7 +77,7 @@ namespace BattleForDune.Core.Components
             }
             if (@event.TargetId != EntityId.None && @event.TargetId != @event.SubjectId)
             {
-                foreach (var effect in Effects.ByOwner(@event.SubjectId))
+                foreach (var effect in Effects.ByOwner(@event.TargetId))
                 {
                     if (!effect.IsGlobal)
                     {
@@ -105,7 +105,7 @@ namespace BattleForDune.Core.Components
             }
             if (@event.TargetId != EntityId.None && @event.TargetId != @event.SubjectId)
             {
-                foreach (var effect in Effects.ByOwner(@event.SubjectId))
+                foreach (var effect in Effects.ByOwner(@event.TargetId))
                 {
                     if (!effect.IsGlobal)
                     {

@@ -12,7 +12,7 @@ namespace BattleForDune.Core.Systems
             {
                 if (world.Timers.Peek(out var timer) && timer.Turn <= world.Turn)
                 {
-                    sink.Queue(new RemoveEffectEvent(EntityId.None, 0, timer.OwnerId));
+                    sink.Queue(RemoveEffectEvent.Intransitive(timer.OwnerId));
                     sink.Flush();
                 }
                 else

@@ -34,7 +34,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                 return;
             }
             sink.Queue(
-                new UpdateActionsEvent(
+                UpdateActionsEvent.Transitive(
                     @event.SubjectId, @event.AbilityId, @event.SubjectId, ActionPoints, MovePoints));
         }
     }

@@ -3,15 +3,20 @@
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct UpdateActionsEvent(
-        EntityId subjectId, byte abilityId, EntityId targetId, sbyte attacks, sbyte moves) : IGameEvent
+    public record struct UpdateActionsEvent(
+        bool IsCanceled,
+        EntityId SubjectId,
+        byte AbilityId, 
+        EntityId TargetId,
+        sbyte Attacks, 
+        sbyte Moves) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.UpdateActions;
-        public bool IsCanceled { get; set; }
-        public EntityId SubjectId { get; set; } = subjectId;
-        public byte AbilityId = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
-        public sbyte Attacks = attacks;
-        public sbyte Moves = moves;
+
+        public static UpdateActionsEvent Transitive(
+            EntityId subjectId, byte abilityId, EntityId targetId, sbyte attacks,  sbyte moves)
+        {
+            return new(false, subjectId, abilityId, targetId, attacks, moves);
+        }
     }
 }

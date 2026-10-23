@@ -4,29 +4,46 @@ using System.Runtime.InteropServices;
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct AttackEvent(
-        EntityId subjectId,
-        byte abilityId, 
-        EntityId targetId,
-        AbilityVector vector,
-        sbyte skill,
-        sbyte critRange,
-        sbyte defenseEvasion,
-        sbyte defenseArmor,
-        sbyte defenseShield) : IGameEvent
+    public record struct AttackEvent(
+        bool IsCanceled,
+        bool IsCritical,
+        EntityId SubjectId,
+        byte AbilityId, 
+        EntityId TargetId,
+        AbilityVector Vector,
+        sbyte Skill,
+        sbyte CriticalRange,
+        sbyte DefenseEvasion,
+        sbyte DefenseArmor,
+        sbyte DefenseShield,
+        sbyte Roll) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Attack;
-        public bool IsCanceled { get; set; }
-        public bool IsCritical;
-        public EntityId SubjectId { get; set; } = subjectId;
-        public byte AbilityId = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
-        public AbilityVector Vector = vector;
-        public sbyte Skill = skill;
-        public sbyte CritRange = critRange;
-        public sbyte DefenseEvasion = defenseEvasion;
-        public sbyte DefenseArmor = defenseArmor;
-        public sbyte DefenseShield = defenseShield;
-        public byte Roll;
+
+        public static AttackEvent Transitive(
+            EntityId subjectId,
+            byte abilityId,
+            EntityId targetId,
+            AbilityVector vector,
+            sbyte skill,
+            sbyte criticalRange,
+            sbyte defenseEvasion,
+            sbyte defenseArmor,
+            sbyte defenseShield)
+        {
+            return new(
+                false, 
+                false, 
+                subjectId,
+                abilityId, 
+                targetId, 
+                vector, 
+                skill,
+                criticalRange, 
+                defenseEvasion, 
+                defenseArmor,
+                defenseShield,
+                0);
+        }
     }
 }

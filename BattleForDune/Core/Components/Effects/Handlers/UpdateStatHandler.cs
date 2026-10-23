@@ -11,16 +11,16 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             where TSink : IGameEventSink
         {
             sink.Queue(
-                new UpdateStatEvent(
-                    parent.SourceId, parent.AbilityId, parent.OwnerId, Stat, Delta, isReversal: false));
+                UpdateStatEvent.Transitive(
+                    parent.SourceId, parent.AbilityId, parent.OwnerId, Stat, Delta));
         }
 
         public void Remove<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
             where TSink : IGameEventSink
         {
             sink.Queue(
-                new UpdateStatEvent(
-                    parent.SourceId, parent.AbilityId, parent.OwnerId, Stat, Delta, isReversal: true));
+                UpdateStatEvent.TransitiveReversal(
+                    parent.SourceId, parent.AbilityId, parent.OwnerId, Stat, Delta));
         }
     }
 }

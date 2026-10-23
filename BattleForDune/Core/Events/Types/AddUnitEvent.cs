@@ -4,26 +4,57 @@ using System.Runtime.InteropServices;
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct AddUnitEvent(
-        EntityId subjectId, 
-        byte abilityId,
-        RegistryKey unitPrototypeKey,
-        byte level,
-        RegistryKey factionKey, 
-        byte teamId,
-        Hex2b position) 
-        : IGameEvent
+    public record struct AddUnitEvent(
+        bool IsCanceled,
+        EntityId SubjectId,
+        byte AbilityId,
+        EntityId TargetId,
+        RegistryKey UnitPrototypeKey,
+        byte Level,
+        RegistryKey FactionKey,
+        byte TeamId,
+        Hex2b Position) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.AddUnit;
-        public bool IsCanceled { get; set; }
-        public EntityId SubjectId { get; set; } = subjectId;
-        public byte AbilityId = abilityId;
-        public readonly EntityId TargetId => EntityId.None;
-        public RegistryKey UnitPrototypeKey = unitPrototypeKey;
-        public byte Level = level;
-        public EntityId UnitId;
-        public byte TeamId = teamId;
-        public RegistryKey FactionKey = factionKey;
-        public Hex2b Position = position;
+
+        public static AddUnitEvent Intransitive(
+            RegistryKey unitPrototypeKey,
+            byte level,
+            RegistryKey factionKey,
+            byte teamId,
+            Hex2b position)
+        {
+            return new(
+                false,
+                EntityId.None,
+                0,
+                EntityId.None,
+                unitPrototypeKey,
+                level,
+                factionKey,
+                teamId,
+                position);
+        }
+
+        public static AddUnitEvent Transitive(
+            EntityId subjectId,
+            byte abilityId,
+            RegistryKey unitPrototypeKey,
+            byte level,
+            RegistryKey factionKey,
+            byte teamId,
+            Hex2b position)
+        {
+            return new(
+                false, 
+                subjectId, 
+                abilityId,
+                EntityId.None,
+                unitPrototypeKey,
+                level, 
+                factionKey,
+                teamId, 
+                position);
+        }
     }
 }

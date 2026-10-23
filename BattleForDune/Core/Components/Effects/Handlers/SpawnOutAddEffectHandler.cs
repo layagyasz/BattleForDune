@@ -29,10 +29,10 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             }
 
             sink.Queue(
-                new AddEffectEvent(
+                AddEffectEvent.Transitive(
                     @event.SubjectId, 
                     @event.AbilityId,
-                    @event.UnitId, 
+                    @event.TargetId, 
                     Stacks, 
                     Power,
                     Duration,

@@ -4,21 +4,27 @@ using System.Runtime.InteropServices;
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct UpdateStatEvent(
-        EntityId subjectId,
-        byte abilityId,
-        EntityId targetId,
-        StatType stat,
-        Stat delta,
-        bool isReversal) : IGameEvent
+    public record struct UpdateStatEvent(
+        bool IsCanceled,
+        EntityId SubjectId,
+        byte AbilityId,
+        EntityId TargetId,
+        StatType Stat,
+        Stat Delta,
+        bool IsReversal) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.UpdateStat;
-        public bool IsCanceled { get; set; }
-        public EntityId SubjectId { get; set; } = subjectId;
-        public byte AbilityId = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
-        public StatType Stat = stat;
-        public Stat Delta = delta;
-        public bool IsReversal = isReversal;
+
+        public static UpdateStatEvent Transitive(
+            EntityId subjectId, byte abilityId, EntityId targetId, StatType stat, Stat delta)
+        {
+            return new(false, subjectId, abilityId, targetId, stat, delta, false);
+        }
+
+        public static UpdateStatEvent TransitiveReversal(
+            EntityId subjectId, byte abilityId, EntityId targetId, StatType stat, Stat delta)
+        {
+            return new(false, subjectId, abilityId, targetId, stat, delta, true);
+        }
     }
 }

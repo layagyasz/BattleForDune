@@ -16,15 +16,15 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                 return;
             }
             sink.Queue(
-                new AddEffectEvent(
-                    @event.SubjectId, 
-                    @event.AbilityId,
-                    @event.TargetId,
-                    stacks: 1, 
+                AddEffectEvent.Transitive(
+                    @event.SubjectId,
+                    @event.AbilityId, 
+                    @event.TargetId, 
+                    stacks: 1,
                     power: Math.Max((byte)1, @event.Die.Count),
-                    Duration, 
-                    EffectKey,
-                    skill: 0,
+                    Duration,
+                    EffectKey, 
+                    skill: 0, 
                     Difficulty));
         }
     }

@@ -25,7 +25,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                 && Vector.HasFlag(@event.Vector)
                 && Stat.Contains(@event.Stat))
             {
-                @event.Die.Modifier += Modifier;
+                @event.Roll += Modifier;
             }
         }
 

@@ -3,14 +3,19 @@
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct KillEvent(EntityId subjectId, byte abilityId, EntityId targetId, bool isPrimaryDamage)
-        : IGameEvent
+    public record struct KillEvent(
+        bool IsCanceled,
+        EntityId SubjectId, 
+        byte AbilityId, 
+        EntityId TargetId, 
+        bool IsPrimaryDamage) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.Kill;
-        public bool IsCanceled { get; set; }
-        public EntityId SubjectId { get; set; } = subjectId;
-        public byte AbilityId = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
-        public bool IsPrimaryDamage = isPrimaryDamage;
+
+        public static KillEvent Transitive(
+            EntityId subjectId, byte abilityId, EntityId targetId, bool isPrimaryDamage)
+        {
+            return new(false, subjectId, abilityId, targetId, isPrimaryDamage);
+        }
     }
 }

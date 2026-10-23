@@ -3,11 +3,13 @@
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct FinalizeInitiativeEvent : IGameEvent
+    public record struct FinalizeInitiativeEvent() : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.FinalizeInitiative;
-        public bool IsCanceled { get; set; }
+        public readonly bool IsCanceled => false;
         public readonly EntityId SubjectId => EntityId.None;
         public readonly EntityId TargetId => EntityId.None;
+
+        public static FinalizeInitiativeEvent Global() => new();
     }
 }

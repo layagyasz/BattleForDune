@@ -8,6 +8,7 @@ using BattleForDune.Runners.Setup;
 using BattleForDune.View;
 using BattleForDune.View.Config;
 using Cardamom.Graphics;
+using Cardamom.Logging;
 using Cardamom.Ui;
 using Cardamom.Utils.Suppliers.Ids;
 using Cardamom.Window;
@@ -70,7 +71,8 @@ namespace BattleForDune.Runners
             var screen = new BattleScreen(controller, sceneFactory.CreateBattle(map, 128));
             ui.SetRoot(screen);
 
-            var processor = new LocalEventProcessor(components, [uiEventPump]);
+            var debugListener = new DebugEventListener(new Logger(new ConsoleBackend(), LogLevel.Info));
+            var processor = new LocalEventProcessor(components, [debugListener, uiEventPump]);
             var eventPump = new EventPump<LocalEventProcessor>(processor);
             var world = new LocalWorld(components, eventPump, Setup.TurnLimit, 1, random);
             Setup.Setup(map.Size, eventPump);

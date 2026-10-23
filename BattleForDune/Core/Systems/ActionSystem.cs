@@ -16,7 +16,7 @@ namespace BattleForDune.Core.Systems
                 {
                     continue;
                 }
-                sink.Queue(new ResetActionsEvent(entityId, actions.AttacksLimit, actions.MovesLimit));
+                sink.Queue(ResetActionsEvent.Intransitive(entityId, actions.AttacksLimit, actions.MovesLimit));
             }
             sink.Flush();
         }

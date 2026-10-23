@@ -21,7 +21,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             where TSink : IGameEventSink
         {
             sink.Queue(
-                new DamageEvent(
+                DamageEvent.Transitive(
                     parent.SourceId,
                     parent.AbilityId,
                     parent.OwnerId,

@@ -2,6 +2,7 @@
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.View.Config;
+using System.Text;
 
 namespace BattleForDune.View
 {
@@ -62,7 +63,7 @@ namespace BattleForDune.View
 
         private void HandleAddUnit(AddUnitEvent @event)
         {
-            _unitLayer?.Add(@event.UnitId, @event.UnitPrototypeKey, @event.Position);
+            _unitLayer?.Add(@event.TargetId, @event.UnitPrototypeKey, @event.Position);
         }
 
         private void HandleBreak(BreakEvent @event)
@@ -78,7 +79,13 @@ namespace BattleForDune.View
             ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var isFound);
             if (isFound)
             {
-                _textParticleLayer?.Add(@event.Damage.ToString(), pos, damageView.Color);
+                var builder = new StringBuilder();
+                builder.Append(@event.Damage);
+                if (@event.IsCritical)
+                {
+                    builder.Append('!');
+                }
+                _textParticleLayer?.Add(builder.ToString(), pos, damageView.Color);
             }
         }
 

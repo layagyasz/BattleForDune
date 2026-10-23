@@ -16,14 +16,8 @@ namespace BattleForDune.Runners.Setup
                 var position = 
                     new Vector2i((bounds.X - Width) / 2 + (i % Width), front + direction * i / Width);
                 sink.Queue(
-                    new AddUnitEvent(
-                        subjectId: EntityId.None,
-                        abilityId: 0,
-                        Unit, 
-                        Level,
-                        Faction, 
-                        TeamId, 
-                        Geometry.Projection.OffsetToAxial(position)));
+                    AddUnitEvent.Intransitive(
+                        Unit, Level, Faction, TeamId, Geometry.Projection.OffsetToAxial(position)));
             }
         }
     }

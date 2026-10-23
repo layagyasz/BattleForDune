@@ -47,7 +47,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             }
 
             sink.Queue(
-                new AddUnitEvent(
+                AddUnitEvent.Transitive(
                     parent.SourceId, 
                     parent.AbilityId, 
                     UnitKey, 

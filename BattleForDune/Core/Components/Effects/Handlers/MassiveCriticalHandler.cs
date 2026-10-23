@@ -33,7 +33,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             }
             {
                 sink.Queue(
-                    new DamageEvent(
+                    DamageEvent.Transitive(
                         @event.SubjectId,
                         @event.AbilityId,
                         @event.TargetId,

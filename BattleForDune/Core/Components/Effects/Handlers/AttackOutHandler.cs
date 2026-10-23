@@ -39,7 +39,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             }
 
             @event.Skill += AttackSkill;
-            @event.CritRange += CritRange;
+            @event.CriticalRange += CritRange;
             @event.DefenseEvasion += DefenseEvasion;
             @event.DefenseArmor += DefenseArmor;
             @event.DefenseShield += DefenseShield;

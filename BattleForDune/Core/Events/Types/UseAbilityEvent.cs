@@ -3,12 +3,14 @@
 namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct UseAbilityEvent(EntityId subjectId, byte abilityId, EntityId targetId) : IGameEvent
+    public record struct UseAbilityEvent(
+        bool IsCanceled, EntityId SubjectId, byte AbilityId, EntityId TargetId) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.UseAbility;
-        public bool IsCanceled { get; set; }
-        public EntityId SubjectId { get; set; } = subjectId;
-        public byte AbilityId = abilityId;
-        public EntityId TargetId { get; set; } = targetId;
+
+        public static UseAbilityEvent Transitive(EntityId subjectId, byte abilityId, EntityId targetId)
+        {
+            return new(false, subjectId, abilityId, targetId);
+        }
     }
 }

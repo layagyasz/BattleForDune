@@ -5,7 +5,7 @@ using BattleForDune.Core.Schema;
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
     public record class UseAbilityAttackHandler(
-        AbilityVector Vector, sbyte Attack, sbyte CritRange, sbyte AntiArmor, sbyte AntiShield) 
+        AbilityVector Vector, sbyte Attack, sbyte CriticalRange, sbyte AntiArmor, sbyte AntiShield) 
         : IAbilityHandler<UseAbilityEvent>
     {
         public void Intercept(ref UseAbilityEvent @event, ComponentWorld world) { }
@@ -30,7 +30,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
             }
 
             var attack =
-                new AttackEvent(
+                AttackEvent.Transitive(
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
@@ -39,7 +39,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                     defenseEvasion: targetStats[StatType.Evasion].Total,
                     defenseArmor: (sbyte)(targetStats[StatType.Armor].Total - AntiArmor),
                     defenseShield: (sbyte)(targetStats[StatType.Shield].Total - AntiShield),
-                    critRange: CritRange);
+                    criticalRange: CriticalRange);
             sink.Queue(in attack);
         }
     }

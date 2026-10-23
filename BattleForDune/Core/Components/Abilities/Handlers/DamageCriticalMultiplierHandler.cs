@@ -9,7 +9,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
         {
             if (!@event.IsCanceled && @event.IsCritical)
             {
-                @event.Roll = (byte)(Multiplier * @event.Roll);
+                @event.Roll = (sbyte)(Multiplier * @event.Roll);
             }
         }
 
