@@ -15,7 +15,7 @@ namespace BattleForDune.Core.Components.Effects
         public record class Prototype(
             RegistryKey EffectKey, 
             GameEventType[] SupportedEvents, 
-            bool IsMergeable,
+            MergeBehavior MergeBehavior,
             bool IsGlobal,
             IGenericEffectHandler[] Handlers) : IComparable<Prototype>
         {

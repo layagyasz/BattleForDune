@@ -3,7 +3,7 @@
   {
     "EffectKey": 0,
     "SupportedEvents": [ "Tick" ],
-    "IsMergeable": true,
+    "MergeBehavior": [ "All" ],
     "IsGlobal": true,
     "Handlers": [
       {
@@ -17,7 +17,7 @@
   {
     "EffectKey": 1,
     "SupportedEvents": [],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -32,7 +32,7 @@
   {
     "EffectKey": 2,
     "SupportedEvents": [ "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "DamageImmunity",
@@ -46,7 +46,7 @@
   {
     "EffectKey": 3,
     "SupportedEvents": [ "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "DamageOutModifier",
@@ -61,7 +61,7 @@
   {
     "EffectKey": 4,
     "SupportedEvents": [],
-    "IsMergeable": true,
+    "MergeBehavior": [ "Timer" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -76,7 +76,7 @@
   {
     "EffectKey": 5,
     "SupportedEvents": [],
-    "IsMergeable": true,
+    "MergeBehavior": [ "Timer" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -91,7 +91,7 @@
   {
     "EffectKey": 6,
     "SupportedEvents": [ "Tick" ],
-    "IsMergeable": true,
+    "MergeBehavior": [ "All" ],
     "IsGlobal": true,
     "Handlers": [
       {
@@ -105,7 +105,7 @@
   {
     "EffectKey": 7,
     "SupportedEvents": [ "Tick" ],
-    "IsMergeable": true,
+    "MergeBehavior": [ "All" ],
     "IsGlobal": true,
     "Handlers": [
       {
@@ -118,9 +118,8 @@
   // Feared
   {
     "EffectKey": 8,
-    "SupportedEvents": [ "Tick" ],
-    "IsMergeable": true,
-    "IsGlobal": true,
+    "SupportedEvents": [ "Damage" ],
+    "MergeBehavior": [ "All" ],
     "Handlers": [
       {
         "$type": "DamageInModifier",
@@ -135,7 +134,7 @@
   {
     "EffectKey": 9,
     "SupportedEvents": [],
-    "IsMergeable": true,
+    "MergeBehavior": [ "All" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -150,7 +149,7 @@
   {
     "EffectKey": 10,
     "SupportedEvents": [],
-    "IsMergeable": true,
+    "MergeBehavior": [ "Timer" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -165,7 +164,7 @@
   {
     "EffectKey": 11,
     "SupportedEvents": [ "Attack" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "AttackOut",
@@ -180,7 +179,7 @@
   {
     "EffectKey": 12,
     "SupportedEvents": [ "Attack", "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -232,7 +231,7 @@
   {
     "EffectKey": 13,
     "SupportedEvents": [ "Attack", "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -275,7 +274,7 @@
   {
     "EffectKey": 14,
     "SupportedEvents": [ "Attack" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -303,7 +302,7 @@
   {
     "EffectKey": 15,
     "SupportedEvents": [ "Attack", "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -339,7 +338,7 @@
   {
     "EffectKey": 16,
     "SupportedEvents": [],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -355,7 +354,7 @@
   {
     "EffectKey": 17,
     "SupportedEvents": [ "Attack", "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -385,7 +384,7 @@
   {
     "EffectKey": 18,
     "SupportedEvents": [ "Kill" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "KillOutActionPoints",
@@ -398,7 +397,7 @@
   {
     "EffectKey": 19,
     "SupportedEvents": [ "ResetActions" ],
-    "IsMergeable": true,
+    "MergeBehavior": [ "Timer" ],
     "Handlers": [
       {
         "$type": "ResetActions",
@@ -411,7 +410,7 @@
   {
     "EffectKey": 20,
     "SupportedEvents": [ "Kill" ],
-    "IsMergeable": true,
+    "MergeBehavior": [ "Timer" ],
     "Handlers": [
       {
         "$type": "KillInSpawn",
@@ -423,7 +422,7 @@
   {
     "EffectKey": 21,
     "SupportedEvents": [ "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "DamageOutChanceAddEffect",
@@ -445,7 +444,7 @@
   {
     "EffectKey": 22,
     "SupportedEvents": [ "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "UpdateStat",
@@ -476,7 +475,7 @@
   {
     "EffectKey": 23,
     "SupportedEvents": [ "Damage" ],
-    "IsMergeable": false,
+    "MergeBehavior": [ "None" ],
     "Handlers": [
       {
         "$type": "DamageInModifier",

@@ -2,6 +2,7 @@
 using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Actions;
 using BattleForDune.Core.Components.Behaviors;
+using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
@@ -108,7 +109,8 @@ namespace BattleForDune.Core
             }
 
             // Find an existing effect to merge with.
-            if (_world.Registry.GetEffectPrototype(@event.EffectKey).IsMergeable)
+            var mergeBehavior = _world.Registry.GetEffectPrototype(@event.EffectKey).MergeBehavior;
+            if (mergeBehavior != MergeBehavior.None)
             {
                 foreach (var effect in _world.Effects.ByOwner(@event.TargetId))
                 {
@@ -117,24 +119,37 @@ namespace BattleForDune.Core
                         continue;
                     }
 
-                    effect.Remove(_world, in sink);
-                    effect.MergeStacks(@event.Stacks);
-                    effect.MergePower(@event.Power);
-                    effect.Apply(_world, in sink);
-
-                    if (@event.Duration >= 0)
+                    if (mergeBehavior.HasFlag(MergeBehavior.Power) 
+                        || mergeBehavior.HasFlag(MergeBehavior.Stacks))
                     {
-                        byte newExpiration = (byte)(_world.Turn + @event.Duration);
-                        if (_world.Timers.TryGet(effect.Id, out var currentExpiration)
-                            && newExpiration > currentExpiration)
+                        effect.Remove(_world, in sink);
+                        if (mergeBehavior.HasFlag(MergeBehavior.Stacks))
+                        {
+                            effect.MergeStacks(@event.Stacks);
+                        }
+                        if (mergeBehavior.HasFlag(MergeBehavior.Power))
+                        {
+                            effect.MergePower(@event.Power);
+                        }
+                        effect.Apply(_world, in sink);
+                    }
+
+                    if (mergeBehavior.HasFlag(MergeBehavior.Timer))
+                    {
+                        if (@event.Duration >= 0)
+                        {
+                            byte newExpiration = (byte)(_world.Turn + @event.Duration);
+                            if (_world.Timers.TryGet(effect.Id, out var currentExpiration)
+                                && newExpiration > currentExpiration)
+                            {
+                                _world.Timers.Remove(effect.Id);
+                                _world.Timers.Add(effect.Id, newExpiration);
+                            }
+                        }
+                        else
                         {
                             _world.Timers.Remove(effect.Id);
-                            _world.Timers.Add(effect.Id, newExpiration);
                         }
-                    }
-                    else
-                    {
-                        _world.Timers.Remove(effect.Id);
                     }
                     return;
                 }
