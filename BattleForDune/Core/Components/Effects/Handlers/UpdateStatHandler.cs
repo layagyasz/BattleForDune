@@ -4,8 +4,7 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class UpdateStatHandler(StatType Stat, Stat Delta)
-        : IGenericEffectHandler
+    public record class UpdateStatHandler(StatType Stat, Stat Delta) : IGenericEffectHandler
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) 
             where TSink : IGameEventSink

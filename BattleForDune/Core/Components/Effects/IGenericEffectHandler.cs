@@ -5,14 +5,17 @@ using System.Text.Json.Serialization;
 
 namespace BattleForDune.Core.Components.Effects
 {
+    [JsonDerivedType(typeof(AddEffectHandler), "AddEffect")]
     [JsonDerivedType(typeof(AttackHandler), "Attack")]
     [JsonDerivedType(typeof(DamageImmunityHandler), "DamageImmunity")]
     [JsonDerivedType(typeof(DamageChanceAddEffectHandler), "DamageChanceAddEffect")]
     [JsonDerivedType(typeof(DamageModifierHandler), "DamageModifier")]
     [JsonDerivedType(typeof(DamageOverTimeHandler), "DamageOverTime")]
+    [JsonDerivedType(typeof(EffectImmunityHandler), "EffectImmunity")]
     [JsonDerivedType(typeof(KillActionPointsHandler), "KillActionPoints")]
     [JsonDerivedType(typeof(KillSpawnHandler), "KillSpawn")]
     [JsonDerivedType(typeof(MassiveCriticalHandler), "MassiveCritical")]
+    [JsonDerivedType(typeof(OverrideAllegianceHandler), "OverrideAllegiance")]
     [JsonDerivedType(typeof(ResetActionsHandler), "ResetActions")]
     [JsonDerivedType(typeof(SpawnAddEffectHandler), "SpawnAddEffect")]
     [JsonDerivedType(typeof(UpdateStatHandler), "UpdateStat")]

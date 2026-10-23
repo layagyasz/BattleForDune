@@ -132,5 +132,28 @@
     "Color": "#ffffff",
     "Name": "toughness",
     "IsHidden": true
+  },
+  {
+    "Key": 24,
+    "Color": "#ffffff",
+    "Name": "twisted",
+    "IsHidden": true
+  },
+  {
+    "Key": 25,
+    "Color": "#ffffff",
+    "Name": "resilient",
+    "IsHidden": true
+  },
+  {
+    "Key": 26,
+    "Color": "#33ff99",
+    "Name": "deviated"
+  },
+  {
+    "Key": 27,
+    "Color": "#ffffff",
+    "Name": "respirators",
+    "IsHidden": true
   }
 ]

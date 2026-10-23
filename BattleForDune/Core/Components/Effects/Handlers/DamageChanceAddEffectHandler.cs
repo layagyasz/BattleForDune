@@ -8,6 +8,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         EffectDirection Direction, 
         AbilityVector Vector,
         RegistryKey EffectKey,
+        AbilityVector EffectVector,
         sbyte Difficulty, 
         sbyte Duration)
         : IEffectHandler<DamageEvent>
@@ -50,6 +51,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                     @event.SubjectId,
                     @event.AbilityId,
                     @event.TargetId,
+                    EffectVector,
                     stacks: 1,
                     power: Math.Max((byte)1, @event.Die.Count),
                     Duration,

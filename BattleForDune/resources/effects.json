@@ -31,7 +31,7 @@
   // Dauntless
   {
     "EffectKey": 2,
-    "SupportedEvents": [ "Damage" ],
+    "SupportedEvents": [ "AddEffect", "Damage" ],
     "MergeBehavior": [ "None" ],
     "Handlers": [
       {
@@ -39,6 +39,10 @@
         "DamageType": "$all",
         "Vector": [ "All" ],
         "Stat": [ "Morale" ]
+      },
+      {
+        "$type": "EffectImmunity",
+        "Vector": [ "Psychic" ]
       }
     ]
   },
@@ -446,6 +450,7 @@
         "Direction": "Outgoing",
         "Vector": [ "Melee" ],
         "EffectKey": 20,
+        "EffectVector": [ "Pathogen" ],
         "Difficulty": 18,
         "Duration": -1
       },
@@ -454,6 +459,7 @@
         "Direction": "Outgoing",
         "Vector": [ "Melee" ],
         "EffectKey": 7,
+        "EffectVector": [ "Pathogen" ],
         "Difficulty": 0,
         "Duration": 3
       }
@@ -504,6 +510,57 @@
         "Vector": [ "All" ],
         "Stat": [ "Hitpoints" ],
         "Modifier": -1
+      }
+    ]
+  },
+  // Twisted
+  {
+    "EffectKey": 24,
+    "SupportedEvents": [ "AddEffect" ],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "AddEffect",
+        "Direction": "Outgoing",
+        "Vector": [ "All" ],
+        "Duration": 1
+      }
+    ]
+  },
+  // Resilient
+  {
+    "EffectKey": 25,
+    "SupportedEvents": [ "AddEffect" ],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "AddEffect",
+        "Direction": "Incoming",
+        "Vector": [ "All" ],
+        "Duration": -1
+      }
+    ]
+  },
+  // Deviated
+  {
+    "EffectKey": 26,
+    "SupportedEvents": [],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "OverrideAllegiance"
+      }
+    ]
+  },
+  // Respirators
+  {
+    "EffectKey": 27,
+    "SupportedEvents": [ "AddEffect" ],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "EffectImmunity",
+        "Vector": [ "Gas" ]
       }
     ]
   }

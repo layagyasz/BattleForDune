@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using BattleForDune.Core.Schema;
+using System.Runtime.InteropServices;
 
 namespace BattleForDune.Core.Events.Types
 {
@@ -9,6 +10,7 @@ namespace BattleForDune.Core.Events.Types
         byte AbilityId,
         EntityId TargetId,
         EntityId InstanceId,
+        AbilityVector Vector,
         byte Stacks,
         byte Power,
         sbyte Duration,
@@ -21,6 +23,7 @@ namespace BattleForDune.Core.Events.Types
 
         public static AddEffectEvent Intransitive(
             EntityId targetId,
+            AbilityVector vector,
             byte stacks,
             byte power,
             sbyte duration,
@@ -32,6 +35,7 @@ namespace BattleForDune.Core.Events.Types
                   0,
                   targetId,
                   EntityId.None,
+                  vector,
                   stacks,
                   power,
                   duration,
@@ -45,6 +49,7 @@ namespace BattleForDune.Core.Events.Types
             EntityId subjectId,
             byte abilityId,
             EntityId targetId,
+            AbilityVector vector,
             byte stacks,
             byte power,
             sbyte duration,
@@ -58,6 +63,7 @@ namespace BattleForDune.Core.Events.Types
                   abilityId,
                   targetId,
                   EntityId.None,
+                  vector,
                   stacks,
                   power,
                   duration,

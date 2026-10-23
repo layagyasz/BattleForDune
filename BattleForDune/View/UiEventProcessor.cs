@@ -1,4 +1,5 @@
-﻿using BattleForDune.Core.Components;
+﻿using BattleForDune.Core;
+using BattleForDune.Core.Components;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.View.Config;
@@ -53,6 +54,10 @@ namespace BattleForDune.View
 
         private void HandleAddEffect(AddEffectEvent @event)
         {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
             var effectView = _registry.GetEffect(@event.EffectKey);
             if (!effectView.IsHidden)
             {
@@ -63,11 +68,24 @@ namespace BattleForDune.View
 
         private void HandleAddUnit(AddUnitEvent @event)
         {
-            _unitLayer?.Add(@event.TargetId, @event.UnitPrototypeKey, @event.Position);
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            if (@event.SubjectId != EntityId.None)
+            {
+                var render = _registry.GetEvent(@event.Type);
+                _textParticleLayer?.Add(render.Name, @event.Position, render.Color);
+            }
+                _unitLayer?.Add(@event.TargetId, @event.UnitPrototypeKey, @event.Position);
         }
 
         private void HandleBreak(BreakEvent @event)
         {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
             ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var _);
             var render = _registry.GetEvent(@event.Type);
             _textParticleLayer?.Add(render.Name, pos, render.Color);
@@ -75,6 +93,10 @@ namespace BattleForDune.View
 
         private void HandleDamage(DamageEvent @event)
         {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
             var damageView = _registry.GetDamage(@event.DamageType);
             ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var isFound);
             if (isFound)
@@ -91,11 +113,19 @@ namespace BattleForDune.View
 
         private void HandleKill(KillEvent @event)
         {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
             _unitLayer?.Remove(@event.TargetId);
         }
 
         private void HandleMove(MoveEvent @event)
         {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
             ref var metadata = ref _world.UnitMetadatas.TryGet(@event.SubjectId, out var isFound);
             if (!isFound)
             {

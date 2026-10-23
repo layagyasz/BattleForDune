@@ -63,6 +63,11 @@ namespace BattleForDune.Core
                     Process(ref move, sink);
                     Notify(in move);
                     return;
+                case GameEventType.OverrideAllegiance:
+                    var allegiance = @event.ReadPayload<OverrideAllegianceEvent>();
+                    Process(ref allegiance, sink);
+                    Notify(in allegiance);
+                    return;
                 case GameEventType.RemoveEffect:
                     var removeEffect = @event.ReadPayload<RemoveEffectEvent>();
                     Process(ref removeEffect, sink);
@@ -195,7 +200,8 @@ namespace BattleForDune.Core
             foreach (var passive in prototype.Passives)
             {
                 sink.Queue(
-                    AddEffectEvent.Intransitive(@event.TargetId, stacks: 0, power: 0, duration: -1, passive));
+                    AddEffectEvent.Intransitive(
+                        @event.TargetId, AbilityVector.None, stacks: 0, power: 0, duration: -1, passive));
             }
         }
 
@@ -312,6 +318,21 @@ namespace BattleForDune.Core
                 actions.MovePoints -= 1;
             }
             _world.Positions.Move(@event.SubjectId, @event.Destination);
+        }
+
+        private void ApplyOverrideAllegiance(in OverrideAllegianceEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            ref var allegiance = ref _world.Allegiances.TryGet(@event.TargetId, out var isFound);
+            if (!isFound)
+            {
+                return;
+            }
+            allegiance.Team = @event.TeamId;
+            allegiance.Faction = @event.FactionKey;
         }
 
         private void ApplyRemoveEffect(in RemoveEffectEvent @event)
@@ -556,6 +577,23 @@ namespace BattleForDune.Core
             ApplyMove(in @event);
         }
 
+        private void Process<TSink>(ref OverrideAllegianceEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            if (hasAbility)
+            {
+                ability!.Intercept(ref @event, _world);
+            }
+            _world.Intercept(ref @event);
+
+            if (hasAbility)
+            {
+                ability!.Handle(in @event, sink, _world);
+            }
+            _world.Handle(in @event, sink);
+            ApplyOverrideAllegiance(in @event);
+        }
+
         private void Process<TSink>(ref RemoveEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
@@ -643,10 +681,6 @@ namespace BattleForDune.Core
 
         private void Notify<T>(in T @event) where T : struct, IGameEvent
         {
-            if (@event.IsCanceled)
-            {
-                return;
-            }
             foreach (var listener in _listeners)
             {
                 listener.Queue(@event);

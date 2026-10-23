@@ -11,6 +11,6 @@
         Poison = 16,
         Psychic = 32,
         Environmental = 64,
-        All = 127
+        All = 255
     }
 }

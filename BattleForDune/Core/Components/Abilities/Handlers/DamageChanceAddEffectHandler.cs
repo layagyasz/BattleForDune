@@ -1,9 +1,11 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
+using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Abilities.Handlers
 {
-    public record class DamageChanceAddEffectHandler(RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
+    public record class DamageChanceAddEffectHandler(
+        RegistryKey EffectKey, AbilityVector Vector, sbyte Difficulty, sbyte Duration)
         : IAbilityHandler<DamageEvent>
     {
         public void Intercept(ref DamageEvent @event, ComponentWorld world) { }
@@ -20,6 +22,7 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                     @event.SubjectId,
                     @event.AbilityId, 
                     @event.TargetId, 
+                    Vector,
                     stacks: 1,
                     power: Math.Max((byte)1, @event.Die.Count),
                     Duration,

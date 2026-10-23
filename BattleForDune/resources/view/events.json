@@ -3,5 +3,10 @@
     "EventType": "Break",
     "Color": "#ff3399",
     "Name": "broken"
+  },
+  {
+    "EventType": "AddUnit",
+    "Color": "#33ff33",
+    "Name": "summoned"
   }
 ]

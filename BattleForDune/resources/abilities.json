@@ -70,6 +70,7 @@
       {
         "$type": "DamageChanceAddEffect",
         "EffectKey": 6,
+        "Vector": [ "Melee" ],
         "Difficulty": 18,
         "Duration": 3
       }
@@ -111,6 +112,7 @@
       {
         "$type": "DamageChanceAddEffect",
         "EffectKey": 6,
+        "Vector": [ "Melee" ],
         "Difficulty": 18,
         "Duration": 3
       }

@@ -12,8 +12,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         sbyte CritRange, 
         sbyte DefenseEvasion,
         sbyte DefenseArmor, 
-        sbyte DefenseShield)
-        : IEffectHandler<AttackEvent>
+        sbyte DefenseShield) : IEffectHandler<AttackEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)
             where TSink : IGameEventSink
