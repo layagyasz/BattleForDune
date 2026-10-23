@@ -7,9 +7,10 @@
         Melee = 1,
         Ranged = 2,
         Gas = 4,
-        Disease = 8,
-        Psychic = 16,
-        Environmental = 32,
-        All = 63
+        Pathogen = 8,
+        Poison = 16,
+        Psychic = 32,
+        Environmental = 64,
+        All = 127
     }
 }

@@ -7,6 +7,8 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.Terminate;
         public bool IsCanceled { get; set; }
+        public readonly EntityId SubjectId => EntityId.None;
+        public readonly EntityId TargetId => EntityId.None;
         public byte WinningTeam = winningTeam;
     }
 }

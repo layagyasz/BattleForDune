@@ -4,5 +4,7 @@
     {
         GameEventType Type { get; }
         bool IsCanceled { get; }
+        EntityId SubjectId { get; }
+        EntityId TargetId { get; }
     }
 }

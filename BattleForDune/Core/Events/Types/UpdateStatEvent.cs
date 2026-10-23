@@ -14,9 +14,9 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.UpdateStat;
         public bool IsCanceled { get; set; }
-        public EntityId SubjectId = subjectId;
+        public EntityId SubjectId { get; set; } = subjectId;
         public byte AbilityId = abilityId;
-        public EntityId TargetId = targetId;
+        public EntityId TargetId { get; set; } = targetId;
         public StatType Stat = stat;
         public Stat Delta = delta;
         public bool IsReversal = isReversal;

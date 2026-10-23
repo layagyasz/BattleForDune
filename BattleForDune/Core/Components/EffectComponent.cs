@@ -21,9 +21,12 @@ namespace BattleForDune.Core.Components
                 {
                     _byOwner.Add(effect.OwnerId.Value, handle);
                 }
-                foreach (var @event in _registry.GetEffectPrototype(effect.EffectKey).SupportedEvents)
+                if (effect.IsGlobal)
                 {
-                    _byType.Add((int)@event, handle);
+                    foreach (var @event in _registry.GetEffectPrototype(effect.EffectKey).SupportedEvents)
+                    {
+                        _byType.Add((int)@event, handle);
+                    }
                 }
                 return true;
             }
@@ -35,9 +38,12 @@ namespace BattleForDune.Core.Components
             if (_byId.RemoveOnly(id.Value, out var handle))
             {
                 ref var effect = ref _effects.Get(handle);
-                foreach (var @event in _registry.GetEffectPrototype(effect.EffectKey).SupportedEvents)
+                if (effect.IsGlobal)
                 {
-                    _byType.Remove((int)@event, handle);
+                    foreach (var @event in _registry.GetEffectPrototype(effect.EffectKey).SupportedEvents)
+                    {
+                        _byType.Remove((int)@event, handle);
+                    }
                 }
                 if (effect.OwnerId != EntityId.None)
                 {

@@ -8,13 +8,15 @@ namespace BattleForDune.Core.Components.Effects
         EntityId OwnerId, 
         EntityId SourceId, 
         byte AbilityId,
+        bool IsGlobal,
         IGenericEffectHandler[] Handlers) 
         : IGameEventHandler
     {
         public record class Prototype(
             RegistryKey EffectKey, 
             GameEventType[] SupportedEvents, 
-            bool IsMergeable, 
+            bool IsMergeable,
+            bool IsGlobal,
             IGenericEffectHandler[] Handlers) : IComparable<Prototype>
         {
             public int CompareTo(Prototype? other)
@@ -28,7 +30,7 @@ namespace BattleForDune.Core.Components.Effects
 
             public Effect Materialize(EntityId id, EntityId ownerId, EntityId sourceId, byte abilityId)
             {
-                return new(EffectKey, id, ownerId, sourceId, abilityId, Handlers);
+                return new(EffectKey, id, ownerId, sourceId, abilityId, IsGlobal, Handlers);
             }
         }
 

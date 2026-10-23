@@ -4,6 +4,7 @@
     "EffectKey": 0,
     "SupportedEvents": [ "Tick" ],
     "IsMergeable": true,
+    "IsGlobal": true,
     "Handlers": [
       {
         "$type": "DamageOverTime",
@@ -91,6 +92,7 @@
     "EffectKey": 6,
     "SupportedEvents": [ "Tick" ],
     "IsMergeable": true,
+    "IsGlobal": true,
     "Handlers": [
       {
         "$type": "DamageOverTime",
@@ -104,6 +106,7 @@
     "EffectKey": 7,
     "SupportedEvents": [ "Tick" ],
     "IsMergeable": true,
+    "IsGlobal": true,
     "Handlers": [
       {
         "$type": "DamageOverTime",
@@ -117,6 +120,7 @@
     "EffectKey": 8,
     "SupportedEvents": [ "Tick" ],
     "IsMergeable": true,
+    "IsGlobal": true,
     "Handlers": [
       {
         "$type": "DamageInModifier",
@@ -418,7 +422,7 @@
   // Contaminate
   {
     "EffectKey": 21,
-    "SupportedEvents": [ "Damage", "AddUnit" ],
+    "SupportedEvents": [ "Damage" ],
     "IsMergeable": false,
     "Handlers": [
       {

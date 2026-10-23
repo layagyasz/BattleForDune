@@ -19,9 +19,9 @@ namespace BattleForDune.Core.Events.Types
         public bool IsCanceled { get; set; }
         public bool IsPrimary = isPrimary;
         public bool IsCritical = isCritical;
-        public EntityId SubjectId = subjectId;
+        public EntityId SubjectId { get; set; } = subjectId;
         public byte AbilityId = abilityId;
-        public EntityId TargetId = targetId;
+        public EntityId TargetId { get; set; } = targetId;
         public DamageType DamageType = damageType;
         public AbilityVector Vector = vector;
         public StatType Stat = stat;

@@ -18,9 +18,9 @@ namespace BattleForDune.Core.Events.Types
         public readonly GameEventType Type => GameEventType.Attack;
         public bool IsCanceled { get; set; }
         public bool IsCritical;
-        public EntityId SubjectId = subjectId;
+        public EntityId SubjectId { get; set; } = subjectId;
         public byte AbilityId = abilityId;
-        public EntityId TargetId = targetId;
+        public EntityId TargetId { get; set; } = targetId;
         public AbilityVector Vector = vector;
         public sbyte Skill = skill;
         public sbyte CritRange = critRange;

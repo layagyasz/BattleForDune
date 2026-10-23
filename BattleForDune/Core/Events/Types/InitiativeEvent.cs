@@ -7,7 +7,8 @@ namespace BattleForDune.Core.Events.Types
     {
         public readonly GameEventType Type => GameEventType.Initiative;
         public bool IsCanceled { get; set; }
-        public EntityId SubjectId = subjectId;
+        public EntityId SubjectId { get; set; } = subjectId;
+        public readonly EntityId TargetId => EntityId.None;
         public sbyte Skill = skill;
         public byte Roll;
         public float Initiative;

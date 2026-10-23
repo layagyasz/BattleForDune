@@ -65,6 +65,26 @@ namespace BattleForDune.Core.Components
 
         public void Intercept<T>(ref T @event) where T : struct, IGameEvent
         {
+            if (@event.SubjectId != EntityId.None)
+            {
+                foreach (var effect in Effects.ByOwner(@event.SubjectId))
+                {
+                    if (!effect.IsGlobal)
+                    {
+                        effect.Intercept(ref @event, this);
+                    }
+                }
+            }
+            if (@event.TargetId != EntityId.None && @event.TargetId != @event.SubjectId)
+            {
+                foreach (var effect in Effects.ByOwner(@event.SubjectId))
+                {
+                    if (!effect.IsGlobal)
+                    {
+                        effect.Intercept(ref @event, this);
+                    }
+                }
+            }
             foreach (var effect in Effects.ByEventType(@event.Type))
             {
                 effect.Intercept(ref @event, this);
@@ -73,6 +93,26 @@ namespace BattleForDune.Core.Components
 
         public void Handle<T>(in T @event, IGameEventSink sink) where T : struct, IGameEvent
         {
+            if (@event.SubjectId != EntityId.None)
+            {
+                foreach (var effect in Effects.ByOwner(@event.SubjectId))
+                {
+                    if (!effect.IsGlobal)
+                    {
+                        effect.Handle(in @event, this, sink);
+                    }
+                }
+            }
+            if (@event.TargetId != EntityId.None && @event.TargetId != @event.SubjectId)
+            {
+                foreach (var effect in Effects.ByOwner(@event.SubjectId))
+                {
+                    if (!effect.IsGlobal)
+                    {
+                        effect.Handle(in @event, this, sink);
+                    }
+                }
+            }
             foreach (var effect in Effects.ByEventType(@event.Type))
             {
                 effect.Handle(in @event, this, sink);
