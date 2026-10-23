@@ -5,7 +5,8 @@ using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class DamageInModifierHandler(
+    public record class DamageModifierHandler(
+        EffectDirection Direction,
         EnumSet<DamageType> DamageType,
         AbilityVector Vector,
         EnumSet<StatType> Stat,
@@ -20,8 +21,11 @@ namespace BattleForDune.Core.Components.Effects.Handlers
 
         public void Intercept(Effect parent, ref DamageEvent @event, ComponentWorld world)
         {
-            if (@event.TargetId == parent.OwnerId 
-                && DamageType.Contains(@event.DamageType) 
+            if (!IGenericEffectHandler.HasDirection(in @event, Direction, parent.OwnerId))
+            {
+                return;
+            }
+            if (DamageType.Contains(@event.DamageType) 
                 && Vector.HasFlag(@event.Vector)
                 && Stat.Contains(@event.Stat))
             {

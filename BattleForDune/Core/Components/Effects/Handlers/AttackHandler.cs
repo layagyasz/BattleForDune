@@ -4,7 +4,8 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class AttackInHandler(
+    public record class AttackHandler(
+        EffectDirection Direction,
         AbilityVector Vector,
         BooleanFlag TargetShielded,
         sbyte AttackSkill, 
@@ -24,7 +25,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
 
         public void Intercept(Effect parent, ref AttackEvent @event, ComponentWorld world)
         {
-            if (@event.TargetId != parent.OwnerId)
+            if (!IGenericEffectHandler.HasDirection(in @event, Direction, parent.OwnerId))
             {
                 return;
             }

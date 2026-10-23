@@ -4,8 +4,12 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class DamageOutChanceAddEffectHandler(
-        AbilityVector Vector, RegistryKey EffectKey, sbyte Difficulty, sbyte Duration)
+    public record class DamageChanceAddEffectHandler(
+        EffectDirection Direction, 
+        AbilityVector Vector,
+        RegistryKey EffectKey,
+        sbyte Difficulty, 
+        sbyte Duration)
         : IEffectHandler<DamageEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)
@@ -21,6 +25,10 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         public void Handle<TSink>(Effect parent, in DamageEvent @event, ComponentWorld world, in TSink sink) 
             where TSink : IGameEventSink
         {
+            if (!IGenericEffectHandler.HasDirection(in @event, Direction, parent.OwnerId))
+            {
+                return;
+            }
             if (@event.IsCanceled)
             {
                 return;

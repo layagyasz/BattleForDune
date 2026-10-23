@@ -4,8 +4,8 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class KillOutActionPointsHandler(
-        BooleanFlag IsPrimaryDamage, sbyte ActionPoints, sbyte MovePoints) 
+    public record class KillActionPointsHandler(
+        EffectDirection Direction, BooleanFlag IsPrimaryDamage, sbyte ActionPoints, sbyte MovePoints) 
         : IEffectHandler<KillEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)
@@ -25,7 +25,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             {
                 return;
             }
-            if (@event.SubjectId != parent.OwnerId)
+            if (!IGenericEffectHandler.HasDirection(in @event, Direction, parent.OwnerId))
             {
                 return;
             }

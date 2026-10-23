@@ -3,7 +3,7 @@ using BattleForDune.Core.Events.Types;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class KillInSpawnHandler(RegistryKey UnitKey)
+    public record class KillSpawnHandler(EffectDirection Direction, RegistryKey UnitKey)
         : IEffectHandler<KillEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)
@@ -23,7 +23,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             {
                 return;
             }
-            if (@event.TargetId != parent.OwnerId)
+            if (!IGenericEffectHandler.HasDirection(in @event, Direction, parent.OwnerId))
             {
                 return;
             }
