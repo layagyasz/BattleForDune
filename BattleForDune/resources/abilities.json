@@ -152,5 +152,43 @@
         "Multiplier": 2.0
       }
     ]
+  },
+  // Deviator MLRS
+  {
+    "AbilityKey": 4,
+    "Range": 2,
+    "TargetType": [ "Enemy" ],
+    "TargetComparator": {
+      "$type": "Default"
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAttack",
+        "Vector": [ "Ranged" ],
+        "CriticalRange": 0
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Physical",
+        "Vector": [ "Ranged" ],
+        "Stat": "Hitpoints",
+        "Damage": "1d10",
+        "IsPrimary": true
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Psychic",
+        "Vector": [ "Psychic" ],
+        "Stat": "Morale",
+        "Damage": "1d10"
+      },
+      {
+        "$type": "AttackChanceAddEffect",
+        "EffectKey": 26,
+        "Vector": [ "Gas" ],
+        "Difficulty": 16,
+        "Duration": 3
+      }
+    ]
   }
 ]

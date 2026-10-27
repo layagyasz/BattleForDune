@@ -15,6 +15,7 @@ namespace BattleForDune.Core.Events.Types
         AbilityVector Vector,
         StatType Stat,
         Die Die,
+        sbyte Structure,
         sbyte Roll,
         byte Damage) : IGameEvent
     {
@@ -29,7 +30,8 @@ namespace BattleForDune.Core.Events.Types
             DamageType damageType,
             AbilityVector vector,
             StatType stat,
-            Die die)
+            Die die,
+            sbyte structure)
         {
             return new(
                 false, 
@@ -42,6 +44,7 @@ namespace BattleForDune.Core.Events.Types
                 vector,
                 stat,
                 die,
+                structure,
                 0, 
                 0);
         }

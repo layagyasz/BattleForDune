@@ -33,11 +33,13 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public bool Remove(EntityId id)
+        public bool Remove<TCallback>(EntityId id, TCallback callback) 
+            where TCallback : ICallback<Effect>, allows ref struct
         {
             if (_byId.RemoveOnly(id.Value, out var handle))
             {
                 ref var effect = ref _effects.Get(handle);
+                callback.Notify(handle, ref effect);
                 if (effect.IsGlobal)
                 {
                     foreach (var @event in _registry.GetEffectPrototype(effect.EffectKey).SupportedEvents)

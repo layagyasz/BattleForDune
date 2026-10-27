@@ -6,11 +6,24 @@ using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
+using BattleForDune.FastLookup;
 
 namespace BattleForDune.Core
 {
     public class LocalEventProcessor(ComponentWorld world, IGameEventSink[] listeners) : IGameEventProcessor
     {
+        private readonly ref struct EffectRemoveCallback<TSink>(
+            ComponentWorld world, TSink sink) : ICallback<Effect> where TSink : IGameEventSink
+        {
+            private readonly ComponentWorld _world = world;
+            private readonly TSink _sink = sink;
+
+            public readonly void Notify(int handle, ref Effect element)
+            {
+                element.Remove(_world, _sink);
+            }
+        }
+
         private readonly ComponentWorld _world = world;
         private readonly IGameEventSink[] _listeners = listeners;
 
@@ -335,13 +348,15 @@ namespace BattleForDune.Core
             allegiance.Faction = @event.FactionKey;
         }
 
-        private void ApplyRemoveEffect(in RemoveEffectEvent @event)
+        private void ApplyRemoveEffect<TSink>(in RemoveEffectEvent @event, TSink sink) 
+            where TSink : IGameEventSink
         {
             if (@event.IsCanceled)
             {
                 return;
             }
-            _world.Effects.Remove(@event.InstanceId);
+            var callback = new EffectRemoveCallback<TSink>(world, sink);
+            _world.Effects.Remove(@event.InstanceId, callback);
             _world.Timers.Remove(@event.InstanceId);
         }
 
@@ -440,7 +455,7 @@ namespace BattleForDune.Core
             }
             _world.Intercept(ref @event);
 
-            if (@event.Roll + @event.Skill < @event.Difficulty)
+            if (!IsSuccess(@event.Skill, @event.Difficulty, @event.Roll))
             {
                 @event.IsCanceled = true;
             }
@@ -477,15 +492,17 @@ namespace BattleForDune.Core
                 + @event.DefenseEvasion 
                 + Math.Max((sbyte) 0, @event.DefenseArmor)
                 + Math.Max((sbyte) 0, @event.DefenseShield);
-            if (defense > 0 
-                && @event.Roll != 20 
-                && (@event.Roll + @event.Skill < defense || @event.Roll == 1))
+            if (!IsSuccess(@event.Skill, defense, @event.Roll))
             {
                 @event.IsCanceled = true;
             }
-            if (@event.Roll > 20 - @event.CriticalRange)
+            else if (@event.Roll > 20 - @event.CriticalRange)
             {
-                @event.IsCritical = true;
+                var confirmRoll = _world.Roll(new(1, 20, 0));
+                if (IsSuccess(@event.Skill, defense, confirmRoll))
+                {
+                    @event.IsCritical = true;
+                }
             }
 
             if (hasAbility)
@@ -523,7 +540,7 @@ namespace BattleForDune.Core
             }
             _world.Intercept(ref @event);
 
-            @event.Damage = (byte)Math.Max((byte) 0, @event.Roll);
+            @event.Damage = (byte)Math.Max(0, @event.Roll - @event.Structure);
             if (@event.Damage <= 0)
             {
                 @event.IsCanceled = true;
@@ -608,7 +625,7 @@ namespace BattleForDune.Core
                 ability!.Handle(in @event, sink, _world);
             }
             _world.Handle(in @event, sink);
-            ApplyRemoveEffect(in @event);
+            ApplyRemoveEffect(in @event, sink);
         }
 
         private void Process<TSink>(ref ResetActionsEvent @event, TSink sink) where TSink : IGameEventSink
@@ -684,6 +701,22 @@ namespace BattleForDune.Core
             foreach (var listener in _listeners)
             {
                 listener.Queue(@event);
+            }
+        }
+
+        private static bool IsSuccess(int skill, int difficulty, int roll)
+        {
+            if (roll == 1)
+            {
+                return false;
+            }
+            else if (roll == 20)
+            {
+                return true;
+            }
+            else
+            {
+                return skill + roll >= difficulty;
             }
         }
     }

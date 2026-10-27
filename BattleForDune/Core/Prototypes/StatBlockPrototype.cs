@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace BattleForDune.Core.Prototypes
 {
-    [InlineArray(8)]
+    [InlineArray(9)]
     public struct StatBlockPrototype
     {
         private Progression _element0;
@@ -38,6 +38,12 @@ namespace BattleForDune.Core.Prototypes
             set => this[StatType.Initiative] = value;
         }
 
+        public Progression Structure
+        {
+            readonly get => this[StatType.Structure];
+            set => this[StatType.Structure] = value;
+        }
+
         public Progression Hitpoints
         {
             readonly get => this[StatType.Hitpoints];
@@ -65,7 +71,7 @@ namespace BattleForDune.Core.Prototypes
         public readonly StatBlock Materialize(byte level)
         {
             var block = new StatBlock();
-            for (int i = 0; i < 8; ++i)
+            for (int i = 0; i < 9; ++i)
             {
                 block[i] = ToStat(this[i], level);
             }

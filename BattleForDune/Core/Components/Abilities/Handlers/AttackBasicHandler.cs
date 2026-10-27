@@ -9,7 +9,8 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
         AbilityVector Vector,
         StatType Stat,
         Die Damage, 
-        bool IsPrimary) 
+        bool IsPrimary,
+        sbyte AntiStructure) 
         : IAbilityHandler<AttackEvent>
     {
         public void Intercept(ref AttackEvent @event, ComponentWorld world) { }
@@ -21,7 +22,12 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
             {
                 return;
             }
-            ref var stats = ref world.Stats.TryGet(@event.TargetId, out var isFound);
+            ref var stats = ref world.Stats.TryGet(@event.SubjectId, out var isFound);
+            if (!isFound)
+            {
+                return;
+            }
+            ref var targetStats = ref world.Stats.TryGet(@event.TargetId, out isFound);
             if (!isFound)
             {
                 return;
@@ -37,7 +43,8 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
                     DamageType, 
                     Vector, 
                     Stat, 
-                    Damage);
+                    Damage,
+                    (sbyte)(targetStats[StatType.Structure].Value - AntiStructure));
             sink.Queue(in damage);
         }
     }

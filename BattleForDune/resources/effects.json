@@ -23,7 +23,8 @@
         "$type": "UpdateStat",
         "Stat": "Initiative",
         "Delta": {
-          "Value": 4
+          "Value": 4,
+          "Max": 4
         }
       }
     ]

@@ -31,19 +31,18 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             {
                 return;
             }
-            {
-                sink.Queue(
-                    DamageEvent.Transitive(
-                        @event.SubjectId,
-                        @event.AbilityId,
-                        @event.TargetId,
-                        isPrimary: false,
-                        isCritical: false,
-                        @event.DamageType,
-                        @event.Vector,
-                        @event.Stat,
-                        Die));
-            }
+            sink.Queue(
+                DamageEvent.Transitive(
+                    @event.SubjectId,
+                    @event.AbilityId,
+                    @event.TargetId,
+                    isPrimary: false,
+                    isCritical: false,
+                    @event.DamageType,
+                    @event.Vector,
+                    @event.Stat,
+                    Die,
+                    0));
         }
     }
 }

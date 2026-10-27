@@ -2,7 +2,7 @@
 
 namespace BattleForDune.Core.Schema
 {
-    [InlineArray(8)]
+    [InlineArray(9)]
     public struct StatBlock
     {
         private Stat _element0;

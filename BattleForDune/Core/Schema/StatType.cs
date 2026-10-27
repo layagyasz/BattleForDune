@@ -7,6 +7,7 @@
         Armor,
         Shield,
         Initiative,
+        Structure,
         Hitpoints,
         Morale,
         Threat
