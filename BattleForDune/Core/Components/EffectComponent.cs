@@ -33,8 +33,8 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public bool Remove<TCallback>(EntityId id, TCallback callback) 
-            where TCallback : ICallback<Effect>, allows ref struct
+        public bool Remove<TCallback>(EntityId id, ref TCallback callback) 
+            where TCallback : IStorageCallback<Effect>, allows ref struct
         {
             if (_byId.RemoveOnly(id.Value, out var handle))
             {

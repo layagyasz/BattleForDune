@@ -16,9 +16,9 @@ namespace BattleForDune.Core.Components
         private readonly HeapStorage<TimerKeyer, GameTimer> _timers = new(new TimerKeyer(), capacity);
         private readonly UniqueIndex _index = new(capacity);
 
-        public void Add(EntityId ownerId, byte turn)
+        public void Add(EntityId ownerId, GameTimerType type, byte turn)
         {
-            if (_timers.Allocate(new(ownerId, turn), out var handle))
+            if (_timers.Allocate(new(ownerId, type, turn), out var handle))
             {
                 _index.Add(ownerId.Value, handle);
             }
@@ -45,14 +45,14 @@ namespace BattleForDune.Core.Components
             return false;
         }
 
-        public bool TryGet(EntityId ownerId, out byte expiration)
+        public bool TryGet(EntityId ownerId, out GameTimer timer)
         { 
             if (_index.TryGet(ownerId.Value, out var handle))
             {
-                expiration = _timers.Get(handle).Turn;
+                timer = _timers.Get(handle);
                 return true;
             }
-            expiration = 0;
+            timer = default!;
             return false;
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace BattleForDune.FastLookup
 {
-    public interface ICallback<T>
+    public interface IStorageCallback<T>
     {
         void Notify(int handle, ref T value);
     }

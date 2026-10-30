@@ -1,4 +1,4 @@
-﻿namespace BattleForDune.FastLookup
+﻿namespace BattleForDune
 {
     public interface IPredicate<T>
     {

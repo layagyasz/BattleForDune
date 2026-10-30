@@ -1,19 +1,35 @@
 ﻿using BattleForDune.Core.Components;
 using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Actions;
+using BattleForDune.Core.Components.Auras;
 using BattleForDune.Core.Components.Behaviors;
 using BattleForDune.Core.Components.Effects;
+using BattleForDune.Core.Components.Timers;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
 using BattleForDune.FastLookup;
+using BattleForDune.Geometry;
 
 namespace BattleForDune.Core
 {
     public class LocalEventProcessor(ComponentWorld world, IGameEventSink[] listeners) : IGameEventProcessor
     {
+        private readonly ref struct AddAuraEnterCallback<TSink>(
+            EntityId auraId, ComponentWorld world, TSink sink) : ICallback<int> where TSink : IGameEventSink
+        {
+            private readonly EntityId _auraId = auraId;
+            private readonly ComponentWorld _world = world;
+            private readonly TSink _sink = sink;
+
+            public readonly void Notify(in int id)
+            {
+                _sink.Queue(EnterAuraEvent.Intransitive(new(id), _auraId));
+            }
+        }
+
         private readonly ref struct EffectRemoveCallback<TSink>(
-            ComponentWorld world, TSink sink) : ICallback<Effect> where TSink : IGameEventSink
+            ComponentWorld world, TSink sink) : IStorageCallback<Effect> where TSink : IGameEventSink
         {
             private readonly ComponentWorld _world = world;
             private readonly TSink _sink = sink;
@@ -24,6 +40,64 @@ namespace BattleForDune.Core
             }
         }
 
+        private readonly ref struct EnterAuraCallback<TSink>(
+            EntityId subjectId, Hex2b origin, TSink sink) : ICallback<Aura> where TSink : IGameEventSink
+        {
+            private readonly EntityId _subjectId = subjectId;
+            private readonly Hex2b _origin = origin;
+            private readonly TSink _sink = sink;
+
+            public readonly void Notify(in Aura aura)
+            {
+                if (Hexes.Distance(_origin, aura.Position) > aura.Range)
+                {
+                    _sink.Queue(EnterAuraEvent.Intransitive(_subjectId, aura.Id));
+                }
+            }
+        }
+
+        private readonly ref struct LeaveAuraCallback<TSink>(
+            EntityId subjectId, Hex2b destination, TSink sink) : ICallback<Aura> where TSink : IGameEventSink
+        {
+            private readonly EntityId _subjectId = subjectId;
+            private readonly Hex2b _destination = destination;
+            private readonly TSink _sink = sink;
+
+            public readonly void Notify(in Aura aura)
+            {
+                if (Hexes.Distance(_destination, aura.Position) > aura.Range)
+                {
+                    _sink.Queue(LeaveAuraEvent.Intransitive(_subjectId, aura.Id));
+                }
+            }
+        }
+
+        private readonly ref struct RemoveAuraCallback<TSink>(
+            ComponentWorld world, TSink sink) : ICallback<Aura> where TSink : IGameEventSink
+        {
+            private readonly ComponentWorld _world = world;
+            private readonly TSink _sink = sink;
+
+            public readonly void Notify(in Aura aura)
+            {
+                var callback = new RemoveAuraLeaveCallback<TSink>(aura.Id, _world, _sink);
+                _world.Positions.QueryRange(aura.Position, aura.Range, ref callback);
+            }
+        }
+
+        private readonly ref struct RemoveAuraLeaveCallback<TSink>(
+            EntityId auraId, ComponentWorld world, TSink sink) : ICallback<int> where TSink : IGameEventSink
+        {
+            private readonly EntityId _auraId = auraId;
+            private readonly ComponentWorld _world = world;
+            private readonly TSink _sink = sink;
+
+            public readonly void Notify(in int id)
+            {
+                _sink.Queue(LeaveAuraEvent.Intransitive(new(id), _auraId));
+            }
+        }
+
         private readonly ComponentWorld _world = world;
         private readonly IGameEventSink[] _listeners = listeners;
 
@@ -31,6 +105,11 @@ namespace BattleForDune.Core
         {
             switch (@event.Type)
             {
+                case GameEventType.AddAura:
+                    var aura = @event.ReadPayload<AddAuraEvent>();
+                    Process(ref aura, sink);
+                    Notify(in aura);
+                    return;
                 case GameEventType.AddEffect:
                     var effect = @event.ReadPayload<AddEffectEvent>();
                     Process(ref effect, sink);
@@ -56,6 +135,11 @@ namespace BattleForDune.Core
                     Process(ref damage, sink);
                     Notify(in damage);
                     return;
+                case GameEventType.EnterAura:
+                    var enter = @event.ReadPayload<EnterAuraEvent>();
+                    Process(ref enter, sink);
+                    Notify(in enter);
+                    return;
                 case GameEventType.FinalizeInitiative:
                     var finalize = @event.ReadPayload<FinalizeInitiativeEvent>();
                     Process(ref finalize, sink);
@@ -71,6 +155,11 @@ namespace BattleForDune.Core
                     Process(ref kill, sink);
                     Notify(in kill);
                     return;
+                case GameEventType.LeaveAura:
+                    var leave = @event.ReadPayload<LeaveAuraEvent>();
+                    Process(ref leave, sink);
+                    Notify(in leave);
+                    return;
                 case GameEventType.Move:
                     var move = @event.ReadPayload<MoveEvent>();
                     Process(ref move, sink);
@@ -80,6 +169,11 @@ namespace BattleForDune.Core
                     var allegiance = @event.ReadPayload<OverrideAllegianceEvent>();
                     Process(ref allegiance, sink);
                     Notify(in allegiance);
+                    return;
+                case GameEventType.RemoveAura:
+                    var removeAura = @event.ReadPayload<RemoveAuraEvent>();
+                    Process(ref removeAura, sink);
+                    Notify(in removeAura);
                     return;
                 case GameEventType.RemoveEffect:
                     var removeEffect = @event.ReadPayload<RemoveEffectEvent>();
@@ -116,6 +210,32 @@ namespace BattleForDune.Core
                     Process(ref use, sink);
                     Notify(in use);
                     return;
+            }
+        }
+
+        private void ApplyAddAura<TSink>(in AddAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+
+            _world.Auras.Add(
+                @event.AuraId,
+                new Aura(
+                    @event.AuraId,
+                    @event.SubjectId,
+                    @event.AbilityId,
+                    @event.Position,
+                    @event.Vector,
+                    @event.EffectKey,
+                    @event.Power,
+                    @event.Range));
+            var callback = new AddAuraEnterCallback<TSink>(@event.AuraId, _world, sink);
+            _world.Positions.QueryRange(@event.Position, @event.Range, ref callback);
+            if (@event.Duration >= 0)
+            {
+                _world.Timers.Add(@event.AuraId, GameTimerType.Aura, (byte)(_world.Turn + @event.Duration));
             }
         }
 
@@ -157,11 +277,11 @@ namespace BattleForDune.Core
                         if (@event.Duration >= 0)
                         {
                             byte newExpiration = (byte)(_world.Turn + @event.Duration);
-                            if (_world.Timers.TryGet(effect.Id, out var currentExpiration)
-                                && newExpiration > currentExpiration)
+                            if (_world.Timers.TryGet(effect.Id, out var currentTimer)
+                                && newExpiration > currentTimer.Turn)
                             {
                                 _world.Timers.Remove(effect.Id);
-                                _world.Timers.Add(effect.Id, newExpiration);
+                                _world.Timers.Add(effect.Id, GameTimerType.Effect, newExpiration);
                             }
                         }
                         else
@@ -176,14 +296,14 @@ namespace BattleForDune.Core
             // If no matching effects exist, add a new one.
             var newEffect = 
                 _world.Registry.GetEffectPrototype(@event.EffectKey)
-                    .Materialize(@event.InstanceId, @event.TargetId, @event.SubjectId, @event.AbilityId);
+                    .Materialize(@event.EffectId, @event.TargetId, @event.SubjectId, @event.AbilityId);
             newEffect.MergeStacks(@event.Stacks);
             newEffect.MergePower(@event.Power);
             _world.Effects.Add(newEffect);
             newEffect.Apply(_world, in sink);
             if (@event.Duration >= 0)
             {
-                _world.Timers.Add(newEffect.Id, (byte)(_world.Turn + @event.Duration));
+                _world.Timers.Add(newEffect.Id, GameTimerType.Effect, (byte)(_world.Turn + @event.Duration));
             }
         }
 
@@ -277,7 +397,41 @@ namespace BattleForDune.Core
                     }
                 }
             }
+        }
 
+        private void ApplyEnterAura<TSink>(in EnterAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            if (!_world.Auras.TryGet(@event.AuraId, out var aura))
+            {
+                return;
+            }
+
+            foreach (var effect in _world.Effects.ByOwner(@event.TargetId))
+            {
+                if (effect.EffectKey != aura.EffectKey)
+                {
+                    continue;
+                }
+
+                effect.Remove(_world, in sink);
+                effect.Increment();
+                effect.MergePower(aura.Power);
+                effect.Apply(_world, in sink);
+
+                return;
+            }
+
+            var newEffect =
+                _world.Registry.GetEffectPrototype(aura.EffectKey)
+                    .Materialize(@event.EffectId, @event.SubjectId, aura.SourceId, aura.AbilityId);
+            newEffect.Increment();
+            newEffect.MergePower(aura.Power);
+            _world.Effects.Add(newEffect);
+            newEffect.Apply(_world, in sink);
         }
 
         private void ApplyFinalizeInitiative(in FinalizeInitiativeEvent @event)
@@ -319,7 +473,42 @@ namespace BattleForDune.Core
             }
         }
 
-        private void ApplyMove(in MoveEvent @event)
+        private void ApplyLeaveAura<TSink>(in LeaveAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            if (!_world.Auras.TryGet(@event.AuraId, out var aura))
+            {
+                return;
+            }
+
+            foreach (var effect in _world.Effects.ByOwner(@event.TargetId))
+            {
+                if (effect.EffectKey != aura.EffectKey)
+                {
+                    continue;
+                }
+
+                if (effect.Stacks < 2)
+                {
+                    var callback = new EffectRemoveCallback<TSink>(_world, sink);
+                    _world.Effects.Remove(effect.Id, ref callback);
+                }
+                else
+                {
+                    effect.Remove(_world, in sink);
+                    effect.Decrement();
+                    effect.MergePower(aura.Power);
+                    effect.Apply(_world, in sink);
+                }
+
+                return;
+            }
+        }
+
+        private void ApplyMove<TSink>(in MoveEvent @event, TSink sink) where TSink : IGameEventSink
         {
             if (@event.IsCanceled)
             {
@@ -331,6 +520,11 @@ namespace BattleForDune.Core
                 actions.MovePoints -= 1;
             }
             _world.Positions.Move(@event.SubjectId, @event.Destination);
+
+            var leaveCallback = new LeaveAuraCallback<TSink>(@event.SubjectId, @event.Destination, sink);
+            _world.Auras.QueryRange(@event.Origin, 0, ref leaveCallback);
+            var enterCallback = new EnterAuraCallback<TSink>(@event.SubjectId, @event.Origin, sink);
+            _world.Auras.QueryRange(@event.Destination, 0, ref enterCallback);
         }
 
         private void ApplyOverrideAllegiance(in OverrideAllegianceEvent @event)
@@ -348,6 +542,17 @@ namespace BattleForDune.Core
             allegiance.Faction = @event.FactionKey;
         }
 
+        private void ApplyRemoveAura<TSink>(in RemoveAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+
+            var callback = new RemoveAuraCallback<TSink>(_world, sink);
+            _world.Auras.Remove(@event.AuraId, ref callback);
+        }
+
         private void ApplyRemoveEffect<TSink>(in RemoveEffectEvent @event, TSink sink) 
             where TSink : IGameEventSink
         {
@@ -355,9 +560,9 @@ namespace BattleForDune.Core
             {
                 return;
             }
-            var callback = new EffectRemoveCallback<TSink>(world, sink);
-            _world.Effects.Remove(@event.InstanceId, callback);
-            _world.Timers.Remove(@event.InstanceId);
+            var callback = new EffectRemoveCallback<TSink>(_world, sink);
+            _world.Effects.Remove(@event.EffectId, ref callback);
+            _world.Timers.Remove(@event.EffectId);
         }
 
         private void ApplyResetActions(in ResetActionsEvent @event)
@@ -442,9 +647,29 @@ namespace BattleForDune.Core
             }
         }
 
+        private void Process<TSink>(ref AddAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            @event.AuraId = _world.NextId();
+
+            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+
+            if (hasAbility)
+            {
+                ability!.Intercept(ref @event, _world);
+            }
+            _world.Intercept(ref @event);
+
+            if (hasAbility)
+            {
+                ability!.Handle(in @event, sink, _world);
+            }
+            _world.Handle(in @event, sink);
+            ApplyAddAura(in @event, sink);
+        }
+
         private void Process<TSink>(ref AddEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            @event.InstanceId = _world.NextId();
+            @event.EffectId = _world.NextId();
             @event.Roll = _world.Roll(new(1, 20, 0));
 
             bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
@@ -554,6 +779,13 @@ namespace BattleForDune.Core
             ApplyDamage(in @event, sink);
         }
 
+        private void Process<TSink>(ref EnterAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            _world.Handle(in @event, sink);
+            ApplyEnterAura(in @event, sink);
+        }
+
         private void Process<TSink>(ref FinalizeInitiativeEvent @event, TSink sink) where TSink : IGameEventSink
         {
             _world.Intercept(ref @event);
@@ -587,11 +819,18 @@ namespace BattleForDune.Core
             ApplyKill(in @event, sink);
         }
 
+        private void Process<TSink>(ref LeaveAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            _world.Handle(in @event, sink);
+            ApplyLeaveAura(in @event, sink);
+        }
+
         private void Process<TSink>(ref MoveEvent @event, TSink sink) where TSink : IGameEventSink
         {
             _world.Intercept(ref @event);
             _world.Handle(in @event, sink);
-            ApplyMove(in @event);
+            ApplyMove(in @event, sink);
         }
 
         private void Process<TSink>(ref OverrideAllegianceEvent @event, TSink sink) where TSink : IGameEventSink
@@ -609,6 +848,23 @@ namespace BattleForDune.Core
             }
             _world.Handle(in @event, sink);
             ApplyOverrideAllegiance(in @event);
+        }
+
+        private void Process<TSink>(ref RemoveAuraEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            if (hasAbility)
+            {
+                ability!.Intercept(ref @event, _world);
+            }
+            _world.Intercept(ref @event);
+
+            if (hasAbility)
+            {
+                ability!.Handle(in @event, sink, _world);
+            }
+            _world.Handle(in @event, sink);
+            ApplyRemoveAura(in @event, sink);
         }
 
         private void Process<TSink>(ref RemoveEffectEvent @event, TSink sink) where TSink : IGameEventSink

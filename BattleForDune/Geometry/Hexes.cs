@@ -35,6 +35,18 @@ namespace BattleForDune.Geometry
             return SnapToHex(l + blend * (r - l));
         }
 
+        public static void Range<TCallback>(Hex2b center, byte range, ref TCallback callback) 
+            where TCallback : ICallback<Hex2b>, allows ref struct
+        {
+            for (int q = -range; q <= range; ++q)
+            {
+                for (int r = Math.Max(-range, -q - range); r <= Math.Min(range, -q + range); ++r)
+                {
+                    callback.Notify(center + new Hex2b(q, r));
+                }
+            }
+        }
+
         public static Hex2b SnapToHex(Hex2 hex)
         {
             var q = (int)Math.Round(hex.Q);

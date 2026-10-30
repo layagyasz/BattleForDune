@@ -9,7 +9,7 @@ namespace BattleForDune.Core.Events.Types
         EntityId SubjectId,
         byte AbilityId,
         EntityId TargetId,
-        EntityId InstanceId,
+        EntityId EffectId,
         AbilityVector Vector,
         byte Stacks,
         byte Power,

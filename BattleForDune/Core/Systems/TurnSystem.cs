@@ -4,7 +4,6 @@ using BattleForDune.Core.Components.Behaviors;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
-using BattleForDune.FastLookup;
 using BattleForDune.Geometry;
 
 namespace BattleForDune.Core.Systems
@@ -34,7 +33,7 @@ namespace BattleForDune.Core.Systems
                 return _target;
             }
 
-            public void Notify(int handle, ref int value)
+            public void Notify(in int value)
             {
                 var option = new EntityId(value);
                 var targetType = GetTargetType(SubjectId, SubjectTeam, option, World);
@@ -210,7 +209,7 @@ namespace BattleForDune.Core.Systems
                 foreach (var option in world.Units.AsSpan())
                 {
                     var refOption = option;
-                    accumulator.Notify(0, ref refOption);
+                    accumulator.Notify(in refOption);
                 }
             }
             else

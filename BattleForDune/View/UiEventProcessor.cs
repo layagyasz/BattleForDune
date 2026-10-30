@@ -59,9 +59,13 @@ namespace BattleForDune.View
                 return;
             }
             var effectView = _registry.GetEffect(@event.EffectKey);
-            if (!effectView.IsHidden)
+            if (effectView.IsHidden)
             {
-                ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var _);
+                return;
+            }
+            ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var isFound);
+            if (isFound)
+            {
                 _textParticleLayer?.Add(effectView.Name, pos, effectView.Color);
             }
         }
@@ -86,9 +90,12 @@ namespace BattleForDune.View
             {
                 return;
             }
-            ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var _);
-            var render = _registry.GetEvent(@event.Type);
-            _textParticleLayer?.Add(render.Name, pos, render.Color);
+            ref var pos = ref _world.Positions.TryGet(@event.TargetId, out var isFound);
+            if (isFound)
+            {
+                var render = _registry.GetEvent(@event.Type);
+                _textParticleLayer?.Add(render.Name, pos, render.Color);
+            }
         }
 
         private void HandleDamage(DamageEvent @event)

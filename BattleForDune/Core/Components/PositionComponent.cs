@@ -1,14 +1,15 @@
 ﻿using BattleForDune.FastLookup;
 using BattleForDune.Geometry;
+using System.Runtime.CompilerServices;
 
 namespace BattleForDune.Core.Components
 {
     public class PositionComponent(HexRect2b bounds, int capacity) : IGameComponent<Hex2b>
     {
-        private static Hex2b _null = default!;
         private readonly SparseStorage<Hex2b> _values = new(capacity);
         private readonly UniqueIndex _index = new(capacity);
-        private readonly HexQuadTree<int> _quadTree = new(bounds, capacity >> 3, capacity);
+        private readonly HexQuadTree<int> _quadTree = 
+            new(bounds, capacity >> 3, capacity, maxDepth: 6, maxItemsPerNode: 8);
 
         public bool Add(EntityId id, Hex2b value)
         {
@@ -46,7 +47,7 @@ namespace BattleForDune.Core.Components
                 return ref _values.Get(handle);
             }
             isFound = false;
-            return ref _null;
+            return ref Unsafe.NullRef<Hex2b>();
         }
 
         public bool Move(EntityId id, Hex2b value)

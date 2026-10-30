@@ -9,7 +9,7 @@ namespace BattleForDune.FastLookup
         {
             public bool IsFound { get; private set; }
 
-            public void Notify(int handle, ref T value)
+            public void Notify(in T value)
             {
                 IsFound = true;
             }
@@ -320,7 +320,7 @@ namespace BattleForDune.FastLookup
                     ref ItemNode itemNode = ref _items[itemIndex];
                     if (Hexes.Distance(itemNode.Position, position) <= radius)
                     {
-                        callback.Notify(itemIndex, ref itemNode.Element);
+                        callback.Notify(in itemNode.Element);
                     }
                     itemIndex = itemNode.NextItemIndex;
                 }

@@ -68,7 +68,7 @@ namespace BattleForDune.FastLookup
 
         public void FreeAll<TPredicate, TCallback>(in TPredicate predicate, in TCallback callback)
             where TPredicate : struct, IPredicate<T>, allows ref struct
-            where TCallback : struct, ICallback<T>, allows ref struct
+            where TCallback : struct, IStorageCallback<T>, allows ref struct
         {
             for (int i = _count - 1; i >= 0; i--)
             {

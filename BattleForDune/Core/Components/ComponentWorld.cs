@@ -28,6 +28,7 @@ namespace BattleForDune.Core.Components
         public WorldState State { get; private set; }
         public IdSet Units { get; init; } = new(1024);
         public AllegianceComponent Allegiances { get; init; } = new(1024);
+        public AuraComponent Auras { get; init; } = new(Upsize(map.Size), 1024);
         public PositionComponent Positions { get; init; } = new(Upsize(map.Size), 1024);
         public ActionComponent Actions { get; init; } = new(1024);
         public BehaviorComponent Behaviors { get; init; } = new(1024);

@@ -53,6 +53,16 @@ namespace BattleForDune.Core.Components.Effects
             }
         }
 
+        public void Increment()
+        {
+            Stacks++;
+        }
+
+        public void Decrement()
+        {
+            Stacks--;
+        }
+
         public void MergeStacks(byte newStacks)
         {
             Stacks += newStacks;
