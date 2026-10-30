@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Components.Effects
         EntityId Id, 
         EntityId OwnerId, 
         EntityId SourceId, 
-        byte AbilityId,
+        EntityId AbilityId,
         bool IsGlobal,
         IGenericEffectHandler[] Handlers) 
         : IGameEventHandler
@@ -28,7 +28,7 @@ namespace BattleForDune.Core.Components.Effects
                 return EffectKey.CompareTo(other.EffectKey);
             }
 
-            public Effect Materialize(EntityId id, EntityId ownerId, EntityId sourceId, byte abilityId)
+            public Effect Materialize(EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
             {
                 return new(EffectKey, id, ownerId, sourceId, abilityId, IsGlobal, Handlers);
             }

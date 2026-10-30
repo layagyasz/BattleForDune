@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Events.Types
     public record struct UpdateStatEvent(
         bool IsCanceled,
         EntityId SubjectId,
-        byte AbilityId,
+        EntityId AbilityId,
         EntityId TargetId,
         StatType Stat,
         Stat Delta,
@@ -16,13 +16,13 @@ namespace BattleForDune.Core.Events.Types
         public readonly GameEventType Type => GameEventType.UpdateStat;
 
         public static UpdateStatEvent Transitive(
-            EntityId subjectId, byte abilityId, EntityId targetId, StatType stat, Stat delta)
+            EntityId subjectId, EntityId abilityId, EntityId targetId, StatType stat, Stat delta)
         {
             return new(false, subjectId, abilityId, targetId, stat, delta, false);
         }
 
         public static UpdateStatEvent TransitiveReversal(
-            EntityId subjectId, byte abilityId, EntityId targetId, StatType stat, Stat delta)
+            EntityId subjectId, EntityId abilityId, EntityId targetId, StatType stat, Stat delta)
         {
             return new(false, subjectId, abilityId, targetId, stat, delta, true);
         }

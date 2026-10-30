@@ -4,7 +4,7 @@ namespace BattleForDune.Core.Events.Types
 {
     [StructLayout(LayoutKind.Sequential)]
     public record struct RemoveEffectEvent(
-        bool IsCanceled, EntityId SubjectId, byte AbilityId, EntityId EffectId) : IGameEvent
+        bool IsCanceled, EntityId SubjectId, EntityId AbilityId, EntityId EffectId) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.RemoveEffect;
         // TODO: Include owner id so passives can fire?
@@ -12,10 +12,10 @@ namespace BattleForDune.Core.Events.Types
 
         public static RemoveEffectEvent Intransitive(EntityId effectId)
         {
-            return new(false, EntityId.None, 0, effectId);
+            return new(false, EntityId.None, EntityId.None, effectId);
         }
 
-        public static RemoveEffectEvent Transitive(EntityId subjectId, byte abilityId, EntityId effectId)
+        public static RemoveEffectEvent Transitive(EntityId subjectId, EntityId abilityId, EntityId effectId)
         {
             return new(false, subjectId, abilityId, effectId);
         }

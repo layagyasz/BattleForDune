@@ -8,7 +8,7 @@ namespace BattleForDune.Core.Events
 
         public void Queue<T>(in T @event) where T : struct, IGameEvent
         {
-            _logger.AtInfo().Log(@event.ToString()!);
+            //_logger.AtInfo().Log(@event.ToString()!);
         }
 
         public void Flush() { }

@@ -2,6 +2,8 @@
   // Assault Rifle
   {
     "AbilityKey": 0,
+    "Cooldown": -1,
+    "Charges": -1,
     "Range": 1,
     "TargetType": [ "Enemy" ],
     "TargetComparator": {
@@ -37,6 +39,8 @@
   // Kindjal
   {
     "AbilityKey": 1,
+    "Cooldown": -1,
+    "Charges": -1,
     "Range": 1,
     "TargetType": [ "Enemy" ],
     "TargetComparator": {
@@ -79,6 +83,8 @@
   // Crysknife
   {
     "AbilityKey": 2,
+    "Cooldown": -1,
+    "Charges": -1,
     "Range": 1,
     "TargetType": [ "Enemy" ],
     "TargetComparator": {
@@ -121,6 +127,8 @@
   // Unarmed
   {
     "AbilityKey": 3,
+    "Cooldown": -1,
+    "Charges": -1,
     "Range": 1,
     "TargetType": [ "Enemy" ],
     "TargetComparator": {
@@ -156,6 +164,8 @@
   // Deviator MLRS
   {
     "AbilityKey": 4,
+    "Cooldown": -1,
+    "Charges": -1,
     "Range": 2,
     "TargetType": [ "Enemy" ],
     "TargetComparator": {

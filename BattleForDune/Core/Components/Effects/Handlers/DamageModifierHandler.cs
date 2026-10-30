@@ -26,7 +26,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                 return;
             }
             if (DamageType.Contains(@event.DamageType) 
-                && Vector.HasFlag(@event.Vector)
+                && (Vector & @event.Vector) != 0
                 && Stat.Contains(@event.Stat))
             {
                 @event.Roll += Modifier;

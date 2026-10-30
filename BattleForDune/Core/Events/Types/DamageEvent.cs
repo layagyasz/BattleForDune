@@ -9,7 +9,7 @@ namespace BattleForDune.Core.Events.Types
         bool IsPrimary,
         bool IsCritical,
         EntityId SubjectId,
-        byte AbilityId,
+        EntityId AbilityId,
         EntityId TargetId,
         DamageType DamageType,
         AbilityVector Vector,
@@ -23,7 +23,7 @@ namespace BattleForDune.Core.Events.Types
 
         public static DamageEvent Transitive(
             EntityId subjectId,
-            byte abilityId,
+            EntityId abilityId,
             EntityId targetId,
             bool isPrimary,
             bool isCritical,

@@ -3,8 +3,10 @@ using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Abilities
 {
-    // TODO: include ability level
     public record class Ability(
+        EntityId Id,
+        EntityId OwnerId,
+        sbyte Cooldown,
         sbyte Range,
         TargetType TargetType, 
         ITargetComparator TargetComparator, 
@@ -12,6 +14,8 @@ namespace BattleForDune.Core.Components.Abilities
     {
         public record class Prototype(
             RegistryKey AbilityKey,
+            sbyte Cooldown,
+            sbyte Charges,
             sbyte Range,
             TargetType TargetType,
             ITargetComparator TargetComparator,
@@ -26,9 +30,24 @@ namespace BattleForDune.Core.Components.Abilities
                 return AbilityKey.CompareTo(other.AbilityKey);
             }
 
-            public Ability Materialize()
+            public Ability Materialize(EntityId id, EntityId ownerId)
             {
-                return new Ability(Range, TargetType, TargetComparator, Handlers);
+                return new Ability(id, ownerId, Cooldown, Range, TargetType, TargetComparator, Handlers)
+                {
+                    IsOnCooldown = false,
+                    Charges = Charges
+                };
+            }
+        }
+
+        public bool IsOnCooldown { get; set; }
+        public sbyte Charges { get; private set; }
+
+        public void Consume()
+        {
+            if (Charges > 0)
+            {
+                Charges--;
             }
         }
 

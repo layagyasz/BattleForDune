@@ -8,7 +8,7 @@ namespace BattleForDune.Core.Events.Types
     public record struct AddAuraEvent(
         bool IsCanceled,
         EntityId SubjectId,
-        byte AbilityId,
+        EntityId AbilityId,
         EntityId AuraId,
         Hex2b Position,
         AbilityVector Vector,
@@ -22,7 +22,7 @@ namespace BattleForDune.Core.Events.Types
 
         public static AddAuraEvent Transitive(
             EntityId subjectId,
-            byte abilityId,
+            EntityId abilityId,
             Hex2b position,
             AbilityVector vector,
             RegistryKey effectKey,

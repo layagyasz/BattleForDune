@@ -129,16 +129,17 @@ namespace BattleForDune.Core.Systems
         private bool DoAbility<TSink>(EntityId unitId, byte team, ComponentWorld world, TSink sink)
             where TSink : IGameEventSink
         {
-            if (world.Abilities.TryGet(unitId, out var abilities))
-            {
-                for (byte i = 0; i < abilities.Length; ++i)
+            foreach (var ability in world.Abilities.ByOwner(unitId))
+            { 
+                if (ability.IsOnCooldown || ability.Charges == 0)
                 {
-                    var target = FindTarget(unitId, team, abilities[i], world);
-                    if (target != EntityId.None)
-                    {
-                        sink.Queue(UseAbilityEvent.Transitive(unitId, i, target));
-                        return true;
-                    }
+                    continue;
+                }
+                var target = FindTarget(unitId, team, ability, world);
+                if (target != EntityId.None)
+                {
+                    sink.Queue(UseAbilityEvent.Transitive(unitId, ability.Id, target));
+                    return true;
                 }
             }
             return false;

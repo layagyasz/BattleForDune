@@ -6,7 +6,7 @@ namespace BattleForDune.Core.Events.Types
     public record struct UpdateActionsEvent(
         bool IsCanceled,
         EntityId SubjectId,
-        byte AbilityId, 
+        EntityId AbilityId, 
         EntityId TargetId,
         sbyte Attacks, 
         sbyte Moves) : IGameEvent
@@ -14,7 +14,7 @@ namespace BattleForDune.Core.Events.Types
         public readonly GameEventType Type => GameEventType.UpdateActions;
 
         public static UpdateActionsEvent Transitive(
-            EntityId subjectId, byte abilityId, EntityId targetId, sbyte attacks,  sbyte moves)
+            EntityId subjectId, EntityId abilityId, EntityId targetId, sbyte attacks,  sbyte moves)
         {
             return new(false, subjectId, abilityId, targetId, attacks, moves);
         }

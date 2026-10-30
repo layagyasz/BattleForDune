@@ -42,7 +42,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
             {
                 return;
             }
-            if (!Vector.HasFlag(@event.Vector))
+            if ((Vector & @event.Vector) == 0)
             {
                 return;
             }

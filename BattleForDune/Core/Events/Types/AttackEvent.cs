@@ -8,7 +8,7 @@ namespace BattleForDune.Core.Events.Types
         bool IsCanceled,
         bool IsCritical,
         EntityId SubjectId,
-        byte AbilityId, 
+        EntityId AbilityId, 
         EntityId TargetId,
         AbilityVector Vector,
         sbyte Skill,
@@ -22,7 +22,7 @@ namespace BattleForDune.Core.Events.Types
 
         public static AttackEvent Transitive(
             EntityId subjectId,
-            byte abilityId,
+            EntityId abilityId,
             EntityId targetId,
             AbilityVector vector,
             sbyte skill,

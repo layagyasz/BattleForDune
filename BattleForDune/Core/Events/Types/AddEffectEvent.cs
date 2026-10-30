@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Events.Types
     public record struct AddEffectEvent(
         bool IsCanceled,
         EntityId SubjectId,
-        byte AbilityId,
+        EntityId AbilityId,
         EntityId TargetId,
         EntityId EffectId,
         AbilityVector Vector,
@@ -32,7 +32,7 @@ namespace BattleForDune.Core.Events.Types
             return new(
                   false,
                   EntityId.None,
-                  0,
+                  EntityId.None,
                   targetId,
                   EntityId.None,
                   vector,
@@ -47,7 +47,7 @@ namespace BattleForDune.Core.Events.Types
 
         public static AddEffectEvent Transitive(
             EntityId subjectId,
-            byte abilityId,
+            EntityId abilityId,
             EntityId targetId,
             AbilityVector vector,
             byte stacks,

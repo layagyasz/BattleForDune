@@ -2,11 +2,13 @@
 {
     public enum GameEventType : byte
     {
+        AddAbility,
         AddAura,
         AddEffect,
         AddUnit,
         Attack,
         Break,
+        Cooldown,
         Damage,
         EnterAura,
         FinalizeInitiative,
@@ -15,6 +17,7 @@
         LeaveAura,
         Move,
         OverrideAllegiance,
+        RemoveAbility,
         RemoveAura,
         RemoveEffect,
         ResetActions,

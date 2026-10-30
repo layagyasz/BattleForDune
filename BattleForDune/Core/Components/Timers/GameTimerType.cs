@@ -2,6 +2,7 @@
 {
     public enum GameTimerType : byte
     {
+        Ability,
         Aura,
         Effect
     }

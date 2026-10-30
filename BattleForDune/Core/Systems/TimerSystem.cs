@@ -13,15 +13,17 @@ namespace BattleForDune.Core.Systems
             {
                 switch (timer.Type)
                 {
+                    case GameTimerType.Ability:
+                        sink.Queue(CooldownEvent.Intransitive(timer.OwnerId));
+                        break;
                     case GameTimerType.Aura:
                         sink.Queue(RemoveAuraEvent.Intransitive(timer.OwnerId));
-                        sink.Flush();
                         break;
                     case GameTimerType.Effect:
                         sink.Queue(RemoveEffectEvent.Intransitive(timer.OwnerId));
-                        sink.Flush();
                         break;
                 }
+                sink.Flush();
             }
         }
     }

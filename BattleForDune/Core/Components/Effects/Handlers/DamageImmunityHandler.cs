@@ -21,7 +21,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         {
             if (@event.TargetId == parent.OwnerId
                 && DamageType.Contains(@event.DamageType)
-                && Vector.HasFlag(@event.Vector) 
+                && (Vector & @event.Vector) != 0
                 && Stat.Contains(@event.Stat))
             {
                 @event.IsCanceled = true;

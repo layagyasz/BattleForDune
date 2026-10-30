@@ -1,5 +1,4 @@
 ﻿using BattleForDune.Core.Components;
-using BattleForDune.Core.Components.Abilities;
 using BattleForDune.Core.Components.Actions;
 using BattleForDune.Core.Components.Auras;
 using BattleForDune.Core.Components.Behaviors;
@@ -105,6 +104,11 @@ namespace BattleForDune.Core
         {
             switch (@event.Type)
             {
+                case GameEventType.AddAbility:
+                    var ability = @event.ReadPayload<AddAbilityEvent>();
+                    Process(ref ability, sink);
+                    Notify(in ability);
+                    return;
                 case GameEventType.AddAura:
                     var aura = @event.ReadPayload<AddAuraEvent>();
                     Process(ref aura, sink);
@@ -129,6 +133,11 @@ namespace BattleForDune.Core
                     var @break = @event.ReadPayload<BreakEvent>();
                     Process(ref @break, sink);
                     Notify(in @break);
+                    return;
+                case GameEventType.Cooldown:
+                    var cooldown = @event.ReadPayload<CooldownEvent>();
+                    Process(ref cooldown, sink);
+                    Notify(in cooldown);
                     return;
                 case GameEventType.Damage:
                     var damage = @event.ReadPayload<DamageEvent>();
@@ -169,6 +178,11 @@ namespace BattleForDune.Core
                     var allegiance = @event.ReadPayload<OverrideAllegianceEvent>();
                     Process(ref allegiance, sink);
                     Notify(in allegiance);
+                    return;
+                case GameEventType.RemoveAbility:
+                    var removeAbility = @event.ReadPayload<RemoveAbilityEvent>();
+                    Process(ref removeAbility, sink);
+                    Notify(in removeAbility);
                     return;
                 case GameEventType.RemoveAura:
                     var removeAura = @event.ReadPayload<RemoveAuraEvent>();
@@ -211,6 +225,17 @@ namespace BattleForDune.Core
                     Notify(in use);
                     return;
             }
+        }
+
+        private void ApplyAddAbility(in AddAbilityEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _world.Abilities.Add(
+                _world.Registry.GetAbilityPrototype(@event.AbilityKey)
+                    .Materialize(@event.AbilityId, @event.SubjectId));
         }
 
         private void ApplyAddAura<TSink>(in AddAuraEvent @event, TSink sink) where TSink : IGameEventSink
@@ -322,14 +347,10 @@ namespace BattleForDune.Core
             _world.Behaviors.Add(@event.TargetId, new());
             _world.Allegiances.Add(@event.TargetId, new(@event.FactionKey, @event.TeamId));
 
-            var abilities = new Ability[prototype.Abilities.Length];
-            for (int i = 0; i < abilities.Length; ++i)
+            foreach (var ability in prototype.Abilities)
             {
-                abilities[i] =
-                    _world.Registry.GetAbilityPrototype(prototype.Abilities[i]).Materialize();
+                sink.Queue(AddAbilityEvent.Intransitive(@event.TargetId, ability));
             }
-            _world.Abilities.Add(@event.TargetId, abilities);
-
             foreach (var passive in prototype.Passives)
             {
                 sink.Queue(
@@ -352,6 +373,18 @@ namespace BattleForDune.Core
             }
 
             behavior.Mode = BehaviorMode.Broken;
+        }
+
+        private void ApplyCooldown(in CooldownEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            if (_world.Abilities.TryGet(@event.AbilityId, out var ability))
+            {
+                ability.IsOnCooldown = false;
+            }
         }
 
         private void ApplyDamage<TSink>(in DamageEvent @event, TSink sink) where TSink : IGameEventSink
@@ -465,8 +498,11 @@ namespace BattleForDune.Core
             _world.Actions.Remove(@event.TargetId);
             _world.Behaviors.Remove(@event.TargetId);
             _world.Allegiances.Remove(@event.TargetId);
-            _world.Abilities.Remove(@event.TargetId);
 
+            foreach (var ability in _world.Abilities.ByOwner(@event.TargetId))
+            {
+                sink.Queue(RemoveAbilityEvent.Intransitive(ability.Id));
+            }
             foreach (var effect in _world.Effects.ByOwner(@event.TargetId))
             {
                 sink.Queue(RemoveEffectEvent.Intransitive(effect.Id));
@@ -542,13 +578,21 @@ namespace BattleForDune.Core
             allegiance.Faction = @event.FactionKey;
         }
 
+        private void ApplyRemoveAbility(in RemoveAbilityEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _world.Abilities.Remove(@event.AbilityId);
+        }
+
         private void ApplyRemoveAura<TSink>(in RemoveAuraEvent @event, TSink sink) where TSink : IGameEventSink
         {
             if (@event.IsCanceled)
             {
                 return;
             }
-
             var callback = new RemoveAuraCallback<TSink>(_world, sink);
             _world.Auras.Remove(@event.AuraId, ref callback);
         }
@@ -645,13 +689,31 @@ namespace BattleForDune.Core
             {
                 actions.AttackPoints -= 1;
             }
+            if (_world.Abilities.TryGet(@event.AbilityId, out var ability))
+            {
+                ability.Consume();
+                if (ability.Cooldown >= 0)
+                {
+                    ability.IsOnCooldown = true;
+                    _world.Timers.Add(
+                        ability.Id, GameTimerType.Ability, (byte)(_world.Turn + ability.Cooldown));
+                }
+            }
+        }
+
+        private void Process<TSink>(ref AddAbilityEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            @event.AbilityId = _world.NextId();
+            _world.Intercept(ref @event);
+            ApplyAddAbility(in @event);
+            _world.Handle(in @event, sink);
         }
 
         private void Process<TSink>(ref AddAuraEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.AuraId = _world.NextId();
 
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
 
             if (hasAbility)
             {
@@ -672,7 +734,7 @@ namespace BattleForDune.Core
             @event.EffectId = _world.NextId();
             @event.Roll = _world.Roll(new(1, 20, 0));
 
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
 
             if (hasAbility)
             {
@@ -705,7 +767,7 @@ namespace BattleForDune.Core
         {
             @event.Roll = _world.Roll(new(1, 20, 0));
 
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -739,7 +801,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref BreakEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -754,11 +816,28 @@ namespace BattleForDune.Core
             ApplyBreak(in @event);
         }
 
+        private void Process<TSink>(ref CooldownEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
+            if (hasAbility)
+            {
+                ability!.Intercept(ref @event, _world);
+            }
+            _world.Intercept(ref @event);
+
+            if (hasAbility)
+            {
+                ability!.Handle(in @event, sink, _world);
+            }
+            _world.Handle(in @event, sink);
+            ApplyCooldown(in @event);
+        }
+
         private void Process<TSink>(ref DamageEvent @event, TSink sink) where TSink : IGameEventSink
         {
             @event.Roll = _world.Roll(@event.Die);
 
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -804,7 +883,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref KillEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -835,7 +914,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref OverrideAllegianceEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -850,9 +929,16 @@ namespace BattleForDune.Core
             ApplyOverrideAllegiance(in @event);
         }
 
+        private void Process<TSink>(ref RemoveAbilityEvent @event, TSink sink) where TSink : IGameEventSink
+        {
+            _world.Intercept(ref @event);
+            ApplyRemoveAbility(in @event);
+            _world.Handle(in @event, sink);
+        }
+
         private void Process<TSink>(ref RemoveAuraEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -869,7 +955,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref RemoveEffectEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -907,7 +993,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref UpdateActionsEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -924,7 +1010,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref UpdateStatEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            bool hasAbility = _world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability);
+            bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
             if (hasAbility)
             {
                 ability!.Intercept(ref @event, _world);
@@ -941,7 +1027,7 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref UseAbilityEvent @event, TSink sink) where TSink : IGameEventSink
         {
-            if (_world.Abilities.TryGet(@event.SubjectId, @event.AbilityId, out var ability))
+            if (_world.Abilities.TryGet(@event.AbilityId, out var ability))
             {
                 ability!.Intercept(ref @event, _world);
                 _world.Intercept(ref @event);

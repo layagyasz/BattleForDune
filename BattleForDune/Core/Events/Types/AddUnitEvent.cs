@@ -7,7 +7,7 @@ namespace BattleForDune.Core.Events.Types
     public record struct AddUnitEvent(
         bool IsCanceled,
         EntityId SubjectId,
-        byte AbilityId,
+        EntityId AbilityId,
         EntityId TargetId,
         RegistryKey UnitPrototypeKey,
         byte Level,
@@ -27,7 +27,7 @@ namespace BattleForDune.Core.Events.Types
             return new(
                 false,
                 EntityId.None,
-                0,
+                EntityId.None,
                 EntityId.None,
                 unitPrototypeKey,
                 level,
@@ -38,7 +38,7 @@ namespace BattleForDune.Core.Events.Types
 
         public static AddUnitEvent Transitive(
             EntityId subjectId,
-            byte abilityId,
+            EntityId abilityId,
             RegistryKey unitPrototypeKey,
             byte level,
             RegistryKey factionKey,
