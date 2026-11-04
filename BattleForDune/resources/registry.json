@@ -1,5 +1,6 @@
 {
   "Abilities": "resources/abilities.json",
+  "Auras": "resources/auras.json",
   "Archetypes": "resources/archetypes.json",
   "Effects": "resources/effects.json",
   "Factions": "resources/factions.json",

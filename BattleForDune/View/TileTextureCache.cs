@@ -6,21 +6,20 @@ using Cardamom.Graphics.TexturePacking;
 using OpenTK.Mathematics;
 namespace BattleForDune.View
 {
-    public class TileTextureCache(ViewConfigurationRegistry registry, int capacity)
+    public class TileTextureCache(int capacity)
     {
         private static Vector2i ElementSize = new(128, 128);
 
-        private readonly ViewConfigurationRegistry _registry = registry;
         private readonly SparseStorage<Box2i> _segments = new(capacity);
         private readonly UniqueIndex _index = new(capacity);
         private readonly DynamicStaticSizeTexturePage _page =
             new(new(2048, 2048), ElementSize, new(1, 1, 1, 0), new(), new());
 
-        public void AddAll(IEnumerable<RegistryKey> tileKeys)
+        public void AddAll(IEnumerable<(RegistryKey, string)> tiles)
         {
-            foreach (var key in tileKeys)
+            foreach ((var key, var path) in tiles)
             {
-                using var texture = Texture.FromFile(_registry.GetTile(key).ImagePath);
+                using var texture = Texture.FromFile(path);
                 if (_page.Add(texture, out var box)
                     && _segments.Allocate(box, out var handle))
                 {

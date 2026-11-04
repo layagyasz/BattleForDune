@@ -16,6 +16,7 @@ namespace BattleForDune.View
         Font font)
     {
         private readonly MapLayer.Factory _mapLayerFactory = new(shader, gridShader);
+        private readonly AuraLayer.Factory _auraLayerFactory = new(shader);
         private readonly UnitLayer.Factory _unitLayerFactory = new(shader);
         private readonly TextParticleLayer.Factory _textParticleLayerFactory = new(font, textParticleShader);
 
@@ -31,8 +32,16 @@ namespace BattleForDune.View
             var unitTextures = new UnitTextureCache(registry, font, shader, 32);
             unitTextures.AddAll(registry.Units.Select(unit => unit.Key));
 
-            var tileTextures = new TileTextureCache(registry, 32);
-            tileTextures.AddAll(map.Values().Select(tile => tile.TileKey).Distinct());
+            var tileTextures = new TileTextureCache(32);
+            tileTextures.AddAll(
+                map.Values()
+                    .Select(tile => tile.TileKey)
+                    .Distinct()
+                    .Select(key => (key, registry.GetTile(key).ImagePath)));
+
+            var auraTextures = new TileTextureCache(32);
+            auraTextures.AddAll(
+                registry.Auras.Select(aura => (aura.Key, registry.GetAura(aura.Key).ImagePath)));
 
             return new(
                 new PassthroughController(
@@ -44,6 +53,7 @@ namespace BattleForDune.View
                     }),
                 camera,
                 _mapLayerFactory.Create(tileTextures, map),
+                _auraLayerFactory.Create(auraTextures, capacity),
                 _unitLayerFactory.Create(unitTextures, capacity),
                 _textParticleLayerFactory.Create(8192));
         }

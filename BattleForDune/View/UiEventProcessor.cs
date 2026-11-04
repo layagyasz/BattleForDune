@@ -13,8 +13,14 @@ namespace BattleForDune.View
         private readonly ViewConfigurationRegistry _registry = registry;
         private readonly ComponentWorld _world = world;
 
+        private AuraLayer? _auraLayer;
         private UnitLayer? _unitLayer;
         private TextParticleLayer? _textParticleLayer;
+
+        public void AttachAuraLayer(AuraLayer? layer)
+        {
+            _auraLayer = layer;
+        }
 
         public void AttachUnitLayer(UnitLayer? layer)
         {
@@ -31,6 +37,9 @@ namespace BattleForDune.View
             // TODO: localize
             switch (@event.Type)
             {
+                case GameEventType.AddAura:
+                    HandleAddAura(@event.ReadPayload<AddAuraEvent>());
+                    return;
                 case GameEventType.AddEffect:
                     HandleAddEffect(@event.ReadPayload<AddEffectEvent>());
                     return;
@@ -49,7 +58,19 @@ namespace BattleForDune.View
                 case GameEventType.Move:
                     HandleMove(@event.ReadPayload<MoveEvent>());
                     return;
+                case GameEventType.RemoveAura:
+                    HandleRemoveAura(@event.ReadPayload<RemoveAuraEvent>());
+                    return;
             }
+        }
+
+        private void HandleAddAura(AddAuraEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _auraLayer?.Add(@event.AuraId, @event.AuraKey, @event.Position, @event.Range);
         }
 
         private void HandleAddEffect(AddEffectEvent @event)
@@ -139,6 +160,15 @@ namespace BattleForDune.View
                 return;
             }
             _unitLayer?.Move(@event.SubjectId, metadata.UnitKey, @event.Destination);
+        }
+
+        private void HandleRemoveAura(RemoveAuraEvent @event)
+        {
+            if (@event.IsCanceled)
+            {
+                return;
+            }
+            _auraLayer?.Remove(@event.AuraId);
         }
     }
 }

@@ -245,17 +245,11 @@ namespace BattleForDune.Core
                 return;
             }
 
+            var prototype = _world.Registry.GetAuraPrototype(@event.AuraKey);
+
             _world.Auras.Add(
                 @event.AuraId,
-                new Aura(
-                    @event.AuraId,
-                    @event.SubjectId,
-                    @event.AbilityId,
-                    @event.Position,
-                    @event.Vector,
-                    @event.EffectKey,
-                    @event.Power,
-                    @event.Range));
+                prototype.Materialize(@event.AuraId, @event.SubjectId, @event.AbilityId, @event.Position, @event.Power, @event.Range));
             var callback = new AddAuraEnterCallback<TSink>(@event.AuraId, _world, sink);
             _world.Positions.QueryRange(@event.Position, @event.Range, ref callback);
             if (@event.Duration >= 0)
@@ -443,28 +437,18 @@ namespace BattleForDune.Core
                 return;
             }
 
-            foreach (var effect in _world.Effects.ByOwner(@event.TargetId))
-            {
-                if (effect.EffectKey != aura.EffectKey)
-                {
-                    continue;
-                }
-
-                effect.Remove(_world, in sink);
-                effect.Increment();
-                effect.MergePower(aura.Power);
-                effect.Apply(_world, in sink);
-
-                return;
-            }
-
-            var newEffect =
-                _world.Registry.GetEffectPrototype(aura.EffectKey)
-                    .Materialize(@event.EffectId, @event.SubjectId, aura.SourceId, aura.AbilityId);
-            newEffect.Increment();
-            newEffect.MergePower(aura.Power);
-            _world.Effects.Add(newEffect);
-            newEffect.Apply(_world, in sink);
+            sink.Queue(
+                AddEffectEvent.Transitive(
+                    aura.SourceId, 
+                    aura.AbilityId,
+                    @event.SubjectId, 
+                    aura.Vector,
+                    1,
+                    aura.Power,
+                    -1,
+                    aura.Effect,
+                    0, 
+                    0));
         }
 
         private void ApplyFinalizeInitiative(in FinalizeInitiativeEvent @event)
@@ -522,15 +506,14 @@ namespace BattleForDune.Core
 
             foreach (var effect in _world.Effects.ByOwner(@event.TargetId))
             {
-                if (effect.EffectKey != aura.EffectKey)
+                if (effect.EffectKey != aura.Effect)
                 {
                     continue;
                 }
 
                 if (effect.Stacks < 2)
                 {
-                    var callback = new EffectRemoveCallback<TSink>(_world, sink);
-                    _world.Effects.Remove(effect.Id, ref callback);
+                    sink.Queue(RemoveEffectEvent.Intransitive(effect.Id));
                 }
                 else
                 {

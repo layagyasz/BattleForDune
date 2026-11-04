@@ -11,6 +11,7 @@ namespace BattleForDune.View
         IElementController controller,
         ICamera camera, 
         MapLayer mapLayer,
+        AuraLayer auraLayer,
         UnitLayer unitLayer,
         TextParticleLayer textParticleLayer)
         : IRenderable, IInteractive
@@ -20,6 +21,7 @@ namespace BattleForDune.View
         public ICamera Camera { get; } = camera;
         public float? OverrideDepth { get; set; }
         public MapLayer MapLayer { get; } = mapLayer;
+        public AuraLayer AuraLayer { get; } = auraLayer;
         public UnitLayer UnitLayer { get; } = unitLayer;
         public TextParticleLayer TextParticleLayer { get; } = textParticleLayer;
 
@@ -29,6 +31,7 @@ namespace BattleForDune.View
             target.PushProjection(Camera.GetProjection());
             context.Register(this);
             MapLayer.Draw(target, context);
+            AuraLayer.Draw(target, context);
             UnitLayer.Draw(target, context);
             TextParticleLayer.Draw(target, context);
             target.PopProjectionMatrix();
@@ -43,6 +46,7 @@ namespace BattleForDune.View
         public void Initialize()
         {
             MapLayer.Initialize();
+            AuraLayer.Initialize();
             UnitLayer.Initialize();
             TextParticleLayer.Initialize();
         }
@@ -51,6 +55,7 @@ namespace BattleForDune.View
         {
             Camera.SetAspectRatio(context.X / context.Y);
             MapLayer.ResizeContext(context);
+            AuraLayer.ResizeContext(context);
             UnitLayer.ResizeContext(context);
             TextParticleLayer.ResizeContext(context);
         }
@@ -58,6 +63,7 @@ namespace BattleForDune.View
         public void Update(long delta)
         {
             MapLayer.Update(delta);
+            AuraLayer.Update(delta);
             UnitLayer.Update(delta);
             TextParticleLayer.Update(delta);
         }

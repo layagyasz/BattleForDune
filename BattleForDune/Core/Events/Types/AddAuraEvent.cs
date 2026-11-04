@@ -12,7 +12,7 @@ namespace BattleForDune.Core.Events.Types
         EntityId AuraId,
         Hex2b Position,
         AbilityVector Vector,
-        RegistryKey EffectKey,
+        RegistryKey AuraKey,
         byte Power,
         byte Range,
         sbyte Duration) : IGameEvent
@@ -25,7 +25,7 @@ namespace BattleForDune.Core.Events.Types
             EntityId abilityId,
             Hex2b position,
             AbilityVector vector,
-            RegistryKey effectKey,
+            RegistryKey auraKey,
             byte power,
             byte range,
             sbyte duration)
@@ -37,7 +37,7 @@ namespace BattleForDune.Core.Events.Types
                 EntityId.None,
                 position,
                 vector,
-                effectKey,
+                auraKey,
                 power,
                 range,
                 duration);

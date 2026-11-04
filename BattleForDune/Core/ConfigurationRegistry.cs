@@ -1,4 +1,5 @@
 ﻿using BattleForDune.Core.Components.Abilities;
+using BattleForDune.Core.Components.Auras;
 using BattleForDune.Core.Components.Effects;
 using BattleForDune.Core.Prototypes;
 using BattleForDune.Core.Schema;
@@ -36,6 +37,9 @@ namespace BattleForDune.Core
         public required List<Archetype> Archetypes { get; set; }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
+        public required List<Aura.Prototype> Auras { get; set; }
+
+        [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<Effect.Prototype> Effects { get; set; }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
@@ -70,6 +74,11 @@ namespace BattleForDune.Core
         public Archetype GetArchetype(RegistryKey key)
         {
             return Archetypes[key.Value];
+        }
+
+        public Aura.Prototype GetAuraPrototype(RegistryKey key)
+        {
+            return Auras[key.Value];
         }
 
         public Effect.Prototype GetEffectPrototype(RegistryKey key)

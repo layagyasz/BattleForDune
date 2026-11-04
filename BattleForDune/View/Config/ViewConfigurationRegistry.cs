@@ -25,6 +25,9 @@ namespace BattleForDune.View.Config
         }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
+        public required List<TileRenderInfo> Auras { get; set; }
+
+        [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<DamageRenderInfo> Damage { get; set; }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
@@ -38,6 +41,11 @@ namespace BattleForDune.View.Config
 
         [JsonConverter(typeof(FromMultipleFileJsonConverter))]
         public required List<UnitRenderInfo> Units { get; set; }
+
+        public TileRenderInfo GetAura(RegistryKey key)
+        {
+            return Auras[key.Value];
+        }
 
         public DamageRenderInfo GetDamage(DamageType damageType)
         {

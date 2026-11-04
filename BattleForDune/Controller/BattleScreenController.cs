@@ -14,6 +14,7 @@ namespace BattleForDune.Controller
         public void Bind(object @object)
         {
             _screen = (BattleScreen)@object;
+            _processor.AttachAuraLayer(_screen.Scene.AuraLayer);
             _processor.AttachUnitLayer(_screen.Scene.UnitLayer);
             _processor.AttachTextParticleLayer(_screen.Scene.TextParticleLayer);
         }
@@ -21,6 +22,7 @@ namespace BattleForDune.Controller
         public void Unbind()
         {
             _screen = null;
+            _processor.AttachAuraLayer(null);
             _processor.AttachUnitLayer(null);
             _processor.AttachTextParticleLayer(null);
         }
