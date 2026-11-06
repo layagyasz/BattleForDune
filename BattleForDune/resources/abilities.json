@@ -200,5 +200,25 @@
         "Duration": 3
       }
     ]
+  },
+  // Fortify
+  {
+    "AbilityKey": 5,
+    "Cooldown": -1,
+    "Charges": 1,
+    "Range": 0,
+    "TargetType": [ "Self" ],
+    "TargetComparator": {
+      "$type": "Empty"
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAura",
+        "AuraKey": 0,
+        "Power": 0,
+        "Range": 0,
+        "Duration": -1
+      }
+    ]
   }
 ]

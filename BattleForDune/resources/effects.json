@@ -564,5 +564,21 @@
         "Vector": [ "Gas" ]
       }
     ]
+  },
+  // Fortification (Aura)
+  {
+    "EffectKey": 28,
+    "SupportedEvents": [],
+    "MergeBehavior": [ "Stacks" ],
+    "Handlers": [
+      {
+        "$type": "UpdateStat",
+        "Stat": "Armor",
+        "Delta": {
+          "Value": 4,
+          "Max": 4
+        }
+      }
+    ]
   }
 ]

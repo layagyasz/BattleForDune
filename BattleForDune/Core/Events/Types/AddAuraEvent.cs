@@ -1,5 +1,4 @@
-﻿using BattleForDune.Core.Schema;
-using BattleForDune.Geometry;
+﻿using BattleForDune.Geometry;
 using System.Runtime.InteropServices;
 
 namespace BattleForDune.Core.Events.Types
@@ -11,7 +10,6 @@ namespace BattleForDune.Core.Events.Types
         EntityId AbilityId,
         EntityId AuraId,
         Hex2b Position,
-        AbilityVector Vector,
         RegistryKey AuraKey,
         byte Power,
         byte Range,
@@ -24,7 +22,6 @@ namespace BattleForDune.Core.Events.Types
             EntityId subjectId,
             EntityId abilityId,
             Hex2b position,
-            AbilityVector vector,
             RegistryKey auraKey,
             byte power,
             byte range,
@@ -36,7 +33,6 @@ namespace BattleForDune.Core.Events.Types
                 abilityId,
                 EntityId.None,
                 position,
-                vector,
                 auraKey,
                 power,
                 range,

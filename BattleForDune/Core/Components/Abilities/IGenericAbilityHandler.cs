@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 namespace BattleForDune.Core.Components.Abilities
 {
     [JsonDerivedType(typeof(UseAbilityAttackHandler), "UseAbilityAttack")]
+    [JsonDerivedType(typeof(UseAbilityAuraHandler), "UseAbilityAura")]
     [JsonDerivedType(typeof(AttackBasicHandler), "AttackBasic")]
     [JsonDerivedType(typeof(AttackChanceAddEffectHandler), "AttackChanceAddEffect")]
     [JsonDerivedType(typeof(DamageChanceAddEffectHandler), "DamageChanceAddEffect")]

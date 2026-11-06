@@ -155,5 +155,10 @@
     "Color": "#ffffff",
     "Name": "respirators",
     "IsHidden": true
+  },
+  {
+    "Key": 28,
+    "Color": "#3399ff",
+    "Name": "fortified"
   }
 ]

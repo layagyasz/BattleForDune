@@ -85,6 +85,7 @@ namespace BattleForDune.View
         private static void SetVertices(
             Vertex3[] vertices, int offset, Vector3 position, Color4 color, Box2i textureView)
         {
+            // TODO: Support rotations/reflections
             for (int t = 0; t < 6; ++t)
             {
                 vertices[offset + 3 * t] = new(position, Color4.White, textureView.Center);
@@ -97,7 +98,7 @@ namespace BattleForDune.View
                     new(
                         position + Hexes.Corners[(t + 1) % 6],
                         Color4.White,
-                        textureView.Center + textureView.HalfSize * Hexes.Corners[t].Xz);
+                        textureView.Center + textureView.HalfSize * Hexes.Corners[(t + 1) % 6].Xz);
             }
         }
 

@@ -4,14 +4,13 @@ using System.Text.Json.Serialization;
 namespace BattleForDune.Core.Components.Abilities
 {
     [JsonDerivedType(typeof(DefaultComparator), "Default")]
+    [JsonDerivedType(typeof(EmptyComparator), "Empty")]
     public interface ITargetComparator
     {
         public int Compare(ComponentWorld world, EntityId subject, EntityId left, EntityId right);
 
         public record class DefaultComparator : ITargetComparator
         {
-            public static readonly DefaultComparator Instance = new();
-
             public int Compare(ComponentWorld world, EntityId subject, EntityId left, EntityId right)
             {
                 // TODO: Compare position.
@@ -37,6 +36,14 @@ namespace BattleForDune.Core.Components.Abilities
                 {
                     return 1;
                 }
+                return 0;
+            }
+        }
+
+        public record class EmptyComparator : ITargetComparator
+        {
+            public int Compare(ComponentWorld world, EntityId subject, EntityId left, EntityId right)
+            {
                 return 0;
             }
         }
