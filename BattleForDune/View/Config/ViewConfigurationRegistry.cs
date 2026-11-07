@@ -25,7 +25,10 @@ namespace BattleForDune.View.Config
         }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
-        public required List<TileRenderInfo> Auras { get; set; }
+        public required List<AuraRenderInfo> Auras { get; set; }
+
+        [JsonConverter(typeof(FromMultipleFileJsonConverter))]
+        public required List<TileRenderInfo> AuraRenders { get; set; }
 
         [JsonConverter(typeof(FromFileJsonConverter))]
         public required List<DamageRenderInfo> Damage { get; set; }
@@ -42,9 +45,14 @@ namespace BattleForDune.View.Config
         [JsonConverter(typeof(FromMultipleFileJsonConverter))]
         public required List<UnitRenderInfo> Units { get; set; }
 
-        public TileRenderInfo GetAura(RegistryKey key)
+        public AuraRenderInfo GetAura(RegistryKey key)
         {
             return Auras[key.Value];
+        }
+
+        public TileRenderInfo GetAuraRender(RegistryKey key)
+        {
+            return AuraRenders[key.Value];
         }
 
         public DamageRenderInfo GetDamage(DamageType damageType)
@@ -84,6 +92,8 @@ namespace BattleForDune.View.Config
         {
             using var stream = new FileStream(path, FileMode.Open);
             var result = JsonSerializer.Deserialize<ViewConfigurationRegistry>(stream, _options)!;
+            result.AuraRenders.Sort();
+            result.Auras.Sort();
             result.Units.Sort();
             result.Effects.Sort();
             result.Damage.Sort();

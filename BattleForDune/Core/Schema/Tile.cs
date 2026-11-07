@@ -1,4 +1,7 @@
-﻿namespace BattleForDune.Core.Schema
+﻿using BattleForDune.Geometry;
+using OpenTK.Mathematics;
+
+namespace BattleForDune.Core.Schema
 {
     public readonly record struct Tile
     {
@@ -29,6 +32,17 @@
             public readonly byte GetRotation()
             {
                 return (byte)(_value & 0x7);
+            }
+
+            private static readonly int[] _reflection = [1, 0, 5, 4, 3, 2];
+            public readonly Vector2 Apply(int index)
+            {
+                index = (index + GetRotation()) % 6;
+                if (IsReflected())
+                {
+                    index = _reflection[index];
+                }
+                return Hexes.Corners[index].Xz;
             }
         }
 

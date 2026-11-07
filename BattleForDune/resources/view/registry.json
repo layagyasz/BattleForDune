@@ -1,5 +1,6 @@
 {
   "Auras": "resources/view/auras.json",
+  "AuraRenders": [ "resources/auras::*.json" ],
   "Damage": "resources/view/damage.json",
   "Effects": "resources/view/effects.json",
   "Events": "resources/view/events.json",

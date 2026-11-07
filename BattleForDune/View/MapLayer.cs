@@ -47,29 +47,18 @@ namespace BattleForDune.View
                                 new(
                                     center + Hexes.Corners[t], 
                                     Color4.White,
-                                    segment.Center + segment.HalfSize * Transform(t, tile.Transform));
+                                    segment.Center + segment.HalfSize * tile.Transform.Apply(t));
                             mesh[tileIndex + 3 * t + 2] = 
                                 new(
                                     center + Hexes.Corners[(t + 1) % 6], 
                                     Color4.White, 
-                                    segment.Center + segment.HalfSize * Transform(t + 1, tile.Transform));
+                                    segment.Center + segment.HalfSize * tile.Transform.Apply(t + 1));
                         }
                     }
                 }
                 var vao = new VertexBuffer<Vertex3>(PrimitiveType.Triangles);
                 vao.Buffer(mesh);
                 return vao;
-            }
-
-            private static readonly int[] _reflection = [ 1, 0, 5, 4, 3, 2 ];
-            private static Vector2 Transform(int index, Tile.Transformation transform)
-            {
-                index = (index + transform.GetRotation()) % 6;
-                if (transform.IsReflected())
-                {
-                    index = _reflection[index];
-                }
-                return Hexes.Corners[index].Xz;
             }
 
             private static InstanceVertexBuffer<Vertex3, InstanceVertex3> CreateGrid(Vector2i size)

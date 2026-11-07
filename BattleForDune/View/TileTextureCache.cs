@@ -1,6 +1,5 @@
 ﻿using BattleForDune.Core;
 using BattleForDune.FastLookup;
-using BattleForDune.View.Config;
 using Cardamom.Graphics;
 using Cardamom.Graphics.TexturePacking;
 using OpenTK.Mathematics;
@@ -26,6 +25,7 @@ namespace BattleForDune.View
                     _index.Add(key.Value, handle);
                 }
             }
+            GetTexture().CopyToImage().SaveToFile($"{GetHashCode()}.png");
         }
 
         public Box2i Get(RegistryKey key)
