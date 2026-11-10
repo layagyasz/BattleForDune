@@ -15,13 +15,14 @@ namespace BattleForDune.Core
     public class LocalEventProcessor(ComponentWorld world, IGameEventSink[] listeners) : IGameEventProcessor
     {
         private readonly ref struct AddAuraEnterCallback<TSink>(
-            EntityId auraId, ComponentWorld world, TSink sink) : ICallback<int> where TSink : IGameEventSink
+            EntityId auraId, ComponentWorld world, TSink sink) 
+            : IQuadTreeCallback<int> where TSink : IGameEventSink
         {
             private readonly EntityId _auraId = auraId;
             private readonly ComponentWorld _world = world;
             private readonly TSink _sink = sink;
 
-            public readonly void Notify(in int id)
+            public readonly void Notify(Hex2b position, int id)
             {
                 _sink.Queue(EnterAuraEvent.Intransitive(new(id), _auraId));
             }
@@ -40,13 +41,13 @@ namespace BattleForDune.Core
         }
 
         private readonly ref struct EnterAuraCallback<TSink>(
-            EntityId subjectId, Hex2b origin, TSink sink) : ICallback<Aura> where TSink : IGameEventSink
+            EntityId subjectId, Hex2b origin, TSink sink) : IQuadTreeCallback<Aura> where TSink : IGameEventSink
         {
             private readonly EntityId _subjectId = subjectId;
             private readonly Hex2b _origin = origin;
             private readonly TSink _sink = sink;
 
-            public readonly void Notify(in Aura aura)
+            public readonly void Notify(Hex2b position, Aura aura)
             {
                 if (Hexes.Distance(_origin, aura.Position) > aura.Range)
                 {
@@ -55,14 +56,14 @@ namespace BattleForDune.Core
             }
         }
 
-        private readonly ref struct LeaveAuraCallback<TSink>(
-            EntityId subjectId, Hex2b destination, TSink sink) : ICallback<Aura> where TSink : IGameEventSink
+        private readonly ref struct LeaveAuraCallback<TSink>(EntityId subjectId, Hex2b destination, TSink sink) 
+            : IQuadTreeCallback<Aura> where TSink : IGameEventSink
         {
             private readonly EntityId _subjectId = subjectId;
             private readonly Hex2b _destination = destination;
             private readonly TSink _sink = sink;
 
-            public readonly void Notify(in Aura aura)
+            public readonly void Notify(Hex2b position, Aura aura)
             {
                 if (Hexes.Distance(_destination, aura.Position) > aura.Range)
                 {
@@ -85,13 +86,14 @@ namespace BattleForDune.Core
         }
 
         private readonly ref struct RemoveAuraLeaveCallback<TSink>(
-            EntityId auraId, ComponentWorld world, TSink sink) : ICallback<int> where TSink : IGameEventSink
+            EntityId auraId, ComponentWorld world, TSink sink) 
+            : IQuadTreeCallback<int> where TSink : IGameEventSink
         {
             private readonly EntityId _auraId = auraId;
             private readonly ComponentWorld _world = world;
             private readonly TSink _sink = sink;
 
-            public readonly void Notify(in int id)
+            public readonly void Notify(Hex2b position, int id)
             {
                 _sink.Queue(LeaveAuraEvent.Intransitive(new(id), _auraId));
             }
@@ -249,7 +251,13 @@ namespace BattleForDune.Core
 
             _world.Auras.Add(
                 @event.AuraId,
-                prototype.Materialize(@event.AuraId, @event.SubjectId, @event.AbilityId, @event.Position, @event.Power, @event.Range));
+                prototype.Materialize(
+                    @event.AuraId,
+                    @event.SubjectId,
+                    @event.AbilityId, 
+                    @event.Position,
+                    @event.Power,
+                    @event.Range));
             var callback = new AddAuraEnterCallback<TSink>(@event.AuraId, _world, sink);
             _world.Positions.QueryRange(@event.Position, @event.Range, ref callback);
             if (@event.Duration >= 0)

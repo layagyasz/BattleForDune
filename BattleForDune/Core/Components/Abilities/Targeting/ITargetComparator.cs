@@ -1,7 +1,7 @@
 ﻿using BattleForDune.Core.Schema;
 using System.Text.Json.Serialization;
 
-namespace BattleForDune.Core.Components.Abilities
+namespace BattleForDune.Core.Components.Abilities.Targeting
 {
     [JsonDerivedType(typeof(DefaultComparator), "Default")]
     [JsonDerivedType(typeof(EmptyComparator), "Empty")]

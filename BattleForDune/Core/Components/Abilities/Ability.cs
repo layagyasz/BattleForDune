@@ -1,5 +1,5 @@
-﻿using BattleForDune.Core.Events;
-using BattleForDune.Core.Schema;
+﻿using BattleForDune.Core.Components.Abilities.Targeting;
+using BattleForDune.Core.Events;
 
 namespace BattleForDune.Core.Components.Abilities
 {
@@ -7,18 +7,14 @@ namespace BattleForDune.Core.Components.Abilities
         EntityId Id,
         EntityId OwnerId,
         sbyte Cooldown,
-        sbyte Range,
-        TargetType TargetType, 
-        ITargetComparator TargetComparator, 
+        AbilityTargeting Targeting, 
         IGenericAbilityHandler[] Handlers)
     {
         public record class Prototype(
             RegistryKey AbilityKey,
             sbyte Cooldown,
             sbyte Charges,
-            sbyte Range,
-            TargetType TargetType,
-            ITargetComparator TargetComparator,
+            AbilityTargeting Targeting,
             IGenericAbilityHandler[] Handlers) : IComparable<Prototype>
         {
             public int CompareTo(Prototype? other)
@@ -32,7 +28,7 @@ namespace BattleForDune.Core.Components.Abilities
 
             public Ability Materialize(EntityId id, EntityId ownerId)
             {
-                return new Ability(id, ownerId, Cooldown, Range, TargetType, TargetComparator, Handlers)
+                return new Ability(id, ownerId, Cooldown, Targeting, Handlers)
                 {
                     IsOnCooldown = false,
                     Charges = Charges

@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Components\Abilities\Targeting\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="resources\abilities.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

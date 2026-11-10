@@ -49,7 +49,7 @@ namespace BattleForDune.Core.Components
         }
 
         public void QueryRange<TCallback>(Hex2b position, byte range, ref TCallback callback)
-            where TCallback : struct, ICallback<Aura>, allows ref struct
+            where TCallback : struct, IQuadTreeCallback<Aura>, allows ref struct
         {
             _quadTree.Query(position, range, ref callback);
         }

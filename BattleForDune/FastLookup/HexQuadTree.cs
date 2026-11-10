@@ -5,11 +5,11 @@ namespace BattleForDune.FastLookup
 {
     public class HexQuadTree<T> where T : IEquatable<T>
     {
-        private ref struct OccupiedAccumulator : ICallback<T>
+        private ref struct OccupiedAccumulator : IQuadTreeCallback<T>
         {
             public bool IsFound { get; private set; }
 
-            public void Notify(in T value)
+            public void Notify(Hex2b position, T value)
             {
                 IsFound = true;
             }
@@ -296,14 +296,14 @@ namespace BattleForDune.FastLookup
         }
 
         public void Query<TCallback>(Hex2b position, int radius, ref TCallback callback)
-            where TCallback : struct, ICallback<T>, allows ref struct
+            where TCallback : struct, IQuadTreeCallback<T>, allows ref struct
         {
             QueryInternal(0, position, radius, ref callback);
         }
 
         private bool QueryInternal<TCallback>(
             int nodeIndex, Hex2b position, int radius, ref TCallback callback)
-            where TCallback : struct, ICallback<T>, allows ref struct
+            where TCallback : struct, IQuadTreeCallback<T>, allows ref struct
         {
             ref Node node = ref _nodes[nodeIndex];
 
@@ -320,7 +320,7 @@ namespace BattleForDune.FastLookup
                     ref ItemNode itemNode = ref _items[itemIndex];
                     if (Hexes.Distance(itemNode.Position, position) <= radius)
                     {
-                        callback.Notify(in itemNode.Element);
+                        callback.Notify(itemNode.Position, itemNode.Element);
                     }
                     itemIndex = itemNode.NextItemIndex;
                 }

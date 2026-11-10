@@ -1,9 +1,11 @@
 ﻿using BattleForDune.Core.Components;
 using BattleForDune.Core.Components.Abilities;
+using BattleForDune.Core.Components.Abilities.Targeting;
 using BattleForDune.Core.Components.Behaviors;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
 using BattleForDune.Core.Schema;
+using BattleForDune.FastLookup;
 using BattleForDune.Geometry;
 
 namespace BattleForDune.Core.Systems
@@ -14,16 +16,14 @@ namespace BattleForDune.Core.Systems
             EntityId subjectId, 
             byte subjectTeam, 
             ComponentWorld world, 
-            TargetType targetType, 
-            ITargetComparator targetComparator, 
-            Random random) : ICallback<int>
+            AbilityTargeting targeting,
+            Random random) : IQuadTreeCallback<int>
         {
-            public EntityId SubjectId = subjectId;
-            public byte SubjectTeam = subjectTeam;
-            public ComponentWorld World = world;
-            public TargetType TargetType = targetType;
-            public ITargetComparator TargetComparator = targetComparator;
-            public Random Random = random;
+            private readonly EntityId _subjectId = subjectId;
+            private readonly byte _subjectTeam = subjectTeam;
+            private readonly ComponentWorld _world = world;
+            private readonly AbilityTargeting _targeting = targeting;
+            private readonly Random _random = random;
 
             private EntityId _target;
             private int _considered;
@@ -33,28 +33,37 @@ namespace BattleForDune.Core.Systems
                 return _target;
             }
 
-            public void Notify(in int value)
+            public void Notify(Hex2b position, int value)
             {
                 var option = new EntityId(value);
-                var targetType = GetTargetType(SubjectId, SubjectTeam, option, World);
-                if ((targetType & TargetType) != 0)
+                var targetType = GetTargetType(_subjectId, _subjectTeam, option, _world);
+                if ((targetType & _targeting.TargetType) == 0)
                 {
-                    if (_target == EntityId.None)
-                    {
-                        _target = option;
-                        _considered = 0;
-                        return;
-                    }
-                    var comparison = TargetComparator.Compare(World, SubjectId, _target, option);
-                    if (comparison < 0)
-                    {
-                        _target = option;
-                        _considered = 0;
-                    }
-                    else if (comparison == 0 && Random.Next(++_considered + 1) == 1)
-                    {
-                        _target = option;
-                    }
+                    return;
+                }
+                if (!_targeting.AuraCheck.Matches(position, _world))
+                {
+                    return;
+                }
+                if (!_targeting.StatCheck.Matches(option, _world))
+                {
+                    return;
+                }
+                if (_target == EntityId.None)
+                {
+                    _target = option;
+                    _considered = 0;
+                    return;
+                }
+                var comparison = _targeting.Comparator.Compare(_world, _subjectId, _target, option);
+                if (comparison < 0)
+                {
+                    _target = option;
+                    _considered = 0;
+                }
+                else if (comparison == 0 && _random.Next(++_considered + 1) == 1)
+                {
+                    _target = option;
                 }
             }
         };
@@ -193,7 +202,8 @@ namespace BattleForDune.Core.Systems
             {
                 return EntityId.None;
             }
-            if (ability.TargetType == TargetType.Self)
+            var targeting = ability.Targeting;
+            if (targeting.TargetType == TargetType.Self)
             {
                 return subjectId;
             }
@@ -202,20 +212,24 @@ namespace BattleForDune.Core.Systems
                     subjectId,
                     subjectTeam,
                     world,
-                    ability.TargetType,
-                    ability.TargetComparator,
+                    targeting,
                     _random);
-            if (ability.Range < 0)
+            if (targeting.Range < 0)
             {
                 foreach (var option in world.Units.AsSpan())
                 {
                     var refOption = option;
-                    accumulator.Notify(in refOption);
+                    ref var optionPos = ref world.Positions.TryGet(new(option), out isFound);
+                    if (!isFound)
+                    {
+                        continue;
+                    }
+                    accumulator.Notify(optionPos, refOption);
                 }
             }
             else
             {
-                world.Positions.QueryRange(position, (byte)ability.Range, ref accumulator);
+                world.Positions.QueryRange(position, (byte)targeting.Range, ref accumulator);
             }
             return accumulator.GetTarget();
         }

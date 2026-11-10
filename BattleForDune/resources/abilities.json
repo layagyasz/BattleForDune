@@ -4,10 +4,12 @@
     "AbilityKey": 0,
     "Cooldown": -1,
     "Charges": -1,
-    "Range": 1,
-    "TargetType": [ "Enemy" ],
-    "TargetComparator": {
-      "$type": "Default"
+    "Targeting": {
+      "Range": 1,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
     },
     "Handlers": [
       {
@@ -41,10 +43,12 @@
     "AbilityKey": 1,
     "Cooldown": -1,
     "Charges": -1,
-    "Range": 1,
-    "TargetType": [ "Enemy" ],
-    "TargetComparator": {
-      "$type": "Default"
+    "Targeting": {
+      "Range": 1,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
     },
     "Handlers": [
       {
@@ -85,10 +89,12 @@
     "AbilityKey": 2,
     "Cooldown": -1,
     "Charges": -1,
-    "Range": 1,
-    "TargetType": [ "Enemy" ],
-    "TargetComparator": {
-      "$type": "Default"
+    "Targeting": {
+      "Range": 1,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
     },
     "Handlers": [
       {
@@ -129,10 +135,12 @@
     "AbilityKey": 3,
     "Cooldown": -1,
     "Charges": -1,
-    "Range": 1,
-    "TargetType": [ "Enemy" ],
-    "TargetComparator": {
-      "$type": "Default"
+    "Targeting": {
+      "Range": 1,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
     },
     "Handlers": [
       {
@@ -166,10 +174,12 @@
     "AbilityKey": 4,
     "Cooldown": -1,
     "Charges": -1,
-    "Range": 2,
-    "TargetType": [ "Enemy" ],
-    "TargetComparator": {
-      "$type": "Default"
+    "Targeting": {
+      "Range": 2,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
     },
     "Handlers": [
       {
@@ -206,10 +216,16 @@
     "AbilityKey": 5,
     "Cooldown": -1,
     "Charges": 1,
-    "Range": 0,
-    "TargetType": [ "Self" ],
-    "TargetComparator": {
-      "$type": "Empty"
+    "Targeting": {
+      "Range": 0,
+      "TargetType": [ "Self" ],
+      "AuraCheck": {
+        "IsPresent": [ "False" ],
+        "AuraKey": 0
+      },
+      "Comparator": {
+        "$type": "Empty"
+      }
     },
     "Handlers": [
       {
