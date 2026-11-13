@@ -1,4 +1,5 @@
-﻿using Cardamom.Graphics;
+﻿using BattleForDune.View.Layers;
+using Cardamom.Graphics;
 using Cardamom.Graphics.Camera;
 using Cardamom.Mathematics.Geometry;
 using Cardamom.Ui;
@@ -13,6 +14,7 @@ namespace BattleForDune.View
         MapLayer mapLayer,
         AuraLayer auraLayer,
         UnitLayer unitLayer,
+        HealthLayer healthLayer,
         TextParticleLayer textParticleLayer)
         : IRenderable, IInteractive
     {
@@ -23,6 +25,7 @@ namespace BattleForDune.View
         public MapLayer MapLayer { get; } = mapLayer;
         public AuraLayer AuraLayer { get; } = auraLayer;
         public UnitLayer UnitLayer { get; } = unitLayer;
+        public HealthLayer HealthLayer { get; } = healthLayer;
         public TextParticleLayer TextParticleLayer { get; } = textParticleLayer;
 
         public void Draw(IRenderTarget target, IUiContext context)
@@ -33,6 +36,7 @@ namespace BattleForDune.View
             MapLayer.Draw(target, context);
             AuraLayer.Draw(target, context);
             UnitLayer.Draw(target, context);
+            HealthLayer.Draw(target, context);
             TextParticleLayer.Draw(target, context);
             target.PopProjectionMatrix();
             target.PopViewMatrix();
@@ -48,6 +52,7 @@ namespace BattleForDune.View
             MapLayer.Initialize();
             AuraLayer.Initialize();
             UnitLayer.Initialize();
+            HealthLayer.Initialize();
             TextParticleLayer.Initialize();
         }
 
@@ -57,6 +62,7 @@ namespace BattleForDune.View
             MapLayer.ResizeContext(context);
             AuraLayer.ResizeContext(context);
             UnitLayer.ResizeContext(context);
+            HealthLayer.ResizeContext(context);
             TextParticleLayer.ResizeContext(context);
         }
 
@@ -65,6 +71,7 @@ namespace BattleForDune.View
             MapLayer.Update(delta);
             AuraLayer.Update(delta);
             UnitLayer.Update(delta);
+            HealthLayer.Update(delta);
             TextParticleLayer.Update(delta);
         }
     }

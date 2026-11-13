@@ -47,6 +47,11 @@ namespace BattleForDune.Runners
                     .SetFragment("resources/shaders/default.frag")
                     .SetVertex("resources/shaders/default.vert")
                     .Build();
+            var noTexShader =
+                new RenderShader.Builder()
+                    .SetFragment("resources/shaders/default_no_tex.frag")
+                    .SetVertex("resources/shaders/default.vert")
+                    .Build();
             var gridShader =
                 new RenderShader.Builder()
                     .SetFragment("resources/shaders/default_no_tex.frag")
@@ -58,7 +63,8 @@ namespace BattleForDune.Runners
                     .SetVertex("resources/shaders/text_particle.vert")
                     .Build();
             var font = new Font("resources/fonts/ExpandedHerbertarian.ttf");
-            var sceneFactory = new SceneFactory(uiRegistry, shader, gridShader, textParticleShader, font);
+            var sceneFactory = 
+                new SceneFactory(uiRegistry, shader, noTexShader, gridShader, textParticleShader, font);
 
             var ui = new UiWindow(window);
             ui.Bind(new MouseListener());

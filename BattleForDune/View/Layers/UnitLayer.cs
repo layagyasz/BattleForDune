@@ -6,7 +6,7 @@ using Cardamom.Graphics;
 using Cardamom.Ui;
 using OpenTK.Mathematics;
 
-namespace BattleForDune.View
+namespace BattleForDune.View.Layers
 {
     public class UnitLayer(UnitTextureCache textures, RenderShader shader, int capacity) 
         : ManagedResource, IRenderable

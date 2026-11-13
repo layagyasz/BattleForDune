@@ -16,6 +16,7 @@ namespace BattleForDune.Controller
             _screen = (BattleScreen)@object;
             _processor.AttachAuraLayer(_screen.Scene.AuraLayer);
             _processor.AttachUnitLayer(_screen.Scene.UnitLayer);
+            _processor.AttachHealthLayer(_screen.Scene.HealthLayer);
             _processor.AttachTextParticleLayer(_screen.Scene.TextParticleLayer);
         }
         
@@ -24,6 +25,7 @@ namespace BattleForDune.Controller
             _screen = null;
             _processor.AttachAuraLayer(null);
             _processor.AttachUnitLayer(null);
+            _processor.AttachHealthLayer(null);
             _processor.AttachTextParticleLayer(null);
         }
 

@@ -2,7 +2,9 @@
 using BattleForDune.Core.Components;
 using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
+using BattleForDune.Core.Schema;
 using BattleForDune.View.Config;
+using BattleForDune.View.Layers;
 using System.Text;
 
 namespace BattleForDune.View
@@ -15,6 +17,7 @@ namespace BattleForDune.View
 
         private AuraLayer? _auraLayer;
         private UnitLayer? _unitLayer;
+        private HealthLayer? _healthLayer;
         private TextParticleLayer? _textParticleLayer;
 
         public void AttachAuraLayer(AuraLayer? layer)
@@ -25,6 +28,11 @@ namespace BattleForDune.View
         public void AttachUnitLayer(UnitLayer? layer)
         {
             _unitLayer = layer;
+        }
+
+        public void AttachHealthLayer(HealthLayer? layer)
+        {
+            _healthLayer = layer;
         }
 
         public void AttachTextParticleLayer(TextParticleLayer? textParticleLayer)
@@ -102,7 +110,12 @@ namespace BattleForDune.View
                 var render = _registry.GetEvent(@event.Type);
                 _textParticleLayer?.Add(render.Name, @event.Position, render.Color);
             }
-                _unitLayer?.Add(@event.TargetId, @event.UnitPrototypeKey, @event.Position);
+            _unitLayer?.Add(@event.TargetId, @event.UnitPrototypeKey, @event.Position);
+            ref var stat = ref _world.Stats.TryGet(@event.TargetId, out var isFound);
+            if (isFound)
+            {
+                _healthLayer?.Add(@event.TargetId, stat[StatType.Hitpoints], @event.Position);
+            }
         }
 
         private void HandleBreak(BreakEvent @event)
@@ -136,6 +149,12 @@ namespace BattleForDune.View
                     builder.Append('!');
                 }
                 _textParticleLayer?.Add(builder.ToString(), pos, damageView.Color);
+
+                ref var stat = ref _world.Stats.TryGet(@event.TargetId, out isFound);
+                if (isFound)
+                {
+                    _healthLayer?.Move(@event.TargetId, stat[StatType.Hitpoints], pos);
+                }
             }
         }
 
@@ -146,6 +165,7 @@ namespace BattleForDune.View
                 return;
             }
             _unitLayer?.Remove(@event.TargetId);
+            _healthLayer?.Remove(@event.TargetId);
         }
 
         private void HandleMove(MoveEvent @event)
@@ -155,11 +175,15 @@ namespace BattleForDune.View
                 return;
             }
             ref var metadata = ref _world.UnitMetadatas.TryGet(@event.SubjectId, out var isFound);
-            if (!isFound)
+            if (isFound)
             {
-                return;
+                _unitLayer?.Move(@event.SubjectId, metadata.UnitKey, @event.Destination);
             }
-            _unitLayer?.Move(@event.SubjectId, metadata.UnitKey, @event.Destination);
+            ref var stat = ref _world.Stats.TryGet(@event.SubjectId, out isFound);
+            if (isFound)
+            {
+                _healthLayer?.Move(@event.SubjectId, stat[StatType.Hitpoints], @event.Destination);
+            }
         }
 
         private void HandleRemoveAura(RemoveAuraEvent @event)

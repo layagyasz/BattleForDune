@@ -9,7 +9,7 @@ using Cardamom.Ui;
 using MathNet.Numerics.Random;
 using OpenTK.Mathematics;
 
-namespace BattleForDune.View
+namespace BattleForDune.View.Layers
 {
     public class AuraLayer(
         ViewConfigurationRegistry registry,

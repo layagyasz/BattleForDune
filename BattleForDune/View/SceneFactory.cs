@@ -2,6 +2,7 @@
 using BattleForDune.Core.Schema;
 using BattleForDune.Geometry;
 using BattleForDune.View.Config;
+using BattleForDune.View.Layers;
 using Cardamom.Graphics;
 using Cardamom.Graphics.Camera;
 using Cardamom.Ui.Controller.Element;
@@ -11,6 +12,7 @@ namespace BattleForDune.View
     public class SceneFactory(
         ViewConfigurationRegistry registry, 
         RenderShader shader,
+        RenderShader noTexShader,
         RenderShader gridShader,
         RenderShader textParticleShader, 
         Font font)
@@ -18,6 +20,7 @@ namespace BattleForDune.View
         private readonly MapLayer.Factory _mapLayerFactory = new(shader, gridShader);
         private readonly AuraLayer.Factory _auraLayerFactory = new(registry, shader);
         private readonly UnitLayer.Factory _unitLayerFactory = new(shader);
+        private readonly HealthLayer.Factory _healthLayerFactory = new(noTexShader);
         private readonly TextParticleLayer.Factory _textParticleLayerFactory = new(font, textParticleShader);
 
         public BattleScene CreateBattle(DenseHexGrid<Tile> map, int capacity)
@@ -54,6 +57,7 @@ namespace BattleForDune.View
                 _mapLayerFactory.Create(tileTextures, map),
                 _auraLayerFactory.Create(auraTextures, capacity),
                 _unitLayerFactory.Create(unitTextures, capacity),
+                _healthLayerFactory.Create(capacity),
                 _textParticleLayerFactory.Create(8192));
         }
     }

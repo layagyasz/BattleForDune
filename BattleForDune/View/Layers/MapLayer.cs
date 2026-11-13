@@ -8,7 +8,7 @@ using Cardamom.Ui;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace BattleForDune.View
+namespace BattleForDune.View.Layers
 {
     public class MapLayer : ManagedResource, IRenderable
     {
