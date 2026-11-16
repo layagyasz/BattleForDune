@@ -323,7 +323,8 @@ namespace BattleForDune.Core
             // If no matching effects exist, add a new one.
             var newEffect = 
                 _world.Registry.GetEffectPrototype(@event.EffectKey)
-                    .Materialize(@event.EffectId, @event.TargetId, @event.SubjectId, @event.AbilityId);
+                    .Materialize(
+                        @event.EffectId, @event.TargetId, @event.SubjectId, @event.AbilityId, @event.Vector);
             newEffect.MergeStacks(@event.Stacks);
             newEffect.MergePower(@event.Power);
             _world.Effects.Add(newEffect);

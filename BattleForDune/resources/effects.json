@@ -1,5 +1,5 @@
 [
-  // Burn
+  // Burn (Status)
   {
     "EffectKey": 0,
     "SupportedEvents": [ "Tick" ],
@@ -13,7 +13,7 @@
       }
     ]
   },
-  // Fast Attack
+  // Fast Attack (Passive)
   {
     "EffectKey": 1,
     "SupportedEvents": [],
@@ -29,7 +29,7 @@
       }
     ]
   },
-  // Dauntless
+  // Dauntless (Passive)
   {
     "EffectKey": 2,
     "SupportedEvents": [ "AddEffect", "Damage" ],
@@ -47,7 +47,7 @@
       }
     ]
   },
-  // Terror
+  // Terror (Passive)
   {
     "EffectKey": 3,
     "SupportedEvents": [ "Damage" ],
@@ -63,7 +63,7 @@
       }
     ]
   },
-  // Frozen
+  // Frozen (Status)
   {
     "EffectKey": 4,
     "SupportedEvents": [],
@@ -78,7 +78,7 @@
       }
     ]
   },
-  // Dazed
+  // Dazed (Status)
   {
     "EffectKey": 5,
     "SupportedEvents": [],
@@ -93,7 +93,7 @@
       }
     ]
   },
-  // Bleed
+  // Bleed (Status)
   {
     "EffectKey": 6,
     "SupportedEvents": [ "Tick" ],
@@ -107,7 +107,7 @@
       }
     ]
   },
-  // Poisoned
+  // Poisoned (Status)
   {
     "EffectKey": 7,
     "SupportedEvents": [ "Tick" ],
@@ -121,7 +121,7 @@
       }
     ]
   },
-  // Feared
+  // Feared (Status)
   {
     "EffectKey": 8,
     "SupportedEvents": [ "Damage" ],
@@ -137,7 +137,7 @@
       }
     ]
   },
-  // Confused
+  // Confused (Status)
   {
     "EffectKey": 9,
     "SupportedEvents": [],
@@ -152,7 +152,7 @@
       }
     ]
   },
-  // Disrupted
+  // Disrupted (Status)
   {
     "EffectKey": 10,
     "SupportedEvents": [],
@@ -167,7 +167,7 @@
       }
     ]
   },
-  // Pahlevani-Base
+  // Pahlevani-Base (Passive)
   {
     "EffectKey": 11,
     "SupportedEvents": [ "Attack" ],
@@ -183,7 +183,7 @@
       }
     ]
   },
-  // Stena-Shield
+  // Stena-Shield (Passive)
   {
     "EffectKey": 12,
     "SupportedEvents": [ "Attack", "Damage" ],
@@ -238,7 +238,7 @@
       }
     ]
   },
-  // Xin-xin Jian
+  // Xin-xin Jian (Passive)
   {
     "EffectKey": 13,
     "SupportedEvents": [ "Attack", "Damage" ],
@@ -283,7 +283,7 @@
       }
     ]
   },
-  // Raqsh-e Tehgeh (Ginazi)
+  // Raqsh-e Tehgeh (Ginazi) (Passive)
   {
     "EffectKey": 14,
     "SupportedEvents": [ "Attack" ],
@@ -313,7 +313,7 @@
       }
     ]
   },
-  // Kvatan-e Ahanin (Sardaukar)
+  // Kvatan-e Ahanin (Sardaukar) (Passive)
   {
     "EffectKey": 15,
     "SupportedEvents": [ "Attack", "Damage" ],
@@ -352,7 +352,7 @@
       }
     ]
   },
-  // Prana-Bindu (Bene Gesserit)
+  // Prana-Bindu (Bene Gesserit) (Passive)
   {
     "EffectKey": 16,
     "SupportedEvents": [],
@@ -368,7 +368,7 @@
       }
     ]
   },
-  // al-Sikkinayn (Fremen)
+  // al-Sikkinayn (Fremen) (Passive)
   {
     "EffectKey": 17,
     "SupportedEvents": [ "Attack", "Damage" ],
@@ -400,7 +400,7 @@
       }
     ]
   },
-  // Cleave
+  // Cleave (Passive)
   {
     "EffectKey": 18,
     "SupportedEvents": [ "Kill" ],
@@ -414,7 +414,7 @@
       }
     ]
   },
-  // Stunned
+  // Stunned (Status)
   {
     "EffectKey": 19,
     "SupportedEvents": [ "ResetActions" ],
@@ -427,7 +427,7 @@
       }
     ]
   },
-  // Contaminated
+  // Contaminated (Status)
   {
     "EffectKey": 20,
     "SupportedEvents": [ "Kill" ],
@@ -440,7 +440,7 @@
       }
     ]
   },
-  // Contaminate
+  // Contaminate (Passive)
   {
     "EffectKey": 21,
     "SupportedEvents": [ "Damage" ],
@@ -466,7 +466,7 @@
       }
     ]
   },
-  // Mindless
+  // Mindless (Passive)
   {
     "EffectKey": 22,
     "SupportedEvents": [ "Damage" ],
@@ -498,7 +498,7 @@
       }
     ]
   },
-  // Toughness
+  // Toughness (Passive)
   {
     "EffectKey": 23,
     "SupportedEvents": [ "Damage" ],
@@ -514,7 +514,7 @@
       }
     ]
   },
-  // Twisted
+  // Twisted (Passive)
   {
     "EffectKey": 24,
     "SupportedEvents": [ "AddEffect" ],
@@ -528,7 +528,7 @@
       }
     ]
   },
-  // Resilient
+  // Resilient (Passive)
   {
     "EffectKey": 25,
     "SupportedEvents": [ "AddEffect" ],
@@ -542,7 +542,7 @@
       }
     ]
   },
-  // Deviated
+  // Deviated (Status)
   {
     "EffectKey": 26,
     "SupportedEvents": [],
@@ -553,7 +553,7 @@
       }
     ]
   },
-  // Respirators
+  // Respirators (Passive)
   {
     "EffectKey": 27,
     "SupportedEvents": [ "AddEffect" ],
@@ -578,6 +578,39 @@
           "Value": 4,
           "Max": 4
         }
+      }
+    ]
+  },
+  // Disciplined (Passive)
+  {
+    "EffectKey": 29,
+    "SupportedEvents": [ "Damage" ],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "DamageModifier",
+        "Direction": "Incoming",
+        "DamageType": [ "Psychic" ],
+        "Vector": [ "All" ],
+        "Stat": [ "Morale" ],
+        "Modifier": -1
+      }
+    ]
+  },
+  // Cruel (Passive)
+  {
+    "EffectKey": 30,
+    "SupportedEvents": [ "Damage" ],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "DamageByEffects",
+        "Direction": "Outgoing",
+        "DamageType": "$all",
+        "Vector": [ "All" ],
+        "Stat": [ "Hitpoints" ],
+        "EffectVector": [ "All" ],
+        "PerInstance": 1
       }
     ]
   }

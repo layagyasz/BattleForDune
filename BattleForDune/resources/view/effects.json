@@ -160,5 +160,17 @@
     "Key": 28,
     "Color": "#3399ff",
     "Name": "fortified"
+  },
+  {
+    "Key": 29,
+    "Color": "#ffffff",
+    "Name": "disciplined",
+    "IsHidden": true
+  },
+  {
+    "Key": 30,
+    "Color": "#ffffff",
+    "Name": "cruel",
+    "IsHidden": true
   }
 ]

@@ -1,9 +1,10 @@
 ﻿using BattleForDune.Core.Events;
 using BattleForDune.Core.Events.Types;
+using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
-    public record class KillSpawnHandler(EffectDirection Direction, RegistryKey UnitKey)
+    public record class KillSpawnHandler(AbilityDirection Direction, RegistryKey UnitKey)
         : IEffectHandler<KillEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)

@@ -5,7 +5,7 @@ using BattleForDune.Core.Schema;
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class SpawnAddEffectHandler(
-        EffectDirection Direction,
+        AbilityDirection Direction,
         RegistryKey EffectKey, 
         AbilityVector Vector,
         byte Stacks, 

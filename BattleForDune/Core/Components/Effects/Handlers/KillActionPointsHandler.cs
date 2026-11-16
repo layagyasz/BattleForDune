@@ -5,7 +5,7 @@ using BattleForDune.Core.Schema;
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class KillActionPointsHandler(
-        EffectDirection Direction, BooleanFlag IsPrimaryDamage, sbyte ActionPoints, sbyte MovePoints) 
+        AbilityDirection Direction, BooleanFlag IsPrimaryDamage, sbyte ActionPoints, sbyte MovePoints) 
         : IEffectHandler<KillEvent>
     {
         public void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink)

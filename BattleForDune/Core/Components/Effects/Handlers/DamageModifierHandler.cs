@@ -6,7 +6,7 @@ using BattleForDune.FastLookup;
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class DamageModifierHandler(
-        EffectDirection Direction,
+        AbilityDirection Direction,
         EnumSet<DamageType> DamageType,
         AbilityVector Vector,
         EnumSet<StatType> Stat,

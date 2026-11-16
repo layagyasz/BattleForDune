@@ -1,4 +1,5 @@
 ﻿using BattleForDune.Core.Events;
+using BattleForDune.Core.Schema;
 
 namespace BattleForDune.Core.Components.Effects
 {
@@ -8,6 +9,7 @@ namespace BattleForDune.Core.Components.Effects
         EntityId OwnerId, 
         EntityId SourceId, 
         EntityId AbilityId,
+        AbilityVector Vector,
         bool IsGlobal,
         IGenericEffectHandler[] Handlers) 
         : IGameEventHandler
@@ -28,9 +30,10 @@ namespace BattleForDune.Core.Components.Effects
                 return EffectKey.CompareTo(other.EffectKey);
             }
 
-            public Effect Materialize(EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId)
+            public Effect Materialize(
+                EntityId id, EntityId ownerId, EntityId sourceId, EntityId abilityId, AbilityVector vector)
             {
-                return new(EffectKey, id, ownerId, sourceId, abilityId, IsGlobal, Handlers);
+                return new(EffectKey, id, ownerId, sourceId, abilityId, vector, IsGlobal, Handlers);
             }
         }
 

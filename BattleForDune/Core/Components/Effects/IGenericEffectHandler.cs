@@ -1,5 +1,6 @@
 ﻿using BattleForDune.Core.Components.Effects.Handlers;
 using BattleForDune.Core.Events;
+using BattleForDune.Core.Schema;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -7,8 +8,9 @@ namespace BattleForDune.Core.Components.Effects
 {
     [JsonDerivedType(typeof(AddEffectHandler), "AddEffect")]
     [JsonDerivedType(typeof(AttackHandler), "Attack")]
-    [JsonDerivedType(typeof(DamageImmunityHandler), "DamageImmunity")]
+    [JsonDerivedType(typeof(DamageByEffectsHandler), "DamageByEffects")]
     [JsonDerivedType(typeof(DamageChanceAddEffectHandler), "DamageChanceAddEffect")]
+    [JsonDerivedType(typeof(DamageImmunityHandler), "DamageImmunity")]
     [JsonDerivedType(typeof(DamageModifierHandler), "DamageModifier")]
     [JsonDerivedType(typeof(DamageOverTimeHandler), "DamageOverTime")]
     [JsonDerivedType(typeof(EffectImmunityHandler), "EffectImmunity")]
@@ -25,12 +27,12 @@ namespace BattleForDune.Core.Components.Effects
         void Remove<TSink>(Effect parent, ComponentWorld world, in TSink sink) where TSink : IGameEventSink;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool HasDirection<T>(in T @event, EffectDirection direction, EntityId ownerId)
+        public static bool HasDirection<T>(in T @event, AbilityDirection direction, EntityId ownerId)
             where T : struct, IGameEvent => direction switch
             {
-                EffectDirection.Incoming => ownerId == @event.TargetId,
-                EffectDirection.Outgoing => ownerId == @event.SubjectId,
-                _ => throw new ArgumentException($"Unsupported EffectDirection {direction}")
+                AbilityDirection.Incoming => ownerId == @event.TargetId,
+                AbilityDirection.Outgoing => ownerId == @event.SubjectId,
+                _ => throw new ArgumentException($"Unsupported AbilityDirection {direction}")
             };
     }
 }

@@ -5,7 +5,7 @@ using BattleForDune.Core.Schema;
 namespace BattleForDune.Core.Components.Effects.Handlers
 {
     public record class AttackHandler(
-        EffectDirection Direction,
+        AbilityDirection Direction,
         AbilityVector Vector,
         BooleanFlag TargetShielded,
         sbyte AttackSkill, 
