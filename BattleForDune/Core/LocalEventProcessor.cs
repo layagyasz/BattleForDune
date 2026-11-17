@@ -28,6 +28,21 @@ namespace BattleForDune.Core
             }
         }
 
+        private ref struct CountAuraCallback(RegistryKey auraKey, Hex2b position) : IQuadTreeCallback<Aura>
+        {
+            private readonly RegistryKey _auraKey = auraKey;
+            private readonly Hex2b _position = position;
+            public int Count { get; private set; }
+
+            public void Notify(Hex2b position, Aura aura)
+            {
+                if (aura.AuraKey == _auraKey && aura.Position == _position)
+                {
+                    Count++;
+                }
+            }
+        }
+
         private readonly ref struct EffectRemoveCallback<TSink>(
             ComponentWorld world, TSink sink) : IStorageCallback<Effect> where TSink : IGameEventSink
         {
@@ -248,7 +263,6 @@ namespace BattleForDune.Core
             }
 
             var prototype = _world.Registry.GetAuraPrototype(@event.AuraKey);
-
             _world.Auras.Add(
                 @event.AuraId,
                 prototype.Materialize(
@@ -587,6 +601,7 @@ namespace BattleForDune.Core
             }
             var callback = new RemoveAuraCallback<TSink>(_world, sink);
             _world.Auras.Remove(@event.AuraId, ref callback);
+            _world.Timers.Remove(@event.AuraId);
         }
 
         private void ApplyRemoveEffect<TSink>(in RemoveEffectEvent @event, TSink sink) 
@@ -703,7 +718,17 @@ namespace BattleForDune.Core
 
         private void Process<TSink>(ref AddAuraEvent @event, TSink sink) where TSink : IGameEventSink
         {
+            // TODO: Handle merging?
+            var countCallback = new CountAuraCallback(@event.AuraKey, @event.Position);
+            _world.Auras.QueryRange(@event.Position, 0, ref countCallback);
+            if (countCallback.Count > 0)
+            {
+                @event.IsCanceled = true;
+                return;
+            }
+
             @event.AuraId = _world.NextId();
+            @event.Roll = _world.Roll(new(1, 20, 0));
 
             bool hasAbility = _world.Abilities.TryGet(@event.AbilityId, out var ability);
 
@@ -712,6 +737,11 @@ namespace BattleForDune.Core
                 ability!.Intercept(ref @event, _world);
             }
             _world.Intercept(ref @event);
+
+            if (!IsSuccess(@event.Skill, @event.Difficulty, @event.Roll))
+            {
+                @event.IsCanceled = true;
+            }
 
             if (hasAbility)
             {

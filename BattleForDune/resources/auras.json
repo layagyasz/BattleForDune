@@ -3,5 +3,10 @@
     "AuraKey": 0,
     "Effect": 28,
     "Vector": []
+  },
+  {
+    "AuraKey": 1,
+    "Effect": 31,
+    "Vector": [ "Environmental" ]
   }
 ]

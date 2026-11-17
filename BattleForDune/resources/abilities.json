@@ -236,5 +236,48 @@
         "Duration": -1
       }
     ]
+  },
+  // Irradiator MLRS
+  {
+    "AbilityKey": 6,
+    "Cooldown": -1,
+    "Charges": -1,
+    "Targeting": {
+      "Range": 2,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAttack",
+        "Vector": [ "Ranged" ],
+        "CriticalRange": 0
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Physical",
+        "Vector": [ "Ranged" ],
+        "Stat": "Hitpoints",
+        "Damage": "1d10",
+        "IsPrimary": true
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Psychic",
+        "Vector": [ "Psychic" ],
+        "Stat": "Morale",
+        "Damage": "1d10"
+      },
+      {
+        "$type": "AttackChanceAddAura",
+        "AuraKey": 1,
+        "Power": 1,
+        "Range": 0,
+        "Duration": 3,
+        "Difficulty": 14
+      }
+    ]
   }
 ]

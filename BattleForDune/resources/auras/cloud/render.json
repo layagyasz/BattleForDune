@@ -1,0 +1,34 @@
+[
+  {
+    "Key": 32,
+    "ImagePath": "resources/auras/cloud/cloud_000.png"
+  },
+  {
+    "Key": 33,
+    "ImagePath": "resources/auras/cloud/cloud_001.png"
+  },
+  {
+    "Key": 34,
+    "ImagePath": "resources/auras/cloud/cloud_002.png"
+  },
+  {
+    "Key": 35,
+    "ImagePath": "resources/auras/cloud/cloud_003.png"
+  },
+  {
+    "Key": 36,
+    "ImagePath": "resources/auras/cloud/cloud_004.png"
+  },
+  {
+    "Key": 37,
+    "ImagePath": "resources/auras/cloud/cloud_005.png"
+  },
+  {
+    "Key": 38,
+    "ImagePath": "resources/auras/cloud/cloud_006.png"
+  },
+  {
+    "Key": 39,
+    "ImagePath": "resources/auras/cloud/cloud_007.png"
+  }
+]

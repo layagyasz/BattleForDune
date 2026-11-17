@@ -613,5 +613,35 @@
         "PerInstance": 1
       }
     ]
+  },
+  // Irradiated (Aura)
+  {
+    "EffectKey": 31,
+    "SupportedEvents": [ "Tick" ],
+    "MergeBehavior": [ "All" ],
+    "IsGlobal": true,
+    "Handlers": [
+      {
+        "$type": "DamageOverTime",
+        "DamageType": "Radiation",
+        "Vector": [ "Environmental" ]
+      }
+    ]
+  },
+  // Rad-sealed (Passive)
+  {
+    "EffectKey": 32,
+    "SupportedEvents": [ "Damage" ],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "DamageModifier",
+        "Direction": "Incoming",
+        "DamageType": [ "Radiation" ],
+        "Vector": [ "All" ],
+        "Stat": [ "Hitpoints" ],
+        "Modifier": -1
+      }
+    ]
   }
 ]

@@ -13,7 +13,10 @@ namespace BattleForDune.Core.Events.Types
         RegistryKey AuraKey,
         byte Power,
         byte Range,
-        sbyte Duration) : IGameEvent
+        sbyte Duration,
+        sbyte Skill,
+        sbyte Difficulty,
+        sbyte Roll) : IGameEvent
     {
         public readonly GameEventType Type => GameEventType.AddAura;
         public readonly EntityId TargetId => EntityId.None;
@@ -25,7 +28,9 @@ namespace BattleForDune.Core.Events.Types
             RegistryKey auraKey,
             byte power,
             byte range,
-            sbyte duration)
+            sbyte duration,
+            sbyte skill,
+            sbyte difficulty)
         {
             return new(
                 false,
@@ -36,7 +41,10 @@ namespace BattleForDune.Core.Events.Types
                 auraKey,
                 power,
                 range,
-                duration);
+                duration,
+                skill,
+                difficulty,
+                0);
         }
     }
 }

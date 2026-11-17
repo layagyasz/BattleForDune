@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace BattleForDune.Geometry
 {
@@ -10,6 +11,34 @@ namespace BattleForDune.Geometry
         public readonly sbyte S => (sbyte)(-Q - R);
 
         public Hex2b(int q, int r) : this((sbyte)q, (sbyte)r) { }
+
+        public override bool Equals([NotNullWhen(true)] object? @object)
+        {
+            if (@object is null)
+            {
+                return false;
+            }
+            if (@object is Hex2b other)
+            {
+                return this == other;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Q, R);
+        }
+
+        public static bool operator ==(Hex2b left, Hex2b right)
+        {
+            return left.Q == right.Q && left.R == right.R;
+        }
+
+        public static bool operator !=(Hex2b left, Hex2b right)
+        {
+            return left.Q != right.Q || left.R != right.R;
+        }
 
         public static Hex2b operator +(Hex2b left, Hex2b right)
         {

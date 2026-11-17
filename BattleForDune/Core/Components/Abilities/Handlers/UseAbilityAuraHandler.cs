@@ -24,7 +24,15 @@ namespace BattleForDune.Core.Components.Abilities.Handlers
 
             var aura =
                 AddAuraEvent.Transitive(
-                    @event.SubjectId, @event.AbilityId, position, AuraKey, Power, Range, Duration);
+                    @event.SubjectId,
+                    @event.AbilityId, 
+                    position,
+                    AuraKey, 
+                    Power, 
+                    Range,
+                    Duration, 
+                    skill:0,
+                    difficulty:0);
             sink.Queue(in aura);
         }
     }

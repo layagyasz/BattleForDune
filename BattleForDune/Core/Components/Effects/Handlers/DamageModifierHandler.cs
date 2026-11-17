@@ -10,6 +10,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
         EnumSet<DamageType> DamageType,
         AbilityVector Vector,
         EnumSet<StatType> Stat,
+        sbyte AntiStructure,
         sbyte Modifier)
         : IEffectHandler<DamageEvent>
     {
@@ -29,6 +30,7 @@ namespace BattleForDune.Core.Components.Effects.Handlers
                 && (Vector & @event.Vector) != 0
                 && Stat.Contains(@event.Stat))
             {
+                @event.Structure -= AntiStructure;
                 @event.Roll += Modifier;
             }
         }

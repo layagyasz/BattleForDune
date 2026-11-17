@@ -172,5 +172,16 @@
     "Color": "#ffffff",
     "Name": "cruel",
     "IsHidden": true
+  },
+  {
+    "Key": 31,
+    "Color": "#ffff33",
+    "Name": "irradiated"
+  },
+  {
+    "Key": 32,
+    "Color": "#ffffff",
+    "Name": "rad-sealed",
+    "IsHidden": true
   }
 ]
