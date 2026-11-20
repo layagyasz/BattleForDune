@@ -1,0 +1,22 @@
+[
+  {
+    "UnitKey": 7,
+    "Archetype": 0,
+    "Modifiers": [
+      {
+        "Stat": "Armor",
+        "Modifier": 4
+      },
+      {
+        "Stat": "Shield",
+        "Modifier": 5
+      },
+      {
+        "Stat": "Evasion",
+        "Cap": 0
+      }
+    ],
+    "Abilities": [ 1 ],
+    "Passives": [ 2, 3, 15 ]
+  }
+]

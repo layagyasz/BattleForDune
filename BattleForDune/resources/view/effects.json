@@ -183,5 +183,10 @@
     "Color": "#ffffff",
     "Name": "rad-sealed",
     "IsHidden": true
+  },
+  {
+    "Key": 33,
+    "Color": "#33ff33",
+    "Name": "corroded"
   }
 ]

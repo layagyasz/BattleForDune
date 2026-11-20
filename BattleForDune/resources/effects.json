@@ -643,5 +643,21 @@
         "Modifier": -1
       }
     ]
+  },
+  // Corroded (Status)
+  {
+    "EffectKey": 33,
+    "SupportedEvents": [],
+    "MergeBehavior": [ "None" ],
+    "Handlers": [
+      {
+        "$type": "UpdateStatStacked",
+        "Stat": "Armor",
+        "Delta": {
+          "Value": -1
+        },
+        "PerStack": 1
+      }
+    ]
   }
 ]

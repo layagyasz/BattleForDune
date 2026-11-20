@@ -279,5 +279,89 @@
         "Difficulty": 14
       }
     ]
+  },
+  // Chemical Thrower
+  {
+    "AbilityKey": 7,
+    "Cooldown": -1,
+    "Charges": -1,
+    "Targeting": {
+      "Range": 1,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAttack",
+        "Vector": [ "Ranged" ],
+        "AntiShield": 2
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Physical",
+        "Vector": [ "Ranged" ],
+        "Stat": "Hitpoints",
+        "Damage": "2d6",
+        "IsPrimary": true
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Psychic",
+        "Vector": [ "Psychic" ],
+        "Stat": "Morale",
+        "Damage": "2d6"
+      },
+      {
+        "$type": "DamageChanceAddEffect",
+        "EffectKey": 33,
+        "Vector": [ "Environmental" ],
+        "Difficulty": 14,
+        "Duration": -1
+      }
+    ]
+  },
+  // Flame Thrower
+  {
+    "AbilityKey": 8,
+    "Cooldown": -1,
+    "Charges": -1,
+    "Targeting": {
+      "Range": 1,
+      "TargetType": [ "Enemy" ],
+      "Comparator": {
+        "$type": "Default"
+      }
+    },
+    "Handlers": [
+      {
+        "$type": "UseAbilityAttack",
+        "Vector": [ "Ranged" ],
+        "AntiShield": 2
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Physical",
+        "Vector": [ "Ranged" ],
+        "Stat": "Hitpoints",
+        "Damage": "2d8",
+        "IsPrimary": true
+      },
+      {
+        "$type": "AttackBasic",
+        "DamageType": "Psychic",
+        "Vector": [ "Psychic" ],
+        "Stat": "Morale",
+        "Damage": "2d8"
+      },
+      {
+        "$type": "DamageChanceAddEffect",
+        "EffectKey": 6,
+        "Vector": [ "Environmental" ],
+        "Difficulty": 14,
+        "Duration": 3
+      }
+    ]
   }
 ]

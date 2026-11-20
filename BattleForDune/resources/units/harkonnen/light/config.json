@@ -5,7 +5,7 @@
     "Modifiers": [
       {
         "Stat": "Armor",
-        "Modifier": 3
+        "Modifier": 2
       },
       {
         "Stat": "Shield",
@@ -13,7 +13,7 @@
       },
       {
         "Stat": "Evasion",
-        "Cap": 1
+        "Cap": 2
       }
     ],
     "Abilities": [ 1 ],

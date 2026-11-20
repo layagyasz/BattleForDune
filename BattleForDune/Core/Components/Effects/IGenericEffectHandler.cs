@@ -21,6 +21,7 @@ namespace BattleForDune.Core.Components.Effects
     [JsonDerivedType(typeof(ResetActionsHandler), "ResetActions")]
     [JsonDerivedType(typeof(SpawnAddEffectHandler), "SpawnAddEffect")]
     [JsonDerivedType(typeof(UpdateStatHandler), "UpdateStat")]
+    [JsonDerivedType(typeof(UpdateStatStackedHandler), "UpdateStatStacked")]
     public interface IGenericEffectHandler
     {
         void Apply<TSink>(Effect parent, ComponentWorld world, in TSink sink) where TSink : IGameEventSink;

@@ -7,8 +7,8 @@ namespace BattleForDune
     {
         static void Main()
         {
-            var teamA = new TeamSetup(0, new(0), new(0), 10, 50, 50);
-            var teamB = new TeamSetup(1, new(1), new(6), 10, 50, 50);
+            var teamA = new TeamSetup(0, new(0), new(10), 10, 50, 50);
+            var teamB = new TeamSetup(1, new(1), new(11), 10, 50, 50);
             var runner = new TestBattleRunner(new(60, teamA, teamB));
             runner.Run();
         }
